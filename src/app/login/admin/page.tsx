@@ -1,7 +1,6 @@
 import heroImage from "@/assets/images/hero.jpg";
 import logoImage from "@/assets/images/logo.svg";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { StaffLoginForm } from "@/components/auth-forms";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -53,46 +52,7 @@ export default function Admin() {
               Use seu e-mail institucional para acessar o sistema.
             </p>
 
-            <div className="mt-8 space-y-5">
-              <div className="space-y-2">
-                <label
-                  htmlFor="admin-email"
-                  className="text-sm font-medium text-[#394e45]"
-                >
-                  E-mail institucional
-                </label>
-                <Input
-                  id="admin-email"
-                  name="email"
-                  type="email"
-                  autoComplete="username"
-                  placeholder="nome@escola.edu.br"
-                  className="h-12 rounded-md border-[#e5ddd4] bg-[#fcfaf7] px-4 text-sm placeholder:text-[#a39a8d] focus-visible:border-[#b66b4d] focus-visible:ring-[#b66b4d]/20"
-                />
-              </div>
-              <div className="space-y-2">
-                <label
-                  htmlFor="admin-password"
-                  className="text-sm font-medium text-[#394e45]"
-                >
-                  Senha
-                </label>
-                <Input
-                  id="admin-password"
-                  name="senha"
-                  type="password"
-                  autoComplete="current-password"
-                  placeholder="Digite sua senha"
-                  className="h-12 rounded-md border-[#e5ddd4] bg-[#fcfaf7] px-4 text-sm placeholder:text-[#a39a8d] focus-visible:border-[#b66b4d] focus-visible:ring-[#b66b4d]/20"
-                />
-              </div>
-              <Button
-                type="button"
-                className="h-12 w-full rounded-md bg-[#a45137] text-sm font-semibold text-white hover:bg-[#873f2c]"
-              >
-                Entrar no painel
-              </Button>
-            </div>
+            <StaffLoginForm />
 
             <p className="mt-8 border-t border-[#eee9e2] pt-5 text-center text-sm text-[#727b70]">
               É estudante?{" "}

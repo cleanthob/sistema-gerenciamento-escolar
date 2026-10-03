@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  DIRECTOR
+  TEACHER
+  STUDENT
+}
+
+enum StudentStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  WAIVED
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+
+enum SanctionType {
+  WARNING
+  SUSPENSION
+}
+
+enum GuardianContactStatus {
+  PENDING
+  CONTACTED
+  NOT_REQUIRED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         UserRole
+  department   String?
+  phone        String?
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Student {
+  id                 String        @id @default(cuid())
+  registration       String        @unique
+  name               String
+  email              String?       @unique
+  passwordHash       String
+  mustChangePassword Boolean       @default(true)
+  grade              String
+  className          String
+  status             StudentStatus @default(ACTIVE)
+  guardianName       String
+  guardianPhone      String
+  guardianEmail      String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  payments           Payment[]
+  attendances        Attendance[]
+  lessons            Lesson[]
+  sanctions          Sanction[]
+  grades             Grade[]
+}
+
+model Payment {
+  id        String        @id @default(cuid())
+  studentId String
+  amount    Int
+  dueDate   DateTime
+  paidAt    DateTime?
+  status    PaymentStatus @default(PENDING)
+  reference String?
+  createdAt DateTime      @default(now())
+  student   Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId, dueDate, status])
+}
+
+model Attendance {
+  id         String           @id @default(cuid())
+  studentId  String
+  date       DateTime
+  subject    String?
+  status     AttendanceStatus
+  note       String?
+  recordedBy String?
+  createdAt  DateTime         @default(now())
+  student    Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, date, subject])
+  @@index([studentId, date])
+}
+
+model Lesson {
+  id        String   @id @default(cuid())
+  studentId String
+  subject   String
+  teacher   String
+  room      String
+  startsAt  DateTime
+  endsAt    DateTime
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId, startsAt])
+}
+
+model Grade {
+  id         String   @id @default(cuid())
+  studentId  String
+  subject    String
+  activity   String
+  score      Float
+  maxScore   Float    @default(10)
+  term       String
+  recordedAt DateTime @default(now())
+  student    Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId, term, recordedAt])
+}
+
+model Sanction {
+  id                      String                @id @default(cuid())
+  studentId               String
+  type                    SanctionType
+  reason                  String
+  startsAt                DateTime
+  endsAt                  DateTime?
+  guardianContactRequired Boolean               @default(true)
+  guardianContactStatus   GuardianContactStatus @default(PENDING)
+  guardianContactedAt     DateTime?
+  notes                   String?
+  createdBy               String
+  createdAt               DateTime              @default(now())
+  updatedAt               DateTime              @updatedAt
+  student                 Student               @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId, startsAt, endsAt])
+}

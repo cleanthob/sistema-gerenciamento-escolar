@@ -1,7 +1,15 @@
 "use client";
 
-import { Chip } from "@mui/material";
-import fakeDataProvider from "ra-data-fakerest";
+import {
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button as MuiButton,
+  Typography,
+} from "@mui/material";
+import { useState } from "react";
 import {
   BooleanField,
   BooleanInput,
@@ -9,316 +17,99 @@ import {
   Datagrid,
   DateField,
   DateInput,
+  DeleteWithConfirmButton,
   Edit,
   EditButton,
   FunctionField,
   List,
+  NumberField,
+  NumberInput,
+  ReferenceInput,
   SearchInput,
   SelectInput,
   SimpleForm,
   TextField,
   TextInput,
   required,
+  useRecordContext,
 } from "react-admin";
 
-const staffMembers = [
-  {
-    id: 1,
-    name: "Mariana Oliveira",
-    role: "Diretora",
-    department: "Direção",
-    email: "mariana.oliveira@escola.edu.br",
-    phone: "(11) 3456-7801",
-    status: "Ativo",
-    initials: "MO",
-    color: "#28705b",
+const listStyles = {
+  "& .RaList-main": { minWidth: 0 },
+  "& .RaList-content": {
+    backgroundColor: "transparent",
+    boxShadow: "none",
+    overflowX: "auto",
   },
-  {
-    id: 2,
-    name: "Rafael Santos",
-    role: "Coordenador pedagógico",
-    department: "Coordenação",
-    email: "rafael.santos@escola.edu.br",
-    phone: "(11) 3456-7802",
-    status: "Ativo",
-    initials: "RS",
-    color: "#567b96",
+  "& .RaList-actions": { alignItems: "center", flexWrap: "wrap", gap: 1 },
+  "& .RaList-toolbar": { alignItems: "center", flexWrap: "wrap", gap: 1 },
+};
+
+const gridStyles = {
+  minWidth: 720,
+  "& .MuiTableCell-root": { whiteSpace: "nowrap" },
+  "& .MuiTableCell-root:nth-of-type(1)": {
+    whiteSpace: "normal",
+    minWidth: 150,
   },
-  {
-    id: 3,
-    name: "Camila Ferreira",
-    role: "Professora de Matemática",
-    department: "Ensino Fundamental II",
-    email: "camila.ferreira@escola.edu.br",
-    phone: "(11) 3456-7803",
-    status: "Ativo",
-    initials: "CF",
-    color: "#b65b40",
-  },
-  {
-    id: 4,
-    name: "João Pedro Lima",
-    role: "Professor de Ciências",
-    department: "Ensino Fundamental II",
-    email: "joao.lima@escola.edu.br",
-    phone: "(11) 3456-7804",
-    status: "Ativo",
-    initials: "JL",
-    color: "#bb8a38",
-  },
-  {
-    id: 5,
-    name: "Renata Almeida",
-    role: "Professora de Língua Portuguesa",
-    department: "Ensino Fundamental II",
-    email: "renata.almeida@escola.edu.br",
-    phone: "(11) 3456-7805",
-    status: "Afastado",
-    initials: "RA",
-    color: "#736c8b",
-  },
-  {
-    id: 6,
-    name: "Bruno Costa",
-    role: "Orientador educacional",
-    department: "Orientação",
-    email: "bruno.costa@escola.edu.br",
-    phone: "(11) 3456-7806",
-    status: "Ativo",
-    initials: "BC",
-    color: "#43806c",
-  },
-  {
-    id: 7,
-    name: "Lúcia Martins",
-    role: "Secretária escolar",
-    department: "Secretaria",
-    email: "lucia.martins@escola.edu.br",
-    phone: "(11) 3456-7807",
-    status: "Ativo",
-    initials: "LM",
-    color: "#c16a4b",
-  },
-  {
-    id: 8,
-    name: "André Carvalho",
-    role: "Professor de História",
-    department: "Ensino Fundamental II",
-    email: "andre.carvalho@escola.edu.br",
-    phone: "(11) 3456-7808",
-    status: "Ativo",
-    initials: "AC",
-    color: "#567b96",
-  },
-  {
-    id: 9,
-    name: "Patrícia Nunes",
-    role: "Psicóloga escolar",
-    department: "Apoio ao estudante",
-    email: "patricia.nunes@escola.edu.br",
-    phone: "(11) 3456-7809",
-    status: "Ativo",
-    initials: "PN",
-    color: "#b65b40",
-  },
+};
+
+const studentStatusChoices = [
+  { id: "ACTIVE", name: "Ativo" },
+  { id: "INACTIVE", name: "Inativo" },
 ];
-
-const students = [
-  {
-    id: 1,
-    name: "Ana Beatriz Costa",
-    registration: "2026001",
-    grade: "8º ano",
-    className: "8º B",
-    status: "Ativo",
-    guardianName: "Marcos Costa",
-    guardianPhone: "(11) 98812-4501",
-    guardianEmail: "marcos.costa@email.com",
-  },
-  {
-    id: 2,
-    name: "Lucas Mendes Rocha",
-    registration: "2026002",
-    grade: "7º ano",
-    className: "7º A",
-    status: "Ativo",
-    guardianName: "Paula Mendes",
-    guardianPhone: "(11) 98812-4502",
-    guardianEmail: "paula.mendes@email.com",
-  },
-  {
-    id: 3,
-    name: "Sofia Almeida Santos",
-    registration: "2026003",
-    grade: "9º ano",
-    className: "9º C",
-    status: "Acompanhamento",
-    guardianName: "Renato Santos",
-    guardianPhone: "(11) 98812-4503",
-    guardianEmail: "renato.santos@email.com",
-  },
-  {
-    id: 4,
-    name: "Miguel Ferreira Lima",
-    registration: "2026004",
-    grade: "6º ano",
-    className: "6º B",
-    status: "Ativo",
-    guardianName: "Carla Ferreira",
-    guardianPhone: "(11) 98812-4504",
-    guardianEmail: "carla.ferreira@email.com",
-  },
-  {
-    id: 5,
-    name: "Isabela Nunes Martins",
-    registration: "2026005",
-    grade: "8º ano",
-    className: "8º A",
-    status: "Ativo",
-    guardianName: "João Martins",
-    guardianPhone: "(11) 98812-4505",
-    guardianEmail: "joao.martins@email.com",
-  },
-  {
-    id: 6,
-    name: "Pedro Henrique Alves",
-    registration: "2026006",
-    grade: "7º ano",
-    className: "7º B",
-    status: "Acompanhamento",
-    guardianName: "Luciana Alves",
-    guardianPhone: "(11) 98812-4506",
-    guardianEmail: "luciana.alves@email.com",
-  },
-];
-
-const attendance = [
-  {
-    id: 1,
-    studentName: "Ana Beatriz Costa",
-    registration: "2026001",
-    date: "2026-10-03",
-    className: "8º B",
-    status: "Presente",
-    note: "",
-  },
-  {
-    id: 2,
-    studentName: "Lucas Mendes Rocha",
-    registration: "2026002",
-    date: "2026-10-03",
-    className: "7º A",
-    status: "Atraso",
-    note: "Chegada às 08:18",
-  },
-  {
-    id: 3,
-    studentName: "Sofia Almeida Santos",
-    registration: "2026003",
-    date: "2026-10-03",
-    className: "9º C",
-    status: "Falta",
-    note: "Aguardando justificativa",
-  },
-  {
-    id: 4,
-    studentName: "Miguel Ferreira Lima",
-    registration: "2026004",
-    date: "2026-10-03",
-    className: "6º B",
-    status: "Presente",
-    note: "",
-  },
-  {
-    id: 5,
-    studentName: "Isabela Nunes Martins",
-    registration: "2026005",
-    date: "2026-10-03",
-    className: "8º A",
-    status: "Presente",
-    note: "",
-  },
-  {
-    id: 6,
-    studentName: "Pedro Henrique Alves",
-    registration: "2026006",
-    date: "2026-10-03",
-    className: "7º B",
-    status: "Falta",
-    note: "",
-  },
-];
-
-const incidents = [
-  {
-    id: 1,
-    studentName: "Sofia Almeida Santos",
-    registration: "2026003",
-    type: "Advertência",
-    reason: "Ocorrências recorrentes de atraso",
-    startDate: "2026-10-02",
-    endDate: "",
-    guardianContactRequired: true,
-    guardianContactStatus: "Pendente",
-    guardianPhone: "(11) 98812-4503",
-    notes: "Coordenação deve realizar contato.",
-  },
-  {
-    id: 2,
-    studentName: "Pedro Henrique Alves",
-    registration: "2026006",
-    type: "Suspensão",
-    reason: "Suspensão definida pela direção",
-    startDate: "2026-10-05",
-    endDate: "2026-10-06",
-    guardianContactRequired: true,
-    guardianContactStatus: "Contatado",
-    guardianPhone: "(11) 98812-4506",
-    notes: "Responsável comunicado por telefone.",
-  },
-];
-
-export const schoolDataProvider = fakeDataProvider({
-  users: staffMembers,
-  students,
-  attendance,
-  incidents,
-});
-
-const statusChoices = [
-  { id: "Ativo", name: "Ativo" },
-  { id: "Acompanhamento", name: "Acompanhamento" },
-];
-
-const studentChoices = students.map(({ name }) => ({ id: name, name }));
 
 export function StaffList() {
   return (
     <List
       title="Equipe escolar"
-      perPage={6}
+      perPage={10}
       sort={{ field: "name", order: "ASC" }}
       filters={[
         <SearchInput
           key="q"
           source="q"
           alwaysOn
-          placeholder="Nome, função ou setor"
+          placeholder="Nome, e-mail ou setor"
         />,
       ]}
       sx={listStyles}
     >
-      <Datagrid rowClick="edit" bulkActionButtons={false} sx={gridStyles}>
+      <Datagrid bulkActionButtons={false} sx={gridStyles}>
         <TextField source="name" label="Nome" />
-        <TextField source="role" label="Função" />
-        <TextField source="department" label="Setor" />
+        <FunctionField
+          label="Perfil"
+          render={(record) => roleLabel(record.role)}
+        />
+        <TextField
+          source="department"
+          label="Setor"
+          emptyText="Não informado"
+        />
         <TextField source="email" label="E-mail" />
-        <TextField source="phone" label="Telefone" />
-        <TextField source="status" label="Situação" />
-        <EditButton />
+        <TextField source="phone" label="Telefone" emptyText="Não informado" />
+        <FunctionField
+          label="Situação"
+          render={(record) => (
+            <Chip
+              size="small"
+              label={record.active ? "Ativo" : "Inativo"}
+              color={record.active ? "success" : "default"}
+            />
+          )}
+        />
       </Datagrid>
     </List>
   );
+}
+
+function roleLabel(role: string) {
+  const labels: Record<string, string> = {
+    ADMIN: "Administrador",
+    DIRECTOR: "Direção",
+    TEACHER: "Professor(a)",
+  };
+  return labels[role] ?? role;
 }
 
 export function StudentList() {
@@ -346,14 +137,21 @@ export function StudentList() {
           label="Situação"
           render={(record) => (
             <Chip
-              label={record.status}
+              label={record.status === "ACTIVE" ? "Ativo" : "Inativo"}
               size="small"
-              color={record.status === "Ativo" ? "success" : "warning"}
+              color={record.status === "ACTIVE" ? "success" : "default"}
             />
           )}
         />
         <TextField source="guardianName" label="Responsável" />
         <EditButton />
+        <ResetStudentPasswordButton />
+        <DeleteWithConfirmButton
+          label="Arquivar"
+          confirmTitle="Arquivar aluno"
+          confirmContent="A matrícula será desativada. O histórico escolar será preservado."
+          mutationMode="pessimistic"
+        />
       </Datagrid>
     </List>
   );
@@ -374,18 +172,21 @@ export function StudentCreate() {
           label="Matrícula"
           validate={required()}
         />
-        <SelectInput
-          source="grade"
-          label="Ano escolar"
-          validate={required()}
-          choices={gradeChoices}
-        />
+        <TextInput source="email" label="E-mail do aluno" type="email" />
+        <TextInput source="grade" label="Ano escolar" validate={required()} />
         <TextInput source="className" label="Turma" validate={required()} />
         <SelectInput
           source="status"
           label="Situação"
-          defaultValue="Ativo"
-          choices={statusChoices}
+          defaultValue="ACTIVE"
+          choices={studentStatusChoices}
+        />
+        <TextInput
+          source="initialPassword"
+          label="Senha temporária inicial"
+          type="password"
+          validate={required()}
+          helperText="O aluno deverá trocar esta senha no primeiro acesso."
         />
         <TextInput
           source="guardianName"
@@ -423,14 +224,14 @@ export function StudentEdit() {
           label="Matrícula"
           validate={required()}
         />
-        <SelectInput
-          source="grade"
-          label="Ano escolar"
-          validate={required()}
-          choices={gradeChoices}
-        />
+        <TextInput source="email" label="E-mail do aluno" type="email" />
+        <TextInput source="grade" label="Ano escolar" validate={required()} />
         <TextInput source="className" label="Turma" validate={required()} />
-        <SelectInput source="status" label="Situação" choices={statusChoices} />
+        <SelectInput
+          source="status"
+          label="Situação"
+          choices={studentStatusChoices}
+        />
         <TextInput
           source="guardianName"
           label="Nome do responsável"
@@ -452,11 +253,100 @@ export function StudentEdit() {
   );
 }
 
-const gradeChoices = [
-  { id: "6º ano", name: "6º ano" },
-  { id: "7º ano", name: "7º ano" },
-  { id: "8º ano", name: "8º ano" },
-  { id: "9º ano", name: "9º ano" },
+function ResetStudentPasswordButton() {
+  const record = useRecordContext<{ id: string; name: string }>();
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [temporaryPassword, setTemporaryPassword] = useState("");
+  const [error, setError] = useState("");
+
+  async function resetPassword() {
+    if (!record) return;
+    setLoading(true);
+    setError("");
+    try {
+      const response = await fetch(
+        `/api/students/${record.id}/reset-password`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: "{}",
+        },
+      );
+      const result = await response.json();
+      if (!response.ok)
+        setError(result.error ?? "Não foi possível redefinir a senha.");
+      else {
+        setTemporaryPassword(result.temporaryPassword);
+        setOpen(true);
+      }
+    } catch {
+      setError("Falha de conexão ao redefinir a senha.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <>
+      <MuiButton
+        size="small"
+        type="button"
+        aria-label={`Resetar senha de ${record?.name ?? "aluno"}`}
+        onClick={(event) => {
+          event.stopPropagation();
+          void resetPassword();
+        }}
+        disabled={loading}
+      >
+        {loading ? "Gerando..." : "Resetar senha"}
+      </MuiButton>
+      {error ? (
+        <Typography color="error" variant="caption">
+          {error}
+        </Typography>
+      ) : null}
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>Senha temporária gerada</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary">
+            Entregue esta senha a {record?.name} por um canal seguro. Ela será
+            exibida somente agora e precisará ser trocada no próximo acesso.
+          </Typography>
+          <Typography
+            component="code"
+            sx={{
+              display: "block",
+              mt: 2,
+              p: 1.5,
+              bgcolor: "#f3f6ef",
+              color: "#174f43",
+              overflowWrap: "anywhere",
+              fontSize: 16,
+              fontWeight: 700,
+            }}
+          >
+            {temporaryPassword}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <MuiButton onClick={() => setOpen(false)}>Fechar</MuiButton>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}
+
+const attendanceChoices = [
+  { id: "PRESENT", name: "Presente" },
+  { id: "ABSENT", name: "Falta" },
+  { id: "LATE", name: "Atraso" },
+  { id: "EXCUSED", name: "Justificada" },
 ];
 
 export function AttendanceList() {
@@ -465,31 +355,23 @@ export function AttendanceList() {
       title="Presença dos alunos"
       perPage={10}
       sort={{ field: "date", order: "DESC" }}
-      filters={[
-        <SearchInput
-          key="q"
-          source="q"
-          alwaysOn
-          placeholder="Aluno, matrícula ou turma"
-        />,
-      ]}
       sx={listStyles}
     >
       <Datagrid rowClick="edit" bulkActionButtons={false} sx={gridStyles}>
-        <TextField source="studentName" label="Aluno" />
-        <TextField source="registration" label="Matrícula" />
+        <TextField source="student.name" label="Aluno" />
+        <TextField source="student.registration" label="Matrícula" />
         <DateField source="date" label="Data" />
-        <TextField source="className" label="Turma" />
+        <TextField source="student.className" label="Turma" />
         <FunctionField
           label="Registro"
           render={(record) => (
             <Chip
-              label={record.status}
+              label={attendanceLabel(record.status)}
               size="small"
               color={
-                record.status === "Presente"
+                record.status === "PRESENT"
                   ? "success"
-                  : record.status === "Falta"
+                  : record.status === "ABSENT"
                     ? "error"
                     : "warning"
               }
@@ -503,24 +385,39 @@ export function AttendanceList() {
   );
 }
 
+function attendanceLabel(status: string) {
+  return (
+    (
+      {
+        PRESENT: "Presente",
+        ABSENT: "Falta",
+        LATE: "Atraso",
+        EXCUSED: "Justificada",
+      } as Record<string, string>
+    )[status] ?? status
+  );
+}
+
+function StudentReference() {
+  return (
+    <ReferenceInput
+      source="studentId"
+      reference="students"
+      perPage={100}
+      sort={{ field: "name", order: "ASC" }}
+    >
+      <SelectInput optionText="name" validate={required()} fullWidth />
+    </ReferenceInput>
+  );
+}
+
 export function AttendanceCreate() {
   return (
     <Create title="Registrar presença">
       <SimpleForm>
-        <SelectInput
-          source="studentName"
-          label="Aluno"
-          choices={studentChoices}
-          validate={required()}
-          fullWidth
-        />
-        <TextInput
-          source="registration"
-          label="Matrícula"
-          validate={required()}
-        />
+        <StudentReference />
         <DateInput source="date" label="Data" validate={required()} />
-        <TextInput source="className" label="Turma" validate={required()} />
+        <TextInput source="subject" label="Disciplina" />
         <SelectInput
           source="status"
           label="Registro"
@@ -537,20 +434,8 @@ export function AttendanceEdit() {
   return (
     <Edit title="Editar registro de presença">
       <SimpleForm>
-        <SelectInput
-          source="studentName"
-          label="Aluno"
-          choices={studentChoices}
-          validate={required()}
-          fullWidth
-        />
-        <TextInput
-          source="registration"
-          label="Matrícula"
-          validate={required()}
-        />
         <DateInput source="date" label="Data" validate={required()} />
-        <TextInput source="className" label="Turma" validate={required()} />
+        <TextInput source="subject" label="Disciplina" />
         <SelectInput
           source="status"
           label="Registro"
@@ -563,10 +448,14 @@ export function AttendanceEdit() {
   );
 }
 
-const attendanceChoices = [
-  { id: "Presente", name: "Presente" },
-  { id: "Falta", name: "Falta" },
-  { id: "Atraso", name: "Atraso" },
+const sanctionTypeChoices = [
+  { id: "WARNING", name: "Advertência" },
+  { id: "SUSPENSION", name: "Suspensão" },
+];
+const contactChoices = [
+  { id: "PENDING", name: "Pendente" },
+  { id: "CONTACTED", name: "Responsável contatado" },
+  { id: "NOT_REQUIRED", name: "Contato dispensado" },
 ];
 
 export function IncidentList() {
@@ -574,32 +463,24 @@ export function IncidentList() {
     <List
       title="Ocorrências disciplinares"
       perPage={10}
-      sort={{ field: "startDate", order: "DESC" }}
-      filters={[
-        <SearchInput
-          key="q"
-          source="q"
-          alwaysOn
-          placeholder="Aluno, matrícula ou ocorrência"
-        />,
-      ]}
+      sort={{ field: "createdAt", order: "DESC" }}
       sx={listStyles}
     >
       <Datagrid rowClick="edit" bulkActionButtons={false} sx={gridStyles}>
-        <TextField source="studentName" label="Aluno" />
-        <TextField source="registration" label="Matrícula" />
+        <TextField source="student.name" label="Aluno" />
+        <TextField source="student.registration" label="Matrícula" />
         <FunctionField
           label="Medida"
           render={(record) => (
             <Chip
-              label={record.type}
+              label={record.type === "SUSPENSION" ? "Suspensão" : "Advertência"}
               size="small"
-              color={record.type === "Suspensão" ? "error" : "warning"}
+              color={record.type === "SUSPENSION" ? "error" : "warning"}
             />
           )}
         />
         <TextField source="reason" label="Motivo" />
-        <DateField source="startDate" label="Início" />
+        <DateField source="startsAt" label="Início" />
         <BooleanField
           source="guardianContactRequired"
           label="Chamar responsável"
@@ -608,10 +489,10 @@ export function IncidentList() {
           label="Contato"
           render={(record) => (
             <Chip
-              label={record.guardianContactStatus}
+              label={contactLabel(record.guardianContactStatus)}
               size="small"
               color={
-                record.guardianContactStatus === "Contatado"
+                record.guardianContactStatus === "CONTACTED"
                   ? "success"
                   : "warning"
               }
@@ -624,27 +505,28 @@ export function IncidentList() {
   );
 }
 
+function contactLabel(status: string) {
+  return (
+    (
+      {
+        PENDING: "Pendente",
+        CONTACTED: "Contatado",
+        NOT_REQUIRED: "Dispensado",
+      } as Record<string, string>
+    )[status] ?? status
+  );
+}
+
 export function IncidentCreate() {
   return (
     <Create title="Registrar ocorrência">
       <SimpleForm>
-        <SelectInput
-          source="studentName"
-          label="Aluno"
-          choices={studentChoices}
-          validate={required()}
-          fullWidth
-        />
-        <TextInput
-          source="registration"
-          label="Matrícula"
-          validate={required()}
-        />
+        <StudentReference />
         <SelectInput
           source="type"
           label="Medida disciplinar"
           validate={required()}
-          choices={incidentChoices}
+          choices={sanctionTypeChoices}
         />
         <TextInput
           source="reason"
@@ -654,11 +536,11 @@ export function IncidentCreate() {
           fullWidth
         />
         <DateInput
-          source="startDate"
+          source="startsAt"
           label="Data de início"
           validate={required()}
         />
-        <DateInput source="endDate" label="Fim da suspensão" />
+        <DateInput source="endsAt" label="Fim da suspensão" />
         <BooleanInput
           source="guardianContactRequired"
           label="É necessário chamar o responsável?"
@@ -667,13 +549,8 @@ export function IncidentCreate() {
         <SelectInput
           source="guardianContactStatus"
           label="Situação do contato"
-          defaultValue="Pendente"
+          defaultValue="PENDING"
           choices={contactChoices}
-        />
-        <TextInput
-          source="guardianPhone"
-          label="Telefone do responsável"
-          validate={required()}
         />
         <TextInput
           source="notes"
@@ -691,22 +568,10 @@ export function IncidentEdit() {
     <Edit title="Editar ocorrência">
       <SimpleForm>
         <SelectInput
-          source="studentName"
-          label="Aluno"
-          choices={studentChoices}
-          validate={required()}
-          fullWidth
-        />
-        <TextInput
-          source="registration"
-          label="Matrícula"
-          validate={required()}
-        />
-        <SelectInput
           source="type"
           label="Medida disciplinar"
           validate={required()}
-          choices={incidentChoices}
+          choices={sanctionTypeChoices}
         />
         <TextInput
           source="reason"
@@ -716,11 +581,11 @@ export function IncidentEdit() {
           fullWidth
         />
         <DateInput
-          source="startDate"
+          source="startsAt"
           label="Data de início"
           validate={required()}
         />
-        <DateInput source="endDate" label="Fim da suspensão" />
+        <DateInput source="endsAt" label="Fim da suspensão" />
         <BooleanInput
           source="guardianContactRequired"
           label="É necessário chamar o responsável?"
@@ -729,11 +594,6 @@ export function IncidentEdit() {
           source="guardianContactStatus"
           label="Situação do contato"
           choices={contactChoices}
-        />
-        <TextInput
-          source="guardianPhone"
-          label="Telefone do responsável"
-          validate={required()}
         />
         <TextInput
           source="notes"
@@ -746,34 +606,155 @@ export function IncidentEdit() {
   );
 }
 
-const incidentChoices = [
-  { id: "Advertência", name: "Advertência" },
-  { id: "Suspensão", name: "Suspensão" },
-];
+export function PaymentList() {
+  return (
+    <List
+      title="Mensalidades"
+      perPage={10}
+      sort={{ field: "dueDate", order: "DESC" }}
+      sx={listStyles}
+    >
+      <Datagrid bulkActionButtons={false} sx={gridStyles}>
+        <TextField source="student.name" label="Aluno" />
+        <TextField source="student.registration" label="Matrícula" />
+        <NumberField source="amount" label="Valor (centavos)" />
+        <DateField source="dueDate" label="Vencimento" />
+        <DateField source="paidAt" label="Pago em" />
+        <FunctionField
+          label="Situação"
+          render={(record) => (
+            <Chip
+              label={paymentLabel(record.status)}
+              size="small"
+              color={
+                record.status === "PAID"
+                  ? "success"
+                  : record.status === "PENDING"
+                    ? "warning"
+                    : "default"
+              }
+            />
+          )}
+        />
+      </Datagrid>
+    </List>
+  );
+}
 
-const contactChoices = [
-  { id: "Pendente", name: "Pendente" },
-  { id: "Contatado", name: "Responsável contatado" },
-  { id: "Dispensado", name: "Contato dispensado" },
-];
+function paymentLabel(status: string) {
+  return (
+    (
+      { PENDING: "Pendente", PAID: "Pago", WAIVED: "Dispensado" } as Record<
+        string,
+        string
+      >
+    )[status] ?? status
+  );
+}
 
-const listStyles = {
-  "& .RaList-main": { minWidth: 0 },
-  "& .RaList-content": {
-    backgroundColor: "transparent",
-    boxShadow: "none",
-    overflowX: "auto",
-  },
-  "& .RaList-actions": { alignItems: "center", flexWrap: "wrap", gap: 1 },
-  "& .RaList-toolbar": { alignItems: "center", flexWrap: "wrap", gap: 1 },
-  "& .RaList-actionsToolbar": { flexWrap: "wrap" },
-};
+export function PaymentCreate() {
+  return (
+    <Create title="Registrar mensalidade">
+      <SimpleForm>
+        <StudentReference />
+        <NumberInput
+          source="amount"
+          label="Valor em centavos"
+          min={1}
+          validate={required()}
+          helperText="Informe o valor como inteiro em centavos."
+        />
+        <DateInput source="dueDate" label="Vencimento" validate={required()} />
+        <TextInput source="reference" label="Referência" />
+      </SimpleForm>
+    </Create>
+  );
+}
 
-const gridStyles = {
-  minWidth: 720,
-  "& .MuiTableCell-root": { whiteSpace: "nowrap" },
-  "& .MuiTableCell-root:nth-of-type(1)": {
-    whiteSpace: "normal",
-    minWidth: 150,
-  },
-};
+export function GradeList() {
+  return (
+    <List
+      title="Notas lançadas"
+      perPage={20}
+      sort={{ field: "recordedAt", order: "DESC" }}
+      sx={listStyles}
+    >
+      <Datagrid bulkActionButtons={false} sx={gridStyles}>
+        <TextField source="student.name" label="Aluno" />
+        <TextField source="student.registration" label="Matrícula" />
+        <TextField source="subject" label="Disciplina" />
+        <TextField source="activity" label="Avaliação" />
+        <NumberField source="score" label="Nota" />
+        <NumberField source="maxScore" label="Máximo" />
+        <TextField source="term" label="Período" />
+        <DateField source="recordedAt" label="Lançada em" />
+      </Datagrid>
+    </List>
+  );
+}
+
+export function GradeCreate() {
+  return (
+    <Create title="Lançar nota">
+      <SimpleForm>
+        <StudentReference />
+        <TextInput source="subject" label="Disciplina" validate={required()} />
+        <TextInput source="activity" label="Avaliação" validate={required()} />
+        <NumberInput
+          source="score"
+          label="Nota"
+          min={0}
+          validate={required()}
+        />
+        <NumberInput
+          source="maxScore"
+          label="Nota máxima"
+          min={0.01}
+          defaultValue={10}
+          validate={required()}
+        />
+        <TextInput
+          source="term"
+          label="Bimestre / período"
+          validate={required()}
+        />
+      </SimpleForm>
+    </Create>
+  );
+}
+
+export function LessonList() {
+  return (
+    <List
+      title="Aulas programadas"
+      perPage={20}
+      sort={{ field: "startsAt", order: "ASC" }}
+      sx={listStyles}
+    >
+      <Datagrid bulkActionButtons={false} sx={gridStyles}>
+        <TextField source="student.name" label="Aluno" />
+        <TextField source="student.className" label="Turma" />
+        <TextField source="subject" label="Disciplina" />
+        <TextField source="teacher" label="Professor" />
+        <TextField source="room" label="Sala" />
+        <DateField source="startsAt" label="Início" showTime />
+        <DateField source="endsAt" label="Término" showTime />
+      </Datagrid>
+    </List>
+  );
+}
+
+export function LessonCreate() {
+  return (
+    <Create title="Programar aula">
+      <SimpleForm>
+        <StudentReference />
+        <TextInput source="subject" label="Disciplina" validate={required()} />
+        <TextInput source="teacher" label="Professor" validate={required()} />
+        <TextInput source="room" label="Sala" validate={required()} />
+        <DateInput source="startsAt" label="Início" validate={required()} />
+        <DateInput source="endsAt" label="Término" validate={required()} />
+      </SimpleForm>
+    </Create>
+  );
+}

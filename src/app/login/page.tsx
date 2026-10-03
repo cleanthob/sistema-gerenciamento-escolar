@@ -1,7 +1,6 @@
 import heroImage from "@/assets/images/hero.jpg";
 import logoImage from "@/assets/images/logo.svg";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { StudentLoginForm } from "@/components/auth-forms";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -53,54 +52,7 @@ export default function Login() {
               Entre com seus dados escolares para continuar.
             </p>
 
-            <div className="mt-8 space-y-5">
-              <div className="space-y-2">
-                <label
-                  htmlFor="student-id"
-                  className="text-sm font-medium text-[#294b42]"
-                >
-                  Matrícula
-                </label>
-                <Input
-                  id="student-id"
-                  name="matricula"
-                  autoComplete="username"
-                  placeholder="Digite sua matrícula"
-                  className="h-12 rounded-md border-[#d6e1d8] bg-[#fbfcf9] px-4 text-sm placeholder:text-[#8b9e96] focus-visible:border-[#43806c] focus-visible:ring-[#43806c]/20"
-                />
-              </div>
-              <div className="space-y-2">
-                <label
-                  htmlFor="student-password"
-                  className="text-sm font-medium text-[#294b42]"
-                >
-                  Senha
-                </label>
-                <Input
-                  id="student-password"
-                  name="senha"
-                  type="password"
-                  autoComplete="current-password"
-                  placeholder="Digite sua senha"
-                  className="h-12 rounded-md border-[#d6e1d8] bg-[#fbfcf9] px-4 text-sm placeholder:text-[#8b9e96] focus-visible:border-[#43806c] focus-visible:ring-[#43806c]/20"
-                />
-              </div>
-
-              <div className="flex justify-end">
-                <Link
-                  href=""
-                  className="text-sm font-medium text-[#28705b] underline-offset-4 transition-colors hover:text-[#174f43] hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#174f43]"
-                >
-                  Esqueci minha senha
-                </Link>
-              </div>
-              <Button
-                type="button"
-                className="h-12 w-full rounded-md bg-[#174f43] text-sm font-semibold text-white hover:bg-[#103d34]"
-              >
-                Entrar
-              </Button>
-            </div>
+            <StudentLoginForm />
 
             <p className="mt-8 border-t border-[#e7ede7] pt-5 text-center text-sm text-[#647b73]">
               Acesso administrativo?{" "}

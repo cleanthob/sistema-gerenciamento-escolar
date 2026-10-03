@@ -27,8 +27,10 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState, type ReactNode } from "react";
+
+type StudentProfile = { name: string; grade: string; className: string };
 
 const navigation = [
   { label: "Visão geral", href: "/dashboard", icon: Home01Icon },
@@ -38,12 +40,38 @@ const navigation = [
   { label: "Aulas do dia", href: "/dashboard/classes", icon: Calendar03Icon },
 ];
 
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0]?.toLocaleUpperCase("pt-BR") ?? "")
+    .join("");
+}
+
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const currentPage = navigation.find((item) => item.href === pathname);
+  const router = useRouter();
+  const [student, setStudent] = useState<StudentProfile | null>(null);
 
-  if (pathname === "/dashboard") {
-    return <SidebarProvider>{children}</SidebarProvider>;
+  useEffect(() => {
+    let active = true;
+    fetch("/api/auth/session")
+      .then((response) => (response.ok ? response.json() : Promise.reject()))
+      .then((payload) => {
+        if (active) setStudent(payload.user);
+      })
+      .catch(() => {
+        if (active) router.replace("/unauthorized");
+      });
+    return () => {
+      active = false;
+    };
+  }, [router]);
+
+  async function logout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.replace("/login");
+    router.refresh();
   }
 
   return (
@@ -92,22 +120,25 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <SidebarFooter className="border-t border-[#e1e8df] p-4 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-2">
             <div className="flex min-w-0 items-center gap-3 group-data-[collapsible=icon]:justify-center">
               <span
-                title="Ana Beatriz Costa, 8º ano, Turma B"
+                title={student?.name ?? "Perfil do aluno"}
                 className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#e8f1e9] text-[11px] font-semibold text-[#205b49]"
               >
-                AB
+                {student ? initials(student.name) : "…"}
               </span>
               <div className="min-w-0 group-data-[collapsible=icon]:hidden">
                 <p className="truncate text-sm font-semibold text-[#29483e]">
-                  Ana Beatriz Costa
+                  {student?.name ?? "Carregando perfil"}
                 </p>
                 <p className="mt-1 truncate text-xs text-[#82918a]">
-                  8º ano · Turma B
+                  {student
+                    ? `${student.grade} · Turma ${student.className}`
+                    : " "}
                 </p>
               </div>
             </div>
-            <Link
-              href="/login"
+            <button
+              type="button"
+              onClick={logout}
               title="Sair da conta"
               className="mt-2 inline-flex min-h-9 w-full items-center gap-2 rounded-md px-2 text-xs font-medium text-[#527068] hover:bg-[#f2f5f1] hover:text-[#174f43] group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:min-h-8 group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
             >
@@ -115,30 +146,26 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               <span className="group-data-[collapsible=icon]:hidden">
                 Sair da conta
               </span>
-            </Link>
+            </button>
           </SidebarFooter>
           <SidebarRail />
         </Sidebar>
-
-        <SidebarInset className="min-h-svh bg-[#f4f6f1]">
-          <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-[#e1e8df] bg-white/95 px-4 backdrop-blur sm:px-7">
-            <div className="flex items-center gap-3">
-              <SidebarTrigger className="text-[#52685e]" />
-              <div>
-                <p className="text-sm font-semibold text-[#29483e]">
+        <SidebarInset className="min-h-svh min-w-0 bg-[#f4f6f1]">
+          <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-[#e1e8df] bg-white/95 px-3 backdrop-blur sm:px-6">
+            <div className="flex min-w-0 items-center gap-3">
+              <SidebarTrigger className="shrink-0 text-[#52685e]" />
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-[#29483e]">
                   Portal do estudante
                 </p>
-                <p className="hidden text-xs text-[#82918a] sm:block">
-                  {currentPage?.label}
+                <p className="hidden truncate text-xs text-[#82918a] sm:block">
+                  {navigation.find((item) => item.href === pathname)?.label ??
+                    "Área acadêmica"}
                 </p>
               </div>
             </div>
-            <span className="shrink-0 rounded-full border border-[#ead7c9] bg-[#fff7f0] px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-[#a45c40] sm:px-3">
-              <span className="sm:hidden">Demo</span>
-              <span className="hidden sm:inline">Dados demonstrativos</span>
-            </span>
           </header>
-          {children}
+          <div className="min-w-0 flex-1">{children}</div>
         </SidebarInset>
       </div>
     </SidebarProvider>
