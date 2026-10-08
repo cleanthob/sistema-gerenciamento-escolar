@@ -24,6 +24,43 @@ const updateSchema = z
     },
   );
 
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const session = await getSession();
+
+  if (!session) {
+    return unauthorized();
+  }
+
+  const { id } = await params;
+
+  const attendance = await prisma.attendance.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      student: {
+        select: {
+          id: true,
+          name: true,
+          registration: true,
+          className: true,
+        },
+      },
+    },
+  });
+
+  if (!attendance) {
+    return NextResponse.json({ error: "Elemento não existe" }, { status: 404 });
+  }
+
+  return NextResponse.json({
+    data: attendance,
+  });
+}
+
 export async function PATCH(request: Request, { params }: Context) {
   const session = await getSession();
   if (!session) return unauthorized();
