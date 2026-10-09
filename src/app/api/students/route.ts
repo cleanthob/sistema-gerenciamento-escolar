@@ -76,11 +76,21 @@ export async function POST(request: Request) {
   const parsed = createStudentSchema.safeParse(
     await request.json().catch(() => null),
   );
+
   if (!parsed.success) {
+    const fieldErrors = parsed.error.flatten().fieldErrors;
+
+    const messages = Object.entries(fieldErrors).flatMap(([field, errors]) =>
+      (errors ?? []).map((message) => `${message}`),
+    );
+
     return NextResponse.json(
       {
-        error: "Revise os campos informados.",
-        details: parsed.error.flatten().fieldErrors,
+        error:
+          messages.length > 0
+            ? messages.join(" ")
+            : "Revise os campos informados.",
+        details: fieldErrors,
       },
       { status: 400 },
     );
