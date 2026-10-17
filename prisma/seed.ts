@@ -4,13 +4,13 @@ import { hash } from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  const email = process.env.BOOTSTRAP_ADMIN_EMAIL?.trim().toLowerCase();
-  const name = process.env.BOOTSTRAP_ADMIN_NAME?.trim();
-  const password = process.env.BOOTSTRAP_ADMIN_PASSWORD;
+  const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const name = process.env.ADMIN_NAME?.trim();
+  const password = process.env.ADMIN_PASSWORD;
 
   if (!email || !name || !password || password.length < 12) {
     throw new Error(
-      "Defina BOOTSTRAP_ADMIN_EMAIL, BOOTSTRAP_ADMIN_NAME e BOOTSTRAP_ADMIN_PASSWORD (mínimo 12 caracteres) no ambiente.",
+      "Defina ADMIN_EMAIL, ADMIN_NAME e ADMIN_PASSWORD (mínimo 12 caracteres) no ambiente.",
     );
   }
 
