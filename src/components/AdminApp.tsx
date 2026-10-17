@@ -58,6 +58,7 @@ import {
   StudentEdit,
   StudentList,
 } from "./school-admin-resources";
+import Loading from "@/app/loading";
 
 const i18nProvider = polyglotI18nProvider(() => portugueseMessages, "pt");
 const navigation = [
@@ -98,6 +99,7 @@ type AccountProfile = { name: string; role: string };
 
 function AdminLayout({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [profile, setProfile] = useState<AccountProfile | null>(null);
 
@@ -107,9 +109,11 @@ function AdminLayout({ children }: { children: ReactNode }) {
       .then((response) => (response.ok ? response.json() : Promise.reject()))
       .then((payload) => {
         if (active) setProfile(payload.user);
+        setLoading(false);
       })
       .catch(() => {
         if (active) navigate("/unauthorized");
+        setLoading(false);
       });
     return () => {
       active = false;
@@ -120,6 +124,8 @@ function AdminLayout({ children }: { children: ReactNode }) {
     await fetch("/api/auth/logout", { method: "POST" });
     navigate("/login/admin");
   }
+
+  if (loading) return <Loading />;
 
   return (
     <SidebarProvider>
@@ -236,6 +242,7 @@ function AdminLayout({ children }: { children: ReactNode }) {
 function AdminDashboard() {
   const [overview, setOverview] = useState<Overview | null>(null);
   const [error, setError] = useState("");
+
   useEffect(() => {
     let active = true;
     fetch("/api/admin/overview")

@@ -49,38 +49,51 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  color-scheme: light;
+
+  --background: #f3f6ef;
+  --foreground: #203b34;
+
+  --card: #ffffff;
+  --card-foreground: #203b34;
+
+  --popover: #ffffff;
+  --popover-foreground: #203b34;
+
+  --primary: #174f43;
+  --primary-foreground: #ffffff;
+
+  --secondary: #e8f1e9;
+  --secondary-foreground: #205b49;
+
+  --muted: #edf1e9;
+  --muted-foreground: #687b71;
+
+  --accent: #e8f1e9;
+  --accent-foreground: #205b49;
+
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+
+  --border: #e1e8df;
+  --input: #e1e8df;
+  --ring: #174f43;
+
+  --chart-1: #28705b;
+  --chart-2: #567b96;
+  --chart-3: #bb8a38;
+  --chart-4: #b65b40;
+  --chart-5: #78a48e;
+
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #203b34;
+  --sidebar-primary: #174f43;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e8f1e9;
+  --sidebar-accent-foreground: #205b49;
+  --sidebar-border: #e1e8df;
+  --sidebar-ring: #174f43;
 }
 
 .dark {
