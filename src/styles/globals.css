@@ -92,3 +92,9 @@
   --sidebar-border: #e1e8df;
   --sidebar-ring: #174f43;
 }
+
+@layer base {
+  button {
+    @apply cursor-pointer;
+  }
+}
