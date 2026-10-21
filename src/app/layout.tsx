@@ -1,4 +1,3 @@
-import Footer from "@/components/footer";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import type { Metadata } from "next";
@@ -61,8 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={cn("h-full", "antialiased", "font-sans", nunito.variable)}
     >
       <body className="flex min-h-screen flex-col">
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <main>{children}</main>
       </body>
     </html>
   );
