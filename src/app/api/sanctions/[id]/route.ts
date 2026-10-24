@@ -90,6 +90,47 @@ export async function PATCH(request: Request, { params }: Context) {
   }
 }
 
+export async function DELETE(
+  request: Request,
+  context: { params: Promise<{ id: string }> },
+) {
+  const session = await getSession();
+
+  if (!session) return unauthorized();
+  if (!staffRoles.includes(session.role)) return forbidden();
+
+  // Extrai o ID diretamente da URL, evitando problemas com params.
+  const segments = new URL(request.url).pathname.split("/");
+  const id = segments[segments.length - 1];
+
+  if (!id || id === "sanctions") {
+    return NextResponse.json(
+      { error: "ID da ocorrência não informado." },
+      { status: 400 },
+    );
+  }
+
+  const record = await prisma.sanction.findUnique({
+    where: { id },
+    select: { id: true },
+  });
+
+  if (!record) {
+    return NextResponse.json(
+      { error: "Ocorrência não encontrada." },
+      { status: 404 },
+    );
+  }
+
+  await prisma.sanction.delete({
+    where: { id },
+  });
+
+  return NextResponse.json({
+    message: "Ocorrência excluída com sucesso.",
+  });
+}
+
 function isNotFoundError(error: unknown): boolean {
   return (
     typeof error === "object" &&
