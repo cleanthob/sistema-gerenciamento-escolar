@@ -103,3 +103,44 @@ export async function PATCH(request: Request, { params }: Context) {
     throw error;
   }
 }
+
+export async function DELETE(request: Request) {
+  const session = await getSession();
+
+  if (!session) return unauthorized();
+  if (!staffRoles.includes(session.role)) return forbidden();
+
+  const segments = new URL(request.url).pathname.split("/");
+  const id = segments[segments.length - 1];
+
+  if (!id || id === "attendance") {
+    return NextResponse.json(
+      { error: "ID do registro de presença não informado." },
+      { status: 400 },
+    );
+  }
+
+  try {
+    await prisma.attendance.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({
+      message: "Registro de presença excluído com sucesso.",
+    });
+  } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === "P2025"
+    ) {
+      return NextResponse.json(
+        { error: "Registro de presença não encontrado." },
+        { status: 404 },
+      );
+    }
+
+    throw error;
+  }
+}
