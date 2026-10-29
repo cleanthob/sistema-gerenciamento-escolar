@@ -18,14 +18,16 @@ import {
 } from "@/components/ui/sidebar";
 import { navigationAdminPage } from "@/constants/admin";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { useRouter } from "next/navigation";
 
 import { useEffect, useState, type ReactNode } from "react";
-import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
+
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const router = useRouter();
   const [profile, setProfile] = useState<AccountProfile | null>(null);
 
   useEffect(() => {
@@ -37,17 +39,18 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         setLoading(false);
       })
       .catch(() => {
-        if (active) navigate("/unauthorized");
+        if (active) router.push("/unauthorized");
         setLoading(false);
       });
     return () => {
       active = false;
     };
-  }, [navigate]);
+  }, [router]);
 
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });
-    navigate("/login/admin");
+
+    router.push("/");
   }
 
   if (loading) return <Loading />;
