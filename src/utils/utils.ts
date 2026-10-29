@@ -1,4 +1,4 @@
-export function initials(name: string) {
+export function getInitialsFromName(name: string) {
   return name
     .split(/\s+/)
     .slice(0, 2)
@@ -6,7 +6,7 @@ export function initials(name: string) {
     .join("");
 }
 
-export function money(amountInCents: number) {
+export function formatCurrencyBRL(amountInCents: number) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
