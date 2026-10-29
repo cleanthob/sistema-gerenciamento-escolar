@@ -16,6 +16,7 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { navigationAdminPage } from "@/constants/admin";
 import { HugeiconsIcon } from "@hugeicons/react";
 
 import { useEffect, useState, type ReactNode } from "react";
@@ -80,7 +81,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 Administração
               </SidebarGroupLabel>
               <SidebarMenu>
-                {navigation.map((item) => (
+                {navigationAdminPage.map((item) => (
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
                       render={<RouterLink to={item.href} />}
@@ -147,7 +148,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                   Sistema Escolar
                 </p>
                 <p className="hidden truncate text-xs text-[#82918a] sm:block">
-                  {navigation.find(
+                  {navigationAdminPage.find(
                     (item) =>
                       item.href === pathname ||
                       (item.href !== "/" && pathname.startsWith(item.href)),

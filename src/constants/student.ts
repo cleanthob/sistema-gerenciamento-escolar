@@ -3,11 +3,10 @@ import {
   Calendar03Icon,
   ChartColumnIcon,
   Home01Icon,
-  Logout01Icon,
   Wallet01Icon,
 } from "@hugeicons/core-free-icons";
 
-export const navigation = [
+export const navigationStudentPage = [
   { label: "Visão geral", href: "/dashboard", icon: Home01Icon },
   { label: "Notas", href: "/dashboard/grades", icon: BookOpen01Icon },
   { label: "Pagamentos", href: "/dashboard/payments", icon: Wallet01Icon },

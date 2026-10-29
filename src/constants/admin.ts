@@ -15,7 +15,7 @@ export const i18nProvider = polyglotI18nProvider(
   "pt",
 );
 
-export const navigation = [
+export const navigationAdminPage = [
   { label: "Visão geral", href: "/", icon: Home01Icon },
   { label: "Equipe escolar", href: "/users", icon: UserGroupIcon },
   { label: "Alunos", href: "/students", icon: UserMultipleIcon },
@@ -24,4 +24,4 @@ export const navigation = [
   { label: "Aulas", href: "/lessons", icon: Calendar03Icon },
   { label: "Pagamentos", href: "/payments", icon: Wallet01Icon },
   { label: "Ocorrências", href: "/incidents", icon: BookOpen01Icon },
-] as const;
+];
