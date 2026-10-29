@@ -1,4 +1,4 @@
-import Footer from "@/components/footer";
+import Footer from "@/components/shared/footer";
 
 export default function SiteLayout({
   children,

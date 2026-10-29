@@ -1,6 +1,6 @@
 import heroImage from "@/assets/images/hero.jpg";
 import logoImage from "@/assets/images/logo.svg";
-import { StaffLoginForm } from "@/components/auth-forms";
+import { StaffLoginForm } from "@/components/pages/login/auth-forms";
 import Image from "next/image";
 import Link from "next/link";
 

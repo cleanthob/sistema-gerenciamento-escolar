@@ -1,7 +1,7 @@
 import {
   LogoutButton,
   StudentChangePasswordForm,
-} from "@/components/auth-forms";
+} from "@/components/pages/login/auth-forms";
 
 export default function ChangePasswordPage() {
   return (
