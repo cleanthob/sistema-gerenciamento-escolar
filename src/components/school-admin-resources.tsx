@@ -403,10 +403,16 @@ function StudentReference() {
     <ReferenceInput
       source="studentId"
       reference="students"
+      label="Aluno"
       perPage={100}
       sort={{ field: "name", order: "ASC" }}
     >
-      <SelectInput optionText="name" validate={required()} fullWidth />
+      <SelectInput
+        optionText="name"
+        validate={required()}
+        fullWidth
+        label="Aluno"
+      />
     </ReferenceInput>
   );
 }
