@@ -17,7 +17,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { navigation } from "@/constants/student";
-import { initials } from "@/utils/utils";
+import { getInitialsFromName } from "@/utils/utils";
 import { Logout01Icon } from "@hugeicons/core-free-icons";
 
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -101,7 +101,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 title={student?.name ?? "Perfil do aluno"}
                 className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#e8f1e9] text-[11px] font-semibold text-[#205b49]"
               >
-                {student ? initials(student.name) : "…"}
+                {student ? getInitialsFromName(student.name) : "…"}
               </span>
               <div className="min-w-0 group-data-[collapsible=icon]:hidden">
                 <p className="truncate text-sm font-semibold text-[#29483e]">

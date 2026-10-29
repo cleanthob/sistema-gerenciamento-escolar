@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { requireStudent } from "@/lib/student-dashboard";
-import { money } from "@/utils/utils";
+import { formatCurrencyBRL } from "@/utils/utils";
 import { PaymentStatus } from "@prisma/client";
 
 function paymentStatus(status: PaymentStatus) {
@@ -62,7 +62,9 @@ export default async function PaymentsPage() {
               : "—"}
           </p>
           <p className="mt-1 text-sm text-[#718179]">
-            {upcoming ? money(upcoming.amount) : "Nenhum vencimento pendente"}
+            {upcoming
+              ? formatCurrencyBRL(upcoming.amount)
+              : "Nenhum vencimento pendente"}
           </p>
         </article>
         <article
@@ -114,7 +116,7 @@ export default async function PaymentsPage() {
                     </p>
                   </div>
                   <p className="text-sm font-semibold text-[#203b34]">
-                    {money(payment.amount)}
+                    {formatCurrencyBRL(payment.amount)}
                   </p>
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-semibold ${status.styles}`}
