@@ -1,13 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireStudent } from "@/lib/student-dashboard";
+import { money } from "@/utils/utils";
 import { PaymentStatus } from "@prisma/client";
-
-function money(amountInCents: number) {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(amountInCents / 100);
-}
 
 function paymentStatus(status: PaymentStatus) {
   if (status === PaymentStatus.PAID)

@@ -16,37 +16,15 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import {
-  BookOpen01Icon,
-  Calendar03Icon,
-  ChartColumnIcon,
-  Home01Icon,
-  Logout01Icon,
-  Wallet01Icon,
-} from "@hugeicons/core-free-icons";
+import { navigation } from "@/constants/student";
+import { initials } from "@/utils/utils";
+import { Logout01Icon } from "@hugeicons/core-free-icons";
+
 import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
-
-type StudentProfile = { name: string; grade: string; className: string };
-
-const navigation = [
-  { label: "Visão geral", href: "/dashboard", icon: Home01Icon },
-  { label: "Notas", href: "/dashboard/grades", icon: BookOpen01Icon },
-  { label: "Pagamentos", href: "/dashboard/payments", icon: Wallet01Icon },
-  { label: "Frequência", href: "/dashboard/attendance", icon: ChartColumnIcon },
-  { label: "Aulas do dia", href: "/dashboard/classes", icon: Calendar03Icon },
-];
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0]?.toLocaleUpperCase("pt-BR") ?? "")
-    .join("");
-}
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
