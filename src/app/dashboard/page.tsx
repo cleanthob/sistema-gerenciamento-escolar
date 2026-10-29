@@ -1,19 +1,9 @@
 import { evaluateAdmission } from "@/lib/admission";
 import { prisma } from "@/lib/prisma";
 import { requireStudent } from "@/lib/student-dashboard";
+import { formatCurrencyBRL, formatGrade } from "@/utils/utils";
 import { AttendanceStatus, PaymentStatus, SanctionType } from "@prisma/client";
 import Link from "next/link";
-
-function money(amountInCents: number) {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(amountInCents / 100);
-}
-
-function scoreLabel(score: number, maxScore: number) {
-  return `${score.toLocaleString("pt-BR", { maximumFractionDigits: 1 })} / ${maxScore.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}`;
-}
 
 export default async function Dashboard() {
   const student = await requireStudent();
@@ -154,7 +144,7 @@ export default async function Dashboard() {
         <article className="rounded-lg border border-[#e1e8df] bg-white p-5">
           <p className="text-sm text-[#718179]">Próximo pagamento</p>
           <p className="mt-3 text-2xl font-semibold text-[#203b34]">
-            {nextPayment ? money(nextPayment.amount) : "—"}
+            {nextPayment ? formatCurrencyBRL(nextPayment.amount) : "—"}
           </p>
           <p className="mt-1 text-xs text-[#718179]">
             {nextPayment
@@ -210,7 +200,7 @@ export default async function Dashboard() {
                         </p>
                       </div>
                       <p className="shrink-0 text-sm font-semibold text-[#203b34]">
-                        {scoreLabel(grade.score, grade.maxScore)}
+                        {formatGrade(grade.score, grade.maxScore)}
                       </p>
                     </div>
                     <div className="h-2 overflow-hidden rounded-full bg-[#edf1ec]">
@@ -333,7 +323,7 @@ export default async function Dashboard() {
                     Pagamento mais recente
                   </p>
                   <p className="text-sm font-semibold text-[#203b34]">
-                    {money(latestPayment.amount)}
+                    {formatCurrencyBRL(latestPayment.amount)}
                   </p>
                 </div>
                 <p className="mt-2 text-xs text-[#82918a]">
