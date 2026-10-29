@@ -16,7 +16,7 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { navigation } from "@/constants/student";
+import { navigationStudentPage } from "@/constants/student";
 import { getInitialsFromName } from "@/utils/utils";
 import { Logout01Icon } from "@hugeicons/core-free-icons";
 
@@ -79,7 +79,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 Área do estudante
               </SidebarGroupLabel>
               <SidebarMenu>
-                {navigation.map((item) => (
+                {navigationStudentPage.map((item) => (
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
                       render={<Link href={item.href} />}
@@ -137,8 +137,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                   Portal do estudante
                 </p>
                 <p className="hidden truncate text-xs text-[#82918a] sm:block">
-                  {navigation.find((item) => item.href === pathname)?.label ??
-                    "Área acadêmica"}
+                  {navigationStudentPage.find((item) => item.href === pathname)
+                    ?.label ?? "Área acadêmica"}
                 </p>
               </div>
             </div>
