@@ -16,12 +16,52 @@ export const i18nProvider = polyglotI18nProvider(
 );
 
 export const navigationAdminPage = [
-  { label: "Visão geral", href: "/", icon: Home01Icon },
-  { label: "Equipe escolar", href: "/users", icon: UserGroupIcon },
-  { label: "Alunos", href: "/students", icon: UserMultipleIcon },
-  { label: "Presença", href: "/attendance", icon: ChartColumnIcon },
-  { label: "Notas", href: "/grades", icon: BookOpen01Icon },
-  { label: "Aulas", href: "/lessons", icon: Calendar03Icon },
-  { label: "Pagamentos", href: "/payments", icon: Wallet01Icon },
-  { label: "Ocorrências", href: "/incidents", icon: BookOpen01Icon },
+  {
+    label: "Visão geral",
+    description: "Acompanhe os principais indicadores e informações da escola.",
+    href: "/",
+    icon: Home01Icon,
+  },
+  {
+    label: "Equipe escolar",
+    description: "Gerencie os usuários e os acessos da equipe escolar.",
+    href: "/users",
+    icon: UserGroupIcon,
+  },
+  {
+    label: "Alunos",
+    description: "Cadastre alunos e consulte seus dados escolares.",
+    href: "/students",
+    icon: UserMultipleIcon,
+  },
+  {
+    label: "Presença",
+    description: "Acompanhe a frequência e as faltas dos alunos.",
+    href: "/attendance",
+    icon: ChartColumnIcon,
+  },
+  {
+    label: "Notas",
+    description: "Consulte e gerencie notas e avaliações escolares.",
+    href: "/grades",
+    icon: BookOpen01Icon,
+  },
+  {
+    label: "Aulas",
+    description: "Consulte e organize as aulas e seus horários.",
+    href: "/lessons",
+    icon: Calendar03Icon,
+  },
+  {
+    label: "Pagamentos",
+    description: "Acompanhe os pagamentos e as pendências financeiras.",
+    href: "/payments",
+    icon: Wallet01Icon,
+  },
+  {
+    label: "Ocorrências",
+    description: "Registre e consulte ocorrências relacionadas aos alunos.",
+    href: "/incidents",
+    icon: BookOpen01Icon,
+  },
 ];

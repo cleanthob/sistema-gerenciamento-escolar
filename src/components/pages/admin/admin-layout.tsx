@@ -16,6 +16,12 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { navigationAdminPage } from "@/constants/admin";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
@@ -84,23 +90,36 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 Administração
               </SidebarGroupLabel>
               <SidebarMenu>
-                {navigationAdminPage.map((item) => (
-                  <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton
-                      render={<RouterLink to={item.href} />}
-                      isActive={
-                        item.href === "/"
-                          ? pathname === "/"
-                          : pathname.startsWith(item.href)
-                      }
-                      tooltip={item.label}
-                      className="h-10 px-3 text-sm data-active:bg-[#e8f1e9] data-active:text-[#205b49]"
-                    >
-                      <HugeiconsIcon icon={item.icon} strokeWidth={1.8} />
-                      <span>{item.label}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                <TooltipProvider>
+                  {navigationAdminPage.map((item) => (
+                    <SidebarMenuItem key={item.href}>
+                      <Tooltip>
+                        <TooltipTrigger
+                          render={
+                            <SidebarMenuButton
+                              render={<RouterLink to={item.href} />}
+                              isActive={
+                                item.href === "/"
+                                  ? pathname === "/"
+                                  : pathname.startsWith(item.href)
+                              }
+                              className="h-10 px-3 text-sm data-active:bg-[#e8f1e9] data-active:text-[#205b49]"
+                            />
+                          }
+                        >
+                          <HugeiconsIcon icon={item.icon} strokeWidth={1.8} />
+                          <span>{item.label}</span>
+                        </TooltipTrigger>
+
+                        <TooltipContent side="right" className="max-w-64">
+                          <p className="text-xs opacity-80">
+                            {item.description}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </SidebarMenuItem>
+                  ))}
+                </TooltipProvider>
               </SidebarMenu>
             </SidebarGroup>
           </SidebarContent>

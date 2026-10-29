@@ -16,6 +16,12 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { navigationStudentPage } from "@/constants/student";
 import { getInitialsFromName } from "@/utils/utils";
 import { Logout01Icon } from "@hugeicons/core-free-icons";
@@ -79,19 +85,32 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 Área do estudante
               </SidebarGroupLabel>
               <SidebarMenu>
-                {navigationStudentPage.map((item) => (
-                  <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton
-                      render={<Link href={item.href} />}
-                      isActive={pathname === item.href}
-                      tooltip={item.label}
-                      className="h-10 px-3 text-sm data-active:bg-[#e8f1e9] data-active:text-[#205b49]"
-                    >
-                      <HugeiconsIcon icon={item.icon} strokeWidth={1.8} />
-                      <span>{item.label}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                <TooltipProvider>
+                  {navigationStudentPage.map((item) => (
+                    <SidebarMenuItem key={item.href}>
+                      <Tooltip>
+                        <TooltipTrigger
+                          render={
+                            <SidebarMenuButton
+                              render={<Link href={item.href} />}
+                              isActive={pathname === item.href}
+                              className="h-10 px-3 text-sm data-active:bg-[#e8f1e9] data-active:text-[#205b49]"
+                            />
+                          }
+                        >
+                          <HugeiconsIcon icon={item.icon} strokeWidth={1.8} />
+                          <span>{item.label}</span>
+                        </TooltipTrigger>
+
+                        <TooltipContent side="right" className="max-w-64">
+                          <p className="text-xs opacity-80">
+                            {item.description}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </SidebarMenuItem>
+                  ))}
+                </TooltipProvider>
               </SidebarMenu>
             </SidebarGroup>
           </SidebarContent>
