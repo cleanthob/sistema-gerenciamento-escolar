@@ -53,6 +53,19 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     };
   }, [router]);
 
+  useEffect(() => {
+    function handlePhotoUpdate(event: Event) {
+      if (!(event instanceof CustomEvent)) return;
+      const photoUrl = event.detail;
+      if (photoUrl !== null && typeof photoUrl !== "string") return;
+      setStudent((current) => (current ? { ...current, photoUrl } : current));
+    }
+
+    window.addEventListener("student-photo-updated", handlePhotoUpdate);
+    return () =>
+      window.removeEventListener("student-photo-updated", handlePhotoUpdate);
+  }, []);
+
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });
     router.replace("/login");

@@ -24,8 +24,10 @@ export async function GET(_request: Request, { params }: Context) {
 
   const student = await prisma.student.findUnique({
     where: { id },
-    select: { photoUrl: true },
+    select: { photoUrl: true, status: true },
   });
+  if (session.role === UserRole.STUDENT && student?.status !== "ACTIVE")
+    return unauthorized();
   const match = student?.photoUrl?.match(
     /^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/]+={0,2})$/,
   );
