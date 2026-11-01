@@ -113,9 +113,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                             render={
                               <RouterLink
                                 to={item.href}
+                                aria-label={item.label}
                                 aria-current={isCurrent ? "page" : undefined}
                                 className={cn(
-                                  "peer/menu-button group/menu-button flex h-10 w-full items-center gap-2 overflow-hidden rounded-md px-3 text-left text-sm outline-none transition-colors hover:bg-[#1b3042] hover:text-[#b8ddf8] focus-visible:ring-2 focus-visible:ring-[#39a0ed] group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2 [&_svg]:size-4 [&_svg]:shrink-0",
+                                  "peer/menu-button group/menu-button flex h-10 w-full items-center gap-2 overflow-hidden rounded-md px-3 text-left text-sm outline-none transition-colors hover:bg-[#1b3042] hover:text-[#b8ddf8] focus-visible:ring-2 focus-visible:ring-[#39a0ed] group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-2 [&_svg]:size-4 [&_svg]:shrink-0",
                                   isCurrent
                                     ? "bg-[#1b3042] font-medium text-[#b8ddf8]"
                                     : "text-[#dce8f1]",
@@ -124,7 +125,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                             }
                           >
                             <HugeiconsIcon icon={item.icon} strokeWidth={1.8} />
-                            <span>{item.label}</span>
+                            <span className="group-data-[collapsible=icon]:hidden">
+                              {item.label}
+                            </span>
                           </TooltipTrigger>
 
                           <TooltipContent side="right" className="max-w-64">
