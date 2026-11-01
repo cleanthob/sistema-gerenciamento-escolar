@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { requireStudent } from "@/lib/student-dashboard";
 import { formatCurrencyBRL, formatGrade } from "@/utils/utils";
 import { AttendanceStatus, PaymentStatus, SanctionType } from "@prisma/client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getInitialsFromName } from "@/utils/utils";
 import Link from "next/link";
 
 export default async function Dashboard() {
@@ -101,16 +103,29 @@ export default async function Dashboard() {
   return (
     <main className="mx-auto w-full max-w-330 px-4 py-7 sm:px-7 sm:py-9 lg:px-10">
       <div className="mb-7 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-        <div>
-          <p className="text-sm font-medium text-[#7a8c83]">
-            Olá, {student.name}
-          </p>
-          <h1 className="mt-1 text-2xl font-semibold text-[#203b34] sm:text-3xl">
-            Seu resumo escolar
-          </h1>
-          <p className="mt-2 text-sm text-[#718179]">
-            {student.grade} · Turma {student.className}
-          </p>
+        <div className="flex items-center gap-4">
+          <Avatar className="size-16 border-2 border-white shadow-sm">
+            {student.photoUrl ? (
+              <AvatarImage
+                src={student.photoUrl}
+                alt={`Foto de ${student.name}`}
+              />
+            ) : null}
+            <AvatarFallback className="bg-[#e8f1e9] text-base text-[#205b49]">
+              {getInitialsFromName(student.name)}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <p className="text-sm font-medium text-[#7a8c83]">
+              Olá, {student.name}
+            </p>
+            <h1 className="mt-1 text-2xl font-semibold text-[#203b34] sm:text-3xl">
+              Seu resumo escolar
+            </h1>
+            <p className="mt-2 text-sm text-[#718179]">
+              {student.grade} · Turma {student.className}
+            </p>
+          </div>
         </div>
         <p className="text-sm font-medium text-[#73847b]">
           Ano letivo {now.getFullYear()}

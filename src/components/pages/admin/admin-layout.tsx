@@ -17,6 +17,10 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import {
+  Avatar,
+  AvatarFallback,
+} from "@/components/ui/avatar";
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -125,19 +129,21 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           </SidebarContent>
           <SidebarFooter className="border-t border-[#e1e8df] p-4 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-2">
             <div className="flex min-w-0 items-center gap-3 group-data-[collapsible=icon]:justify-center">
-              <span
+              <Avatar
                 title={profile?.name ?? "Conta administrativa"}
-                className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#e8f1e9] text-[11px] font-semibold text-[#205b49]"
+                className="size-8 bg-[#e8f1e9] text-[11px] font-semibold text-[#205b49]"
               >
-                {profile?.name
+                <AvatarFallback>
+                  {profile?.name
                   ? profile.name
                       .split(/\s+/)
                       .slice(0, 2)
                       .map((part) => part[0])
                       .join("")
                       .toLocaleUpperCase("pt-BR")
-                  : "…"}
-              </span>
+                    : "…"}
+                </AvatarFallback>
+              </Avatar>
               <div className="min-w-0 group-data-[collapsible=icon]:hidden">
                 <p className="truncate text-sm font-semibold text-[#29483e]">
                   {profile?.name ?? "Carregando conta"}

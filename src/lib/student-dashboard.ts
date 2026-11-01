@@ -13,6 +13,7 @@ export async function requireStudent() {
     select: {
       id: true,
       name: true,
+      photoUrl: true,
       registration: true,
       email: true,
       grade: true,
@@ -25,5 +26,10 @@ export async function requireStudent() {
   if (!student || student.status !== "ACTIVE") redirect("/unauthorized");
   if (student.mustChangePassword || session.mustChangePassword)
     redirect("/login/change-password");
-  return student;
+  return {
+    ...student,
+    photoUrl: student.photoUrl
+      ? `/api/students/${encodeURIComponent(student.id)}/photo`
+      : null,
+  };
 }

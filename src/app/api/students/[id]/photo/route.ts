@@ -13,9 +13,15 @@ type Context = { params: Promise<{ id: string }> };
 export async function GET(_request: Request, { params }: Context) {
   const session = await getSession();
   if (!session) return unauthorized();
-  if (!managementRoles.includes(session.role)) return forbidden();
 
   const { id } = await params;
+  if (
+    !managementRoles.includes(session.role) &&
+    (session.role !== UserRole.STUDENT || session.id !== id)
+  ) {
+    return forbidden();
+  }
+
   const student = await prisma.student.findUnique({
     where: { id },
     select: { photoUrl: true },

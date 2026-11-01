@@ -12,6 +12,7 @@ export async function GET() {
       select: {
         id: true,
         name: true,
+        photoUrl: true,
         registration: true,
         grade: true,
         className: true,
@@ -20,7 +21,15 @@ export async function GET() {
       },
     });
     if (!student || student.status !== "ACTIVE") return unauthorized();
-    return NextResponse.json({ user: { ...student, role: "STUDENT" } });
+    return NextResponse.json({
+      user: {
+        ...student,
+        photoUrl: student.photoUrl
+          ? `/api/students/${encodeURIComponent(student.id)}/photo`
+          : null,
+        role: "STUDENT",
+      },
+    });
   }
 
   const user = await prisma.user.findUnique({

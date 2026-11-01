@@ -16,6 +16,7 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Tooltip,
   TooltipContent,
@@ -116,12 +117,20 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </SidebarContent>
           <SidebarFooter className="border-t border-[#e1e8df] p-4 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-2">
             <div className="flex min-w-0 items-center gap-3 group-data-[collapsible=icon]:justify-center">
-              <span
+              <Avatar
                 title={student?.name ?? "Perfil do aluno"}
-                className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#e8f1e9] text-[11px] font-semibold text-[#205b49]"
+                className="size-8 bg-[#e8f1e9] text-[11px] font-semibold text-[#205b49]"
               >
-                {student ? getInitialsFromName(student.name) : "…"}
-              </span>
+                {student?.photoUrl ? (
+                  <AvatarImage
+                    src={student.photoUrl}
+                    alt={`Foto de ${student.name}`}
+                  />
+                ) : null}
+                <AvatarFallback>
+                  {student ? getInitialsFromName(student.name) : "…"}
+                </AvatarFallback>
+              </Avatar>
               <div className="min-w-0 group-data-[collapsible=icon]:hidden">
                 <p className="truncate text-sm font-semibold text-[#29483e]">
                   {student?.name ?? "Carregando perfil"}
