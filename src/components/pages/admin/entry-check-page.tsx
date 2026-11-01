@@ -19,6 +19,7 @@ type EntryCheckResult = {
     name: string;
     registration: string;
     className: string;
+    enrolledAt: string;
   };
   canEnter: boolean;
   decision: "LIBERADO" | "BLOQUEADO";
@@ -226,6 +227,9 @@ export default function EntryCheckPage() {
                 <Typography color="text.secondary">
                   Matrícula {result.student.registration} · Turma{" "}
                   {result.student.className}
+                </Typography>
+                <Typography color="text.secondary" sx={{ mt: 0.5 }}>
+                  Inscrição na escola: {formatDate(result.student.enrolledAt)}
                 </Typography>
               </Box>
 

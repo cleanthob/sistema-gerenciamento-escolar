@@ -470,6 +470,7 @@ export function StudentList() {
         />
         <TextField source="registration" label="Matrícula" />
         <TextField source="name" label="Aluno(a)" />
+        <DateField source="createdAt" label="Inscrição na escola" />
         <TextField source="grade" label="Ano" />
         <TextField source="className" label="Turma" />
         <FunctionField
@@ -570,6 +571,7 @@ export function StudentEdit() {
           label="Matrícula"
           validate={required()}
         />
+        <DateField source="createdAt" label="Inscrição na escola" />
         <TextInput source="email" label="E-mail do(a) aluno(a)" type="email" />
         <TextInput source="grade" label="Ano escolar" validate={required()} />
         <TextInput source="className" label="Turma" validate={required()} />

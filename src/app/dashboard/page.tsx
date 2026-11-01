@@ -117,6 +117,13 @@ export default async function Dashboard() {
             <p className="mt-2 text-sm text-[#718179]">
               {student.grade} · Turma {student.className}
             </p>
+            <p className="mt-1 text-sm text-[#718179]">
+              Inscrição na escola:{" "}
+              {new Intl.DateTimeFormat("pt-BR", {
+                dateStyle: "long",
+                timeZone: "UTC",
+              }).format(student.createdAt)}
+            </p>
           </div>
         </div>
         <p className="text-sm font-medium text-[#73847b]">

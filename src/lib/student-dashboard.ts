@@ -18,6 +18,7 @@ export async function requireStudent() {
       email: true,
       grade: true,
       className: true,
+      createdAt: true,
       status: true,
       mustChangePassword: true,
     },

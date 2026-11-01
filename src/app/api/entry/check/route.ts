@@ -44,6 +44,7 @@ export async function POST(request: Request) {
       name: true,
       registration: true,
       className: true,
+      createdAt: true,
       status: true,
       payments: {
         where: { status: PaymentStatus.PENDING },
@@ -75,6 +76,7 @@ export async function POST(request: Request) {
       name: student.name,
       registration: student.registration,
       className: student.className,
+      enrolledAt: student.createdAt,
     },
     canEnter: admission.canEnter,
     decision: admission.canEnter ? "LIBERADO" : "BLOQUEADO",
