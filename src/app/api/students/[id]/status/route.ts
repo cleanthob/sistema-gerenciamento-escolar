@@ -52,7 +52,7 @@ export async function GET(_request: Request, { params }: Context) {
 
   if (!student)
     return NextResponse.json(
-      { error: "Aluno não encontrado." },
+      { error: "Aluno(a) não encontrado(a)." },
       { status: 404 },
     );
 

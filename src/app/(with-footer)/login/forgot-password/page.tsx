@@ -9,7 +9,7 @@ export default function ForgotPasswordPage() {
         </p>
         <h1 className="mt-2 text-2xl font-semibold">Fale com a secretaria</h1>
         <p className="mt-3 text-sm leading-6 text-[#a0b2a7]">
-          Para proteger os dados do aluno, a redefinição deve ser solicitada à
+          Para proteger os dados do(a) aluno(a), a redefinição deve ser solicitada à
           equipe escolar. A secretaria poderá confirmar a identidade do
           responsável e emitir uma senha temporária.
         </p>

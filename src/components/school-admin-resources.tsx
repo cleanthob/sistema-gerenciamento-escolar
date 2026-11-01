@@ -455,7 +455,7 @@ function roleLabel(role: string) {
 export function StudentList() {
   return (
     <List
-      title="Alunos"
+      title="Alunos(as)"
       perPage={10}
       sort={{ field: "name", order: "ASC" }}
       filters={searchFilters("Buscar por nome ou matrícula")}
@@ -469,7 +469,7 @@ export function StudentList() {
           )}
         />
         <TextField source="registration" label="Matrícula" />
-        <TextField source="name" label="Aluno" />
+        <TextField source="name" label="Aluno(a)" />
         <TextField source="grade" label="Ano" />
         <TextField source="className" label="Turma" />
         <FunctionField
@@ -487,7 +487,7 @@ export function StudentList() {
         <ResetStudentPasswordButton />
         <DeleteWithConfirmButton
           label="Arquivar"
-          confirmTitle="Arquivar aluno"
+          confirmTitle="Arquivar aluno(a)"
           confirmContent="A matrícula será desativada. O histórico escolar será preservado."
           mutationMode="pessimistic"
         />
@@ -499,7 +499,7 @@ export function StudentList() {
 export function StudentCreate() {
   return (
     <Create
-      title="Cadastrar aluno"
+      title="Cadastrar aluno(a)"
       redirect="list"
       mutationMode="pessimistic"
       sx={formPageStyles}
@@ -517,7 +517,7 @@ export function StudentCreate() {
           label="Matrícula"
           validate={required()}
         />
-        <TextInput source="email" label="E-mail do aluno" type="email" />
+        <TextInput source="email" label="E-mail do(a) aluno(a)" type="email" />
         <TextInput source="grade" label="Ano escolar" validate={required()} />
         <TextInput source="className" label="Turma" validate={required()} />
         <SelectInput
@@ -531,7 +531,7 @@ export function StudentCreate() {
           label="Senha temporária inicial"
           type="password"
           validate={required()}
-          helperText="O aluno deverá trocar esta senha no primeiro acesso."
+          helperText="O(A) aluno(a) deverá trocar esta senha no primeiro acesso."
         />
         <TextInput
           source="guardianName"
@@ -553,7 +553,7 @@ export function StudentCreate() {
 export function StudentEdit() {
   return (
     <Edit
-      title="Editar cadastro do aluno"
+      title="Editar cadastro do(a) aluno(a)"
       mutationMode="pessimistic"
       sx={formPageStyles}
     >
@@ -570,7 +570,7 @@ export function StudentEdit() {
           label="Matrícula"
           validate={required()}
         />
-        <TextInput source="email" label="E-mail do aluno" type="email" />
+        <TextInput source="email" label="E-mail do(a) aluno(a)" type="email" />
         <TextInput source="grade" label="Ano escolar" validate={required()} />
         <TextInput source="className" label="Turma" validate={required()} />
         <SelectInput
@@ -666,8 +666,8 @@ function StudentAvatar({
     .toLocaleUpperCase("pt-BR");
 
   return (
-    <Avatar className={className} aria-label={name || "Aluno"}>
-      {photoUrl ? <AvatarImage src={photoUrl} alt={name || "Aluno"} /> : null}
+    <Avatar className={className} aria-label={name || "Aluno(a)"}>
+      {photoUrl ? <AvatarImage src={photoUrl} alt={name || "Aluno(a)"} /> : null}
       <AvatarFallback>{initials || "A"}</AvatarFallback>
     </Avatar>
   );
@@ -733,7 +733,7 @@ function StudentPhotoInput() {
           component="button"
           type="button"
           aria-label={
-            photoUrl ? "Alterar foto do aluno" : "Adicionar foto do aluno"
+            photoUrl ? "Alterar foto do(a) aluno(a)" : "Adicionar foto do(a) aluno(a)"
           }
           title="Clique para escolher uma foto"
           disabled={reading}
@@ -815,7 +815,7 @@ function ResetStudentPasswordButton() {
       if (!response.ok)
         setError(
           result.error ??
-            "O servidor não conseguiu redefinir a senha deste aluno. Tente novamente.",
+            "O servidor não conseguiu redefinir a senha deste(a) aluno(a). Tente novamente.",
         );
       else {
         setTemporaryPassword(result.temporaryPassword);
@@ -835,7 +835,7 @@ function ResetStudentPasswordButton() {
       <MuiButton
         size="small"
         type="button"
-        aria-label={`Resetar senha de ${record?.name ?? "aluno"}`}
+        aria-label={`Resetar senha de ${record?.name ?? "aluno(a)"}`}
         onClick={(event) => {
           event.stopPropagation();
           void resetPassword();
@@ -895,14 +895,14 @@ const attendanceChoices = [
 export function AttendanceList() {
   return (
     <List
-      title="Presença dos alunos"
+      title="Presença dos(as) alunos(as)"
       perPage={10}
       sort={{ field: "date", order: "DESC" }}
-      filters={searchFilters("Buscar por aluno, turma ou observação")}
+      filters={searchFilters("Buscar por aluno(a), turma ou observação")}
       sx={listStyles}
     >
       <Datagrid rowClick="edit" bulkActionButtons={false} sx={gridStyles}>
-        <TextField source="student.name" label="Aluno" />
+        <TextField source="student.name" label="Aluno(a)" />
         <TextField source="student.registration" label="Matrícula" />
         <DateField source="date" label="Data" />
         <TextField source="student.className" label="Turma" />
@@ -947,7 +947,7 @@ function StudentReference() {
     <ReferenceInput
       source="studentId"
       reference="students"
-      label="Aluno"
+      label="Aluno(a)"
       perPage={100}
       sort={{ field: "name", order: "ASC" }}
     >
@@ -955,7 +955,7 @@ function StudentReference() {
         optionText="name"
         validate={required()}
         fullWidth
-        label="Aluno"
+        label="Aluno(a)"
       />
     </ReferenceInput>
   );
@@ -1014,11 +1014,11 @@ export function IncidentList() {
       title="Ocorrências disciplinares"
       perPage={10}
       sort={{ field: "createdAt", order: "DESC" }}
-      filters={searchFilters("Buscar por aluno ou motivo")}
+      filters={searchFilters("Buscar por aluno(a) ou motivo")}
       sx={listStyles}
     >
       <Datagrid rowClick="edit" bulkActionButtons={false} sx={gridStyles}>
-        <TextField source="student.name" label="Aluno" />
+        <TextField source="student.name" label="Aluno(a)" />
         <TextField source="student.registration" label="Matrícula" />
         <FunctionField
           label="Medida"
@@ -1163,11 +1163,11 @@ export function PaymentList() {
       title="Mensalidades"
       perPage={10}
       sort={{ field: "dueDate", order: "DESC" }}
-      filters={searchFilters("Buscar por aluno ou matrícula")}
+      filters={searchFilters("Buscar por aluno(a) ou matrícula")}
       sx={listStyles}
     >
       <Datagrid bulkActionButtons={false} sx={gridStyles}>
-        <TextField source="student.name" label="Aluno" />
+        <TextField source="student.name" label="Aluno(a)" />
         <TextField source="student.registration" label="Matrícula" />
         <NumberField source="amount" label="Valor (centavos)" />
         <DateField source="dueDate" label="Vencimento" />
@@ -1229,11 +1229,11 @@ export function GradeList() {
       title="Notas lançadas"
       perPage={20}
       sort={{ field: "recordedAt", order: "DESC" }}
-      filters={searchFilters("Buscar por aluno, disciplina ou avaliação")}
+      filters={searchFilters("Buscar por aluno(a), disciplina ou avaliação")}
       sx={listStyles}
     >
       <Datagrid bulkActionButtons={false} sx={gridStyles}>
-        <TextField source="student.name" label="Aluno" />
+        <TextField source="student.name" label="Aluno(a)" />
         <TextField source="student.registration" label="Matrícula" />
         <TextField source="subject" label="Disciplina" />
         <TextField source="activity" label="Avaliação" />
@@ -1282,11 +1282,11 @@ export function LessonList() {
       title="Aulas programadas"
       perPage={20}
       sort={{ field: "startsAt", order: "ASC" }}
-      filters={searchFilters("Buscar por aluno, disciplina ou professor")}
+      filters={searchFilters("Buscar por aluno(a), disciplina ou professor")}
       sx={listStyles}
     >
       <Datagrid bulkActionButtons={false} sx={gridStyles}>
-        <TextField source="student.name" label="Aluno" />
+        <TextField source="student.name" label="Aluno(a)" />
         <TextField source="student.className" label="Turma" />
         <TextField source="subject" label="Disciplina" />
         <TextField source="teacher" label="Professor" />

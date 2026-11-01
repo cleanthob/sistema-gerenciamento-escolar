@@ -17,23 +17,23 @@ As credenciais administrativas só são criadas pelo seed com valores fornecidos
 | `POST /api/auth/login` | Público | Login com `identifier`, `password` e `audience` (`STAFF` ou `STUDENT`); os portais não aceitam o outro perfil |
 | `POST /api/auth/logout` | Sessão atual | Encerra a sessão no navegador |
 | `GET /api/auth/session` | Sessão atual | Retorna perfil sem dados de senha |
-| `GET /api/students` | Direção/professor | Lista e busca alunos |
-| `POST /api/students` | Direção/professor | Cadastra aluno com senha inicial e troca obrigatória |
+| `GET /api/students` | Direção/professor | Lista e busca alunos(as) |
+| `POST /api/students` | Direção/professor | Cadastra aluno(a) com senha inicial e troca obrigatória |
 | `GET /api/students/:id` | Direção/professor | Consulta cadastro |
 | `PATCH` ou `PUT /api/students/:id` | Direção/professor | Atualiza campos enviados |
 | `DELETE /api/students/:id` | Direção/professor | Arquiva matrícula como inativa, preservando histórico |
 | `POST /api/students/:id/reset-password` | Direção | Gera ou define senha temporária, exibida somente na resposta |
-| `POST /api/students/me/password` | Aluno autenticado | Troca a senha atual e atualiza a sessão |
-| `GET /api/students/:id/status` | Equipe ou o próprio aluno | Consulta presença, suspensão, pagamentos vencidos e liberação |
+| `POST /api/students/me/password` | Aluno(a) autenticado(a) | Troca a senha atual e atualiza a sessão |
+| `GET /api/students/:id/status` | Equipe ou o(a) próprio(a) aluno(a) | Consulta presença, suspensão, pagamentos vencidos e liberação |
 | `POST /api/entry/check` | Direção/professor | Consulta de entrada pela matrícula |
-| `GET` e `POST /api/attendance` | Equipe; aluno só lê os próprios dados | Lista e registra presença |
+| `GET` e `POST /api/attendance` | Equipe; alunos(as) só leem os próprios dados | Lista e registra presença |
 | `PATCH /api/attendance/:id` | Equipe | Corrige registro de presença |
 | `GET` e `POST /api/sanctions` | Equipe | Consulta e registra advertência/suspensão e contato familiar |
 | `PATCH /api/sanctions/:id` | Equipe | Atualiza medida ou situação do contato |
-| `GET` e `POST /api/payments` | Equipe; aluno só lê os próprios dados | Consulta ou registra mensalidade. `amount` é informado em centavos |
+| `GET` e `POST /api/payments` | Equipe; alunos(as) só leem os próprios dados | Consulta ou registra mensalidade. `amount` é informado em centavos |
 | `PATCH /api/payments?id=:id` | Direção | Marca mensalidade pendente, paga ou dispensada |
-| `GET` e `POST /api/grades` | Equipe; aluno só lê as próprias notas | Lista e lança notas no banco |
-| `GET` e `POST /api/lessons` | Equipe; aluno só lê as próprias aulas | Consulta e programa aulas |
+| `GET` e `POST /api/grades` | Equipe; alunos(as) só leem as próprias notas | Lista e lança notas no banco |
+| `GET` e `POST /api/lessons` | Equipe; alunos(as) só leem as próprias aulas | Consulta e programa aulas |
 | `GET /api/staff` | Equipe escolar | Lista contas reais da equipe |
 | `GET /api/admin/overview` | Equipe escolar | Calcula indicadores e agenda a partir do banco |
 
@@ -43,10 +43,10 @@ As respostas de listagem usam `{ data, total }`. As rotas administrativas retorn
 
 - Senhas são armazenadas com bcrypt; nunca são incluídas em respostas de cadastro/listagem.
 - A sessão é um JWT assinado em cookie `HttpOnly`, `SameSite=Lax`, com validade de 8 horas. O segredo `AUTH_SECRET` é obrigatório e não pode ser compartilhado.
-- `/admin` permite apenas equipe escolar e `/dashboard` apenas alunos; perfis incompatíveis recebem a tela de acesso não autorizado.
-- Alunos que receberam senha temporária são direcionados para `/login/change-password` antes de acessar o dashboard. A nova senha exige pelo menos 12 caracteres.
+- `/admin` permite apenas equipe escolar e `/dashboard` apenas alunos(as); perfis incompatíveis recebem a tela de acesso não autorizado.
+- Alunos(as) que receberam senha temporária são direcionados(as) para `/login/change-password` antes de acessar o dashboard. A nova senha exige pelo menos 12 caracteres.
 - A suspensão só bloqueia durante o intervalo de datas. Advertências não bloqueiam a entrada.
-- A exclusão de aluno é lógica para manter vínculos de frequência, pagamentos e ocorrências.
-- O reset administrativo retorna a senha temporária uma vez para entrega por canal seguro. A opção “Esqueci minha senha” orienta o aluno a procurar a secretaria; envio automatizado por e-mail/SMS ainda exige configurar um provedor.
-- As listas do React-Admin e as páginas do aluno consultam as rotas Prisma. Registros ainda não cadastrados aparecem como listas/gráficos vazios, sem valores demonstrativos. A equipe está em modo somente leitura até existir uma API própria de criação/edição de usuários.
+- A exclusão de aluno(a) é lógica para manter vínculos de frequência, pagamentos e ocorrências.
+- O reset administrativo retorna a senha temporária uma vez para entrega por canal seguro. A opção “Esqueci minha senha” orienta o(a) aluno(a) a procurar a secretaria; envio automatizado por e-mail/SMS ainda exige configurar um provedor.
+- As listas do React-Admin e as páginas dos(as) alunos(as) consultam as rotas Prisma. Registros ainda não cadastrados aparecem como listas/gráficos vazios, sem valores demonstrativos. A equipe está em modo somente leitura até existir uma API própria de criação/edição de usuários.
 - Para produção, troque SQLite por PostgreSQL, configure envio de e-mail e limite tentativas de login/reset com rate limiting e monitoramento.

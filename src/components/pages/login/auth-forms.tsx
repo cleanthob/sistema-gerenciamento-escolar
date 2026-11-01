@@ -60,7 +60,7 @@ function useLogin(audience: "STUDENT" | "STAFF") {
         setRequestError(
           result.error ??
             (audience === "STUDENT"
-              ? "Não foi possível validar seu acesso de aluno. Confira sua matrícula, e-mail e senha."
+              ? "Não foi possível validar seu acesso como aluno(a). Confira sua matrícula, e-mail e senha."
               : "Não foi possível validar seu acesso à equipe. Confira seu e-mail institucional e senha."),
         );
         return;

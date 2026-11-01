@@ -28,7 +28,7 @@ export default function Home() {
         </div>
 
         <div className="home-entry-content">
-          <p className="home-eyebrow">Portal do aluno</p>
+          <p className="home-eyebrow">Portal do(a) aluno(a)</p>
           <h1 id="home-title">
             A escola,
             <br />

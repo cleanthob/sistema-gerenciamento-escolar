@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "Não foi possível registrar a presença. Confira o aluno, a data e a situação selecionada.",
+          "Não foi possível registrar a presença. Confira os dados do(a) aluno(a), a data e a situação selecionada.",
         details: parsed.error.flatten().fieldErrors,
       },
       { status: 400 },
@@ -81,14 +81,14 @@ export async function POST(request: Request) {
   } catch (error) {
     if (isRecordNotFound(error))
       return NextResponse.json(
-        { error: "Aluno não encontrado." },
+        { error: "Aluno(a) não encontrado(a)." },
         { status: 404 },
       );
     if (isUniqueConstraintError(error))
       return NextResponse.json(
         {
           error:
-            "A presença desta disciplina já foi registrada para o aluno nessa data.",
+            "A presença desta disciplina já foi registrada para o(a) aluno(a) nessa data.",
         },
         { status: 409 },
       );

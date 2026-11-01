@@ -44,7 +44,7 @@ export async function POST(request: Request, { params }: Context) {
   } catch (error) {
     if (isRecordNotFound(error))
       return NextResponse.json(
-        { error: "Aluno não encontrado." },
+        { error: "Aluno(a) não encontrado(a)." },
         { status: 404 },
       );
     throw error;
@@ -52,7 +52,7 @@ export async function POST(request: Request, { params }: Context) {
 
   return NextResponse.json({
     message:
-      "Senha redefinida. Entregue a senha temporária ao aluno por um canal seguro.",
+      "Senha redefinida. Entregue a senha temporária ao(à) aluno(a) por um canal seguro.",
     temporaryPassword,
     mustChangePassword: true,
   });

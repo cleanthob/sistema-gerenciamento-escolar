@@ -9,7 +9,7 @@ export async function PATCH(request: Request) {
   if (!session) return unauthorized();
   if (session.role !== UserRole.STUDENT) {
     return NextResponse.json(
-      { error: "Somente alunos podem alterar a própria foto." },
+      { error: "Somente alunos(as) podem alterar a própria foto." },
       { status: 403 },
     );
   }

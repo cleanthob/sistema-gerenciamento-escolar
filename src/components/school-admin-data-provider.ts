@@ -49,7 +49,7 @@ function getAdminAction(url: string, method = "GET"): string {
   const resource = segments[2];
   const labels: Record<string, string> = {
     staff: "a equipe escolar",
-    students: "o cadastro do aluno",
+    students: "o cadastro do(a) aluno(a)",
     attendance: "o registro de presença",
     sanctions: "a ocorrência",
     payments: "a mensalidade",

@@ -99,7 +99,7 @@ export async function POST(request: Request) {
         error:
           messages.length > 0
             ? messages.join(" ")
-            : "Os dados enviados não formam um cadastro de aluno válido. Confira os campos e tente novamente.",
+            : "Os dados enviados não formam um cadastro válido para o(a) aluno(a). Confira os campos e tente novamente.",
         details: fieldErrors,
       },
       { status: 400 },

@@ -39,7 +39,7 @@ export async function GET(_request: Request, { params }: Context) {
   });
   if (!student)
     return NextResponse.json(
-      { error: "Aluno não encontrado." },
+      { error: "Aluno(a) não encontrado(a)." },
       { status: 404 },
     );
   return NextResponse.json({ data: student });
@@ -57,7 +57,7 @@ export async function PATCH(request: Request, { params }: Context) {
     return NextResponse.json(
       {
         error:
-          "Não foi possível atualizar o cadastro do aluno. Confira os campos obrigatórios e os formatos informados.",
+          "Não foi possível atualizar o cadastro do(a) aluno(a). Confira os campos obrigatórios e os formatos informados.",
         details: parsed.error.flatten().fieldErrors,
       },
       { status: 400 },
@@ -77,7 +77,7 @@ export async function PATCH(request: Request, { params }: Context) {
     return NextResponse.json(
       {
         error:
-          "A matrícula ou o e-mail informado pertence a outro aluno. Altere os campos destacados.",
+          "A matrícula ou o e-mail informado pertence a outro(a) aluno(a). Altere os campos destacados.",
         errors,
       },
       { status: 409 },
@@ -117,7 +117,7 @@ export async function PATCH(request: Request, { params }: Context) {
   } catch (error) {
     if (isRecordNotFound(error))
       return NextResponse.json(
-        { error: "Aluno não encontrado." },
+        { error: "Aluno(a) não encontrado(a)." },
         { status: 404 },
       );
     if (isUniqueConstraintError(error))
@@ -146,7 +146,7 @@ export async function DELETE(_request: Request, { params }: Context) {
   } catch (error) {
     if (isRecordNotFound(error))
       return NextResponse.json(
-        { error: "Aluno não encontrado." },
+        { error: "Aluno(a) não encontrado(a)." },
         { status: 404 },
       );
     throw error;

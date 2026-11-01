@@ -50,7 +50,7 @@ export default function EntryCheckPage() {
     event.preventDefault();
     const normalizedRegistration = registration.trim().toUpperCase();
     if (!normalizedRegistration) {
-      setError("Informe a matrícula do aluno.");
+      setError("Informe a matrícula do(a) aluno(a).");
       setResult(null);
       return;
     }
@@ -68,7 +68,7 @@ export default function EntryCheckPage() {
       if (!response.ok) {
         setError(
           payload.error ??
-            "Não foi possível verificar a situação deste aluno. Tente novamente.",
+            "Não foi possível verificar a situação deste(a) aluno(a). Tente novamente.",
         );
         return;
       }
@@ -126,7 +126,7 @@ export default function EntryCheckPage() {
           >
             <TextField
               fullWidth
-              label="Matrícula do aluno"
+              label="Matrícula do(a) aluno(a)"
               value={registration}
               onChange={(event) =>
                 setRegistration(event.target.value.toUpperCase())
@@ -231,7 +231,7 @@ export default function EntryCheckPage() {
 
               {result.canEnter ? (
                 <Alert severity="success">
-                  Situação regular. O aluno está liberado para entrar neste
+                  Situação regular. O(A) aluno(a) está liberado(a) para entrar neste
                   momento.
                 </Alert>
               ) : (

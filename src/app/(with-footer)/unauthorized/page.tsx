@@ -17,7 +17,7 @@ export default function UnauthorizedPage() {
             href="/login"
             className="inline-flex min-h-10 items-center rounded-md bg-[#63b392] px-4 text-sm font-semibold text-[#0d1913] hover:bg-[#91c6aa]"
           >
-            Login do aluno
+            Login do(a) aluno(a)
           </Link>
           <Link
             href="/login/admin"

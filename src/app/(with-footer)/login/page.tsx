@@ -27,7 +27,7 @@ export default function Login() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#102f2a]/85 via-[#174f43]/15 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#dcebbd]">
-                Portal do aluno
+                Portal do(a) aluno(a)
               </p>
               <p className="mt-2 max-w-sm text-2xl font-semibold leading-tight sm:text-3xl">
                 Sua jornada escolar, em um só lugar.

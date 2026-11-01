@@ -50,7 +50,7 @@ export default function AdminApp() {
         create={StudentCreate}
         edit={StudentEdit}
         recordRepresentation="name"
-        options={{ label: "Alunos" }}
+        options={{ label: "Alunos(as)" }}
       />
       <Resource
         name="attendance"

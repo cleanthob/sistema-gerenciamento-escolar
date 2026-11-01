@@ -146,7 +146,7 @@ async function main() {
     },
   ];
 
-  // 32 alunos adicionais para testar listagens, filtros e paginação.
+  // 32 alunos(as) adicionais para testar listagens, filtros e paginação.
   studentsData.push(
     {
       registration: "2026009",
@@ -703,7 +703,7 @@ async function main() {
     },
   ];
 
-  // Sanções adicionais distribuídas entre os alunos para cenários de teste.
+  // Sanções adicionais distribuídas entre os(as) alunos(as) para cenários de teste.
   sanctions.push(
     ...studentsData.slice(8, 28).map((student, index) => ({
       registration: student.registration,
@@ -757,7 +757,7 @@ async function main() {
   console.log("==================================");
   console.log("Seed mock executado com sucesso!");
   console.log(`Usuários: ${users.length}`);
-  console.log(`Alunos: ${students.length}`);
+  console.log(`Alunos(as): ${students.length}`);
   console.log(`Pagamentos: ${students.length * 3}`);
   console.log(`Frequências previstas: ${students.length * 20}`);
   console.log(`Aulas previstas: ${students.length * 2}`);

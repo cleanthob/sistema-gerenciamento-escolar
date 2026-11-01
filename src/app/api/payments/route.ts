@@ -69,7 +69,7 @@ export async function POST(request: Request) {
   } catch (error) {
     if (isForeignKeyError(error))
       return NextResponse.json(
-        { error: "Aluno não encontrado." },
+        { error: "Aluno(a) não encontrado(a)." },
         { status: 404 },
       );
     throw error;

@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   if (!session) return unauthorized();
   if (session.role !== UserRole.STUDENT) {
     return NextResponse.json(
-      { error: "Somente alunos podem alterar a senha por esta rota." },
+      { error: "Somente alunos(as) podem alterar a senha por esta rota." },
       { status: 403 },
     );
   }

@@ -25,7 +25,7 @@ export const navigationAdminPage = [
   },
   {
     label: "Controle de entrada",
-    description: "Verifique se o aluno está liberado para entrar na escola.",
+    description: "Verifique se o(a) aluno(a) está liberado(a) para entrar na escola.",
     href: "/entry-check",
     icon: AccessIcon,
   },
@@ -36,14 +36,14 @@ export const navigationAdminPage = [
     icon: UserGroupIcon,
   },
   {
-    label: "Alunos",
-    description: "Cadastre alunos e consulte seus dados escolares.",
+    label: "Alunos(as)",
+    description: "Cadastre alunos(as) e consulte seus dados escolares.",
     href: "/students",
     icon: UserMultipleIcon,
   },
   {
     label: "Presença",
-    description: "Acompanhe a frequência e as faltas dos alunos.",
+    description: "Acompanhe a frequência e as faltas dos(as) alunos(as).",
     href: "/attendance",
     icon: ChartColumnIcon,
   },
@@ -67,7 +67,7 @@ export const navigationAdminPage = [
   },
   {
     label: "Ocorrências",
-    description: "Registre e consulte ocorrências relacionadas aos alunos.",
+    description: "Registre e consulte ocorrências relacionadas aos(às) alunos(as).",
     href: "/incidents",
     icon: BookOpen01Icon,
   },

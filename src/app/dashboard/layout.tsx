@@ -148,7 +148,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <SidebarFooter className="border-t border-[#293830] p-4 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-2">
             <div className="flex min-w-0 items-center gap-3 group-data-[collapsible=icon]:justify-center">
               <Avatar
-                title={student?.name ?? "Perfil do aluno"}
+                title={student?.name ?? "Perfil do(a) aluno(a)"}
                 className="size-8 bg-[#22372c] text-[11px] font-semibold text-[#b7ddc6]"
               >
                 {student?.photoUrl ? (

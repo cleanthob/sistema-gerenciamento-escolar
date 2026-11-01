@@ -50,7 +50,7 @@ export default function AdminDashboard() {
   const cards = overview
     ? [
         {
-          label: "Alunos ativos",
+          label: "Alunos(as) ativos(as)",
           value: formatCount(overview.activeStudents),
           note: `${formatCount(overview.totalStudents)} no total · ${formatCount(
             overview.totalStudents - overview.activeStudents,
