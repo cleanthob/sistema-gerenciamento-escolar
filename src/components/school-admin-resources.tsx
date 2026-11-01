@@ -300,6 +300,13 @@ const formStyles = {
   },
 };
 
+const formPageStyles = {
+  width: "100%",
+  maxWidth: 1440,
+  mx: "auto",
+  p: { xs: 1.5, sm: 3, lg: 5 },
+};
+
 function AdminForm({ children }: { children: ReactNode }) {
   return (
     <SimpleForm
@@ -495,6 +502,7 @@ export function StudentCreate() {
       title="Cadastrar aluno"
       redirect="list"
       mutationMode="pessimistic"
+      sx={formPageStyles}
     >
       <AdminForm>
         <StudentPhotoInput />
@@ -544,7 +552,11 @@ export function StudentCreate() {
 
 export function StudentEdit() {
   return (
-    <Edit title="Editar cadastro do aluno" mutationMode="pessimistic">
+    <Edit
+      title="Editar cadastro do aluno"
+      mutationMode="pessimistic"
+      sx={formPageStyles}
+    >
       <AdminForm>
         <StudentPhotoInput />
         <TextInput
@@ -951,7 +963,7 @@ function StudentReference() {
 
 export function AttendanceCreate() {
   return (
-    <Create title="Registrar presença" redirect="list">
+    <Create title="Registrar presença" redirect="list" sx={formPageStyles}>
       <AdminForm>
         <StudentReference />
         <DateInput source="date" label="Data" validate={required()} />
@@ -970,7 +982,7 @@ export function AttendanceCreate() {
 
 export function AttendanceEdit() {
   return (
-    <Edit title="Editar registro de presença">
+    <Edit title="Editar registro de presença" sx={formPageStyles}>
       <AdminForm>
         <DateInput source="date" label="Data" validate={required()} />
         <TextInput source="subject" label="Disciplina" />
@@ -1058,7 +1070,7 @@ function contactLabel(status: string) {
 
 export function IncidentCreate() {
   return (
-    <Create title="Registrar ocorrência" redirect="list">
+    <Create title="Registrar ocorrência" redirect="list" sx={formPageStyles}>
       <AdminForm>
         <StudentReference />
         <SelectInput
@@ -1104,7 +1116,7 @@ export function IncidentCreate() {
 
 export function IncidentEdit() {
   return (
-    <Edit title="Editar ocorrência">
+    <Edit title="Editar ocorrência" sx={formPageStyles}>
       <AdminForm>
         <SelectInput
           source="type"
@@ -1194,7 +1206,7 @@ function paymentLabel(status: string) {
 
 export function PaymentCreate() {
   return (
-    <Create title="Registrar mensalidade" redirect="list">
+    <Create title="Registrar mensalidade" redirect="list" sx={formPageStyles}>
       <AdminForm>
         <StudentReference />
         <NumberInput
@@ -1236,7 +1248,7 @@ export function GradeList() {
 
 export function GradeCreate() {
   return (
-    <Create title="Lançar nota" redirect="list">
+    <Create title="Lançar nota" redirect="list" sx={formPageStyles}>
       <AdminForm>
         <StudentReference />
         <TextInput source="subject" label="Disciplina" validate={required()} />
@@ -1288,7 +1300,7 @@ export function LessonList() {
 
 export function LessonCreate() {
   return (
-    <Create title="Programar aula" redirect="list">
+    <Create title="Programar aula" redirect="list" sx={formPageStyles}>
       <AdminForm>
         <StudentReference />
         <TextInput source="subject" label="Disciplina" validate={required()} />
