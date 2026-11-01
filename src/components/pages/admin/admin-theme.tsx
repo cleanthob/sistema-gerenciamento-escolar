@@ -65,12 +65,18 @@ export const adminTheme = createTheme({
       },
     },
     MuiButton: {
-      styleOverrides: { root: { borderRadius: 6, fontWeight: 600 } },
+      styleOverrides: { root: { borderRadius: "6px", fontWeight: 600 } },
+    },
+    MuiIconButton: {
+      styleOverrides: { root: { borderRadius: "6px" } },
+    },
+    MuiFab: {
+      styleOverrides: { root: { borderRadius: "6px" } },
     },
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: 8,
+          borderRadius: "6px",
           backgroundColor: "#0f1922",
           "& .MuiOutlinedInput-notchedOutline": { borderColor: "#344c60" },
           "&:hover .MuiOutlinedInput-notchedOutline": {
@@ -81,7 +87,10 @@ export const adminTheme = createTheme({
             borderWidth: 2,
           },
         },
-        input: { padding: "11px 14px" },
+        input: {
+          padding: "11px 14px",
+          textAlign: "left",
+        },
       },
     },
     MuiInputLabel: {

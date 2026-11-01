@@ -109,6 +109,11 @@
     text-rendering: optimizeLegibility;
   }
 
+  input:placeholder-shown,
+  textarea:placeholder-shown {
+    text-align: center !important;
+  }
+
   button {
     @apply cursor-pointer;
   }

@@ -102,12 +102,12 @@ export default async function Dashboard() {
   return (
     <main className="portal-page">
       <div className="mb-7 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-        <div className="flex items-center gap-4">
+        <div className="flex min-w-0 flex-1 flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
           <StudentPhotoEditor
             name={student.name}
             photoUrl={student.photoUrl ?? null}
           />
-          <div>
+          <div className="min-w-0">
             <p className="text-sm font-medium text-[#7a8c83]">
               Olá, {student.name}
             </p>

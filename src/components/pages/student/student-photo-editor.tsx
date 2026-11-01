@@ -1,8 +1,8 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { getInitialsFromName } from "@/utils/utils";
+import { Pencil } from "lucide-react";
 import { useRef, useState, type ChangeEvent } from "react";
 
 type Props = {
@@ -84,13 +84,31 @@ export function StudentPhotoEditor({ name, photoUrl: initialPhotoUrl }: Props) {
   }
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      <Avatar className="size-16 border-2 border-[#293830] shadow-sm">
-        {photoUrl ? <AvatarImage src={photoUrl} alt={`Foto de ${name}`} /> : null}
-        <AvatarFallback className="bg-[#22372c] text-base text-[#b7ddc6]">
-          {getInitialsFromName(name)}
-        </AvatarFallback>
-      </Avatar>
+    <div
+      role="group"
+      aria-label="Foto do perfil"
+      className="flex min-w-0 flex-col items-center gap-2"
+    >
+      <button
+        type="button"
+        className="group/photo relative rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#39a0ed] focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-wait"
+        aria-label={photoUrl ? "Alterar foto do perfil" : "Adicionar foto do perfil"}
+        title="Clique para escolher uma foto"
+        disabled={busy}
+        onClick={() => inputRef.current?.click()}
+      >
+        <Avatar className="size-16 border-2 border-[#293830] shadow-sm">
+          {photoUrl ? (
+            <AvatarImage src={photoUrl} alt={`Foto de ${name}`} />
+          ) : null}
+          <AvatarFallback className="bg-[#22372c] text-base text-[#b7ddc6]">
+            {getInitialsFromName(name)}
+          </AvatarFallback>
+        </Avatar>
+        <span className="absolute inset-0 flex items-center justify-center rounded-full bg-[#071521]/55 text-white opacity-0 transition-opacity group-hover/photo:opacity-100 group-focus-visible/photo:opacity-100 [@media(hover:none)]:opacity-100">
+          <Pencil aria-hidden="true" className="size-5" />
+        </span>
+      </button>
       <input
         ref={inputRef}
         type="file"
@@ -98,31 +116,12 @@ export function StudentPhotoEditor({ name, photoUrl: initialPhotoUrl }: Props) {
         hidden
         onChange={handleFileChange}
       />
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        disabled={busy}
-        onClick={() => inputRef.current?.click()}
-      >
-        {busy ? "Salvando..." : photoUrl ? "Alterar foto" : "Adicionar foto"}
-      </Button>
-      {photoUrl ? (
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          disabled={busy}
-          onClick={() => void savePhoto("")}
-        >
-          Remover
-        </Button>
-      ) : null}
-      <p className="text-center text-xs text-[#a0b2a7]">
-        PNG, JPG ou WebP · máximo de 1 MB
-      </p>
       {error ? (
-        <p role="alert" className="max-w-48 text-center text-xs text-red-700">
+        <p
+          role="alert"
+          aria-live="assertive"
+          className="w-full max-w-56 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-center text-xs text-red-700"
+        >
           {error}
         </p>
       ) : null}

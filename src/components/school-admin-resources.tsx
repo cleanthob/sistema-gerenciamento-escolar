@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Alert,
   Box,
   Chip,
   Dialog,
@@ -9,12 +10,18 @@ import {
   DialogTitle,
   Button as MuiButton,
   FormControl,
-  FormHelperText,
   TextField as MuiTextField,
   Typography,
 } from "@mui/material";
 import { format, useMask } from "@react-input/mask";
-import { useCallback, useRef, useState, type ChangeEvent } from "react";
+import { Pencil } from "lucide-react";
+import {
+  useCallback,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type ReactNode,
+} from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useWatch } from "react-hook-form";
 import {
@@ -22,6 +29,7 @@ import {
   BooleanInput,
   Create,
   Datagrid,
+  DeleteButton,
   DateField,
   DateInput,
   DeleteWithConfirmButton,
@@ -32,14 +40,18 @@ import {
   NumberField,
   NumberInput,
   ReferenceInput,
+  SaveButton,
   SearchInput,
   SelectInput,
   SimpleForm,
   TextField,
   TextInput,
+  Toolbar as AdminToolbar,
   required,
   useRecordContext,
   useInput,
+  useRedirect,
+  useResourceContext,
 } from "react-admin";
 
 const listStyles = {
@@ -102,7 +114,7 @@ const listStyles = {
   },
   "& .RaFilterForm-filterFormInput .MuiInputBase-root": {
     minHeight: 48,
-    borderRadius: 2,
+    borderRadius: "6px",
     backgroundColor: "#0f1922",
   },
   "& .RaList-actions .RaTopToolbar": {
@@ -125,7 +137,7 @@ const listStyles = {
       height: 40,
       minHeight: 40,
       p: "0 14px",
-      borderRadius: 2,
+      borderRadius: "6px",
       boxShadow: "none !important",
       gap: 1,
       "&::after": {
@@ -155,7 +167,7 @@ const listStyles = {
       width: "auto",
       height: 40,
       border: "1px solid #344c60",
-      borderRadius: 2,
+      borderRadius: "6px",
       px: 1.75,
       gap: 1,
       "&::after": {
@@ -211,6 +223,89 @@ const studentStatusChoices = [
   { id: "ACTIVE", name: "Ativo" },
   { id: "INACTIVE", name: "Inativo" },
 ];
+
+const formStyles = {
+  "& > .MuiStack-root": {
+    alignItems: "stretch",
+    gap: 2,
+  },
+  "& .MuiFormControl-root": {
+    width: "100%",
+    maxWidth: "100%",
+    m: 0,
+  },
+  "& .MuiFormControlLabel-root": {
+    ml: 0,
+  },
+  "& .MuiFormHelperText-root": {
+    ml: 0,
+    mt: 0.75,
+    lineHeight: 1.45,
+  },
+};
+
+function AdminForm({ children }: { children: ReactNode }) {
+  return (
+    <SimpleForm
+      sx={formStyles}
+      toolbar={<AdminFormToolbar />}
+    >
+      {children}
+    </SimpleForm>
+  );
+}
+
+function AdminFormToolbar() {
+  const resource = useResourceContext();
+  const redirect = useRedirect();
+
+  return (
+    <AdminToolbar
+      sx={{
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: 1.5,
+        px: { xs: 2, sm: 3 },
+        py: 1.5,
+        borderTop: "1px solid #293b4b",
+        "&.RaToolbar-mobileToolbar": {
+          left: 0,
+          width: "100%",
+          justifyContent: "flex-end",
+          gap: 1,
+          px: 2,
+          py: 1.5,
+          backgroundColor: "#131e28",
+          borderTop: "1px solid #293b4b",
+          "& .MuiIconButton-root": {
+            width: "auto",
+            height: 40,
+            border: "1px solid #344c60",
+            borderRadius: 2,
+            px: 1.5,
+            gap: 0.75,
+            "&::after": {
+              content: "attr(aria-label)",
+              fontSize: "0.875rem",
+              fontWeight: 600,
+              whiteSpace: "nowrap",
+            },
+          },
+        },
+      }}
+    >
+      <MuiButton
+        type="button"
+        variant="outlined"
+        onClick={() => redirect("list", resource)}
+      >
+        Cancelar
+      </MuiButton>
+      <DeleteButton resource={resource} />
+      <SaveButton />
+    </AdminToolbar>
+  );
+}
 
 function searchFilters(placeholder: string) {
   return [
@@ -316,7 +411,7 @@ export function StudentList() {
 export function StudentCreate() {
   return (
     <Create title="Cadastrar aluno">
-      <SimpleForm>
+      <AdminForm>
         <StudentPhotoInput />
         <TextInput
           source="name"
@@ -357,7 +452,7 @@ export function StudentCreate() {
           label="E-mail do responsável"
           type="email"
         />
-      </SimpleForm>
+      </AdminForm>
     </Create>
   );
 }
@@ -365,7 +460,7 @@ export function StudentCreate() {
 export function StudentEdit() {
   return (
     <Edit title="Editar cadastro do aluno">
-      <SimpleForm>
+      <AdminForm>
         <StudentPhotoInput />
         <TextInput
           source="name"
@@ -398,7 +493,7 @@ export function StudentEdit() {
           label="E-mail do responsável"
           type="email"
         />
-      </SimpleForm>
+      </AdminForm>
     </Edit>
   );
 }
@@ -517,46 +612,77 @@ function StudentPhotoInput() {
 
   return (
     <FormControl error={Boolean(uploadError || fieldState.error)} fullWidth>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <StudentAvatar
-          name={typeof name === "string" ? name : record?.name}
-          photoUrl={photoUrl}
-          className="size-16"
-        />
-        <Box>
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/png,image/jpeg,image/webp"
-            hidden
-            onChange={handleFileChange}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 1,
+          width: "100%",
+          p: { xs: 1.5, sm: 2 },
+          border: "1px solid #293b4b",
+          borderRadius: 2,
+          backgroundColor: "#0f1922",
+        }}
+      >
+        <MuiButton
+          component="button"
+          type="button"
+          aria-label={
+            photoUrl ? "Alterar foto do aluno" : "Adicionar foto do aluno"
+          }
+          title="Clique para escolher uma foto"
+          disabled={reading}
+          onClick={() => inputRef.current?.click()}
+          sx={{
+            position: "relative",
+            minWidth: 0,
+            p: 0,
+            borderRadius: "50%",
+            "&:hover .photo-edit-overlay, &:focus-visible .photo-edit-overlay": {
+              opacity: 1,
+            },
+            "@media (hover: none)": {
+              "& .photo-edit-overlay": { opacity: 1 },
+            },
+          }}
+        >
+          <StudentAvatar
+            name={typeof name === "string" ? name : record?.name}
+            photoUrl={photoUrl}
+            className="size-16"
           />
-          <MuiButton
-            variant="outlined"
-            disabled={reading}
-            onClick={() => inputRef.current?.click()}
+          <Box
+            className="photo-edit-overlay"
+            aria-hidden="true"
+            sx={{
+              position: "absolute",
+              inset: 0,
+              display: "grid",
+              placeItems: "center",
+              borderRadius: "50%",
+              backgroundColor: "rgba(7, 21, 33, 0.62)",
+              color: "#fff",
+              opacity: 0,
+              transition: "opacity 160ms ease",
+            }}
           >
-            {reading ? "Carregando..." : "Selecionar foto"}
-          </MuiButton>
-          <Typography variant="caption" sx={{ display: "block" }}>
-            PNG, JPG ou WebP · máximo de 1 MB
-          </Typography>
-          {photoUrl ? (
-            <MuiButton
-              size="small"
-              onClick={() => {
-                field.onChange("");
-                setUploadError("");
-              }}
-            >
-              Remover foto
-            </MuiButton>
-          ) : null}
-        </Box>
+            <Pencil size={20} />
+          </Box>
+        </MuiButton>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          hidden
+          onChange={handleFileChange}
+        />
+        {uploadError || fieldState.error?.message ? (
+          <Alert severity="error" sx={{ width: "100%", mt: 0.5 }}>
+            {uploadError || fieldState.error?.message}
+          </Alert>
+        ) : null}
       </Box>
-      <FormHelperText>
-        {uploadError || fieldState.error?.message || "Foto do aluno"}
-      </FormHelperText>
     </FormControl>
   );
 }
@@ -729,7 +855,7 @@ function StudentReference() {
 export function AttendanceCreate() {
   return (
     <Create title="Registrar presença">
-      <SimpleForm>
+      <AdminForm>
         <StudentReference />
         <DateInput source="date" label="Data" validate={required()} />
         <TextInput source="subject" label="Disciplina" />
@@ -740,7 +866,7 @@ export function AttendanceCreate() {
           choices={attendanceChoices}
         />
         <TextInput source="note" label="Observação" multiline fullWidth />
-      </SimpleForm>
+      </AdminForm>
     </Create>
   );
 }
@@ -748,7 +874,7 @@ export function AttendanceCreate() {
 export function AttendanceEdit() {
   return (
     <Edit title="Editar registro de presença">
-      <SimpleForm>
+      <AdminForm>
         <DateInput source="date" label="Data" validate={required()} />
         <TextInput source="subject" label="Disciplina" />
         <SelectInput
@@ -758,7 +884,7 @@ export function AttendanceEdit() {
           choices={attendanceChoices}
         />
         <TextInput source="note" label="Observação" multiline fullWidth />
-      </SimpleForm>
+      </AdminForm>
     </Edit>
   );
 }
@@ -836,7 +962,7 @@ function contactLabel(status: string) {
 export function IncidentCreate() {
   return (
     <Create title="Registrar ocorrência">
-      <SimpleForm>
+      <AdminForm>
         <StudentReference />
         <SelectInput
           source="type"
@@ -874,7 +1000,7 @@ export function IncidentCreate() {
           multiline
           fullWidth
         />
-      </SimpleForm>
+      </AdminForm>
     </Create>
   );
 }
@@ -882,7 +1008,7 @@ export function IncidentCreate() {
 export function IncidentEdit() {
   return (
     <Edit title="Editar ocorrência">
-      <SimpleForm>
+      <AdminForm>
         <SelectInput
           source="type"
           label="Medida disciplinar"
@@ -917,7 +1043,7 @@ export function IncidentEdit() {
           multiline
           fullWidth
         />
-      </SimpleForm>
+      </AdminForm>
     </Edit>
   );
 }
@@ -972,7 +1098,7 @@ function paymentLabel(status: string) {
 export function PaymentCreate() {
   return (
     <Create title="Registrar mensalidade">
-      <SimpleForm>
+      <AdminForm>
         <StudentReference />
         <NumberInput
           source="amount"
@@ -983,7 +1109,7 @@ export function PaymentCreate() {
         />
         <DateInput source="dueDate" label="Vencimento" validate={required()} />
         <TextInput source="reference" label="Referência" />
-      </SimpleForm>
+      </AdminForm>
     </Create>
   );
 }
@@ -1014,7 +1140,7 @@ export function GradeList() {
 export function GradeCreate() {
   return (
     <Create title="Lançar nota">
-      <SimpleForm>
+      <AdminForm>
         <StudentReference />
         <TextInput source="subject" label="Disciplina" validate={required()} />
         <TextInput source="activity" label="Avaliação" validate={required()} />
@@ -1036,7 +1162,7 @@ export function GradeCreate() {
           label="Bimestre / período"
           validate={required()}
         />
-      </SimpleForm>
+      </AdminForm>
     </Create>
   );
 }
@@ -1066,14 +1192,14 @@ export function LessonList() {
 export function LessonCreate() {
   return (
     <Create title="Programar aula">
-      <SimpleForm>
+      <AdminForm>
         <StudentReference />
         <TextInput source="subject" label="Disciplina" validate={required()} />
         <TextInput source="teacher" label="Professor" validate={required()} />
         <TextInput source="room" label="Sala" validate={required()} />
         <DateInput source="startsAt" label="Início" validate={required()} />
         <DateInput source="endsAt" label="Término" validate={required()} />
-      </SimpleForm>
+      </AdminForm>
     </Create>
   );
 }
