@@ -2,6 +2,14 @@ import { evaluateAdmission } from "@/lib/admission";
 import { prisma } from "@/lib/prisma";
 import { requireStudent } from "@/lib/student-dashboard";
 import { formatCurrencyBRL, formatGrade } from "@/utils/utils";
+import {
+  formatCalendarDate,
+  formatSchoolTime,
+  getSchoolCalendarDateStart,
+  getSchoolDayRange,
+  getSchoolDateParts,
+  getSchoolYearStart,
+} from "@/lib/date-format";
 import { AttendanceStatus, PaymentStatus, SanctionType } from "@prisma/client";
 import { StudentPhotoEditor } from "@/components/pages/student/student-photo-editor";
 import Link from "next/link";
@@ -9,9 +17,10 @@ import Link from "next/link";
 export default async function Dashboard() {
   const student = await requireStudent();
   const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const tomorrow = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
-  const schoolYearStart = new Date(now.getFullYear(), 0, 1);
+  const schoolToday = getSchoolDateParts(now);
+  const todayDateStart = getSchoolCalendarDateStart(now);
+  const { start: todayStart, end: tomorrow } = getSchoolDayRange(now);
+  const schoolYearStart = getSchoolYearStart(now);
 
   const [grades, attendance, payments, lessons, sanctions] = await Promise.all([
     prisma.grade.findMany({
@@ -66,7 +75,8 @@ export default async function Dashboard() {
   );
   const nextPayment = payments.find(
     (payment) =>
-      payment.status === PaymentStatus.PENDING && payment.dueDate >= todayStart,
+      payment.status === PaymentStatus.PENDING &&
+      payment.dueDate >= todayDateStart,
   );
   const admission = evaluateAdmission({
     status: student.status,
@@ -78,11 +88,13 @@ export default async function Dashboard() {
   });
   const activeSuspension = admission.activeSuspensions[0];
   const months = Array.from({ length: 6 }, (_, index) => {
-    const date = new Date(now.getFullYear(), now.getMonth() - 5 + index, 1);
+    const date = new Date(
+      Date.UTC(schoolToday.year, schoolToday.month - 1 - 5 + index, 1),
+    );
     const monthRecords = attendance.filter(
       (item) =>
-        item.date.getFullYear() === date.getFullYear() &&
-        item.date.getMonth() === date.getMonth() &&
+        item.date.getUTCFullYear() === date.getUTCFullYear() &&
+        item.date.getUTCMonth() === date.getUTCMonth() &&
         item.status !== AttendanceStatus.EXCUSED,
     );
     const present = monthRecords.filter(
@@ -91,7 +103,10 @@ export default async function Dashboard() {
         item.status === AttendanceStatus.LATE,
     ).length;
     return {
-      label: new Intl.DateTimeFormat("pt-BR", { month: "short" }).format(date),
+      label: new Intl.DateTimeFormat("pt-BR", {
+        month: "short",
+        timeZone: "UTC",
+      }).format(date),
       rate: monthRecords.length
         ? Math.round((present / monthRecords.length) * 100)
         : null,
@@ -119,15 +134,12 @@ export default async function Dashboard() {
             </p>
             <p className="mt-1 text-sm text-[#718179]">
               Inscrição na escola:{" "}
-              {new Intl.DateTimeFormat("pt-BR", {
-                dateStyle: "long",
-                timeZone: "UTC",
-              }).format(student.createdAt)}
+              {formatCalendarDate(student.createdAt, "long")}
             </p>
           </div>
         </div>
         <p className="text-sm font-medium text-[#73847b]">
-          Ano letivo {now.getFullYear()}
+          Ano letivo {schoolToday.year}
         </p>
       </div>
 
@@ -162,7 +174,7 @@ export default async function Dashboard() {
           </p>
           <p className="mt-1 text-xs text-[#718179]">
             {nextPayment
-              ? `Vencimento ${new Intl.DateTimeFormat("pt-BR").format(nextPayment.dueDate)}`
+              ? `Vencimento ${formatCalendarDate(nextPayment.dueDate)}`
               : payments.length
                 ? "Nenhum pagamento pendente"
                 : "Nenhuma mensalidade cadastrada"}
@@ -342,9 +354,7 @@ export default async function Dashboard() {
                 </div>
                 <p className="mt-2 text-xs text-[#82918a]">
                   Vencimento{" "}
-                  {new Intl.DateTimeFormat("pt-BR").format(
-                    latestPayment.dueDate,
-                  )}{" "}
+                  {formatCalendarDate(latestPayment.dueDate)}{" "}
                   ·{" "}
                   {latestPayment.status === "PAID"
                     ? "Pago"
@@ -386,9 +396,7 @@ export default async function Dashboard() {
                       className="h-9 w-1 shrink-0 rounded-full bg-[#28705b]"
                     />
                     <span className="w-12 shrink-0 text-xs font-semibold tabular-nums text-[#657970]">
-                      {new Intl.DateTimeFormat("pt-BR", {
-                        timeStyle: "short",
-                      }).format(lesson.startsAt)}
+                      {formatSchoolTime(lesson.startsAt)}
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-medium text-[#324c42]">

@@ -1,6 +1,12 @@
 import { forbidden, getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
+  getSchoolCalendarDateStart,
+  getSchoolDayRange,
+  getSchoolDateParts,
+  getSchoolYearStart,
+} from "@/lib/date-format";
+import {
   AttendanceStatus,
   GuardianContactStatus,
   PaymentStatus,
@@ -21,9 +27,13 @@ export async function GET() {
   if (!allowedRoles.includes(session.role)) return forbidden();
 
   const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const tomorrow = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
-  const schoolYearStart = new Date(now.getFullYear(), 0, 1);
+  const todayDateStart = getSchoolCalendarDateStart(now);
+  const tomorrowDateStart = new Date(
+    todayDateStart.getTime() + 24 * 60 * 60 * 1000,
+  );
+  const { start: todayStart, end: tomorrow } = getSchoolDayRange(now);
+  const schoolYearStart = getSchoolYearStart(now);
+  const { year: currentYear } = getSchoolDateParts(now);
 
   const [
     activeStudents,
@@ -51,7 +61,7 @@ export async function GET() {
       },
     }),
     prisma.attendance.findMany({
-      where: { date: { gte: schoolYearStart, lt: tomorrow } },
+      where: { date: { gte: schoolYearStart, lt: tomorrowDateStart } },
       select: { date: true, status: true },
     }),
     prisma.grade.findMany({ select: { score: true, maxScore: true } }),
@@ -63,12 +73,12 @@ export async function GET() {
     }),
     prisma.attendance.count({
       where: {
-        date: { gte: todayStart, lt: tomorrow },
+        date: { gte: todayDateStart, lt: tomorrowDateStart },
         status: AttendanceStatus.ABSENT,
       },
     }),
     prisma.payment.count({
-      where: { dueDate: { lt: todayStart }, status: PaymentStatus.PENDING },
+      where: { dueDate: { lt: todayDateStart }, status: PaymentStatus.PENDING },
     }),
     prisma.lesson.findMany({
       where: { startsAt: { gte: todayStart, lt: tomorrow } },
@@ -95,11 +105,11 @@ export async function GET() {
       ) / gradeRows.length
     : null;
   const months = Array.from({ length: 12 }, (_, index) => {
-    const date = new Date(now.getFullYear(), index, 1);
+    const date = new Date(Date.UTC(currentYear, index, 1));
     const rows = attendanceRows.filter(
       (record) =>
-        record.date.getFullYear() === date.getFullYear() &&
-        record.date.getMonth() === date.getMonth() &&
+        record.date.getUTCFullYear() === date.getUTCFullYear() &&
+        record.date.getUTCMonth() === date.getUTCMonth() &&
         record.status !== AttendanceStatus.EXCUSED,
     );
     const present = rows.filter(
@@ -108,7 +118,10 @@ export async function GET() {
         record.status === AttendanceStatus.LATE,
     ).length;
     return {
-      month: new Intl.DateTimeFormat("pt-BR", { month: "short" }).format(date),
+      month: new Intl.DateTimeFormat("pt-BR", {
+        month: "short",
+        timeZone: "UTC",
+      }).format(date),
       value: rows.length ? Math.round((present / rows.length) * 100) : null,
       records: rows.length,
     };

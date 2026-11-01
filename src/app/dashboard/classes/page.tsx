@@ -1,12 +1,16 @@
 import { prisma } from "@/lib/prisma";
 import { requireStudent } from "@/lib/student-dashboard";
 import { SanctionType } from "@prisma/client";
+import {
+  formatSchoolTime,
+  getSchoolCalendarDateStart,
+  getSchoolDayRange,
+} from "@/lib/date-format";
 
 export default async function ClassesPage() {
   const student = await requireStudent();
   const now = new Date();
-  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
+  const { start, end } = getSchoolDayRange(now);
   const [lessons, sanctions] = await Promise.all([
     prisma.lesson.findMany({
       where: { studentId: student.id, startsAt: { gte: start, lt: end } },
@@ -20,8 +24,8 @@ export default async function ClassesPage() {
   const activeSuspension = sanctions.find(
     (item) =>
       item.type === SanctionType.SUSPENSION &&
-      item.startsAt <= now &&
-      (!item.endsAt || item.endsAt >= now),
+      item.startsAt <= getSchoolCalendarDateStart(now) &&
+      (!item.endsAt || item.endsAt >= getSchoolCalendarDateStart(now)),
   );
 
   return (
@@ -56,14 +60,10 @@ export default async function ClassesPage() {
               <li key={lesson.id} className="flex gap-4 py-5">
                 <div className="w-14 shrink-0 pt-0.5 text-right">
                   <p className="text-sm font-semibold tabular-nums text-[#324c42]">
-                    {new Intl.DateTimeFormat("pt-BR", {
-                      timeStyle: "short",
-                    }).format(lesson.startsAt)}
+                    {formatSchoolTime(lesson.startsAt)}
                   </p>
                   <p className="mt-1 text-[11px] text-[#98a49d]">
-                    {new Intl.DateTimeFormat("pt-BR", {
-                      timeStyle: "short",
-                    }).format(lesson.endsAt)}
+                    {formatSchoolTime(lesson.endsAt)}
                   </p>
                 </div>
                 <span

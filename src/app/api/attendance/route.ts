@@ -22,11 +22,15 @@ export async function GET(request: Request) {
     return forbidden();
 
   const dateParam = searchParams.get("date");
-  const date = dateParam ? new Date(dateParam) : null;
+  const date = dateParam
+    ? new Date(`${dateParam.slice(0, 10)}T00:00:00.000Z`)
+    : null;
   if (date && Number.isNaN(date.getTime()))
     return NextResponse.json({ error: "Data inválida." }, { status: 400 });
   const start = date
-    ? new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    ? new Date(
+        Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()),
+      )
     : undefined;
   const end = start
     ? new Date(start.getTime() + 24 * 60 * 60 * 1000)

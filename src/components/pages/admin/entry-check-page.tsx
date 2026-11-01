@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { formatCurrencyBRL } from "@/utils/utils";
+import { formatCalendarDate, formatSchoolTime } from "@/lib/date-format";
 import { useState, type FormEvent } from "react";
 
 type EntryCheckResult = {
@@ -36,9 +37,7 @@ type EntryCheckResult = {
 type ApiResponse = EntryCheckResult & { error?: string };
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat("pt-BR", { timeZone: "UTC" }).format(
-    new Date(value),
-  );
+  return formatCalendarDate(value);
 }
 
 export default function EntryCheckPage() {
@@ -207,10 +206,7 @@ export default function EntryCheckPage() {
                   </Typography>
                 </Box>
                 <Chip
-                  label={`Verificado às ${new Intl.DateTimeFormat("pt-BR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  }).format(new Date(result.checkedAt))}`}
+                  label={`Verificado às ${formatSchoolTime(result.checkedAt)}`}
                   sx={{
                     color: "#dce8f1",
                     bgcolor: "rgba(12, 20, 28, 0.45)",

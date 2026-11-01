@@ -1,14 +1,16 @@
 import { prisma } from "@/lib/prisma";
 import { requireStudent } from "@/lib/student-dashboard";
 import { AttendanceStatus } from "@prisma/client";
+import { getSchoolDateParts, getSchoolYearStart } from "@/lib/date-format";
 
 export default async function AttendancePage() {
   const student = await requireStudent();
   const today = new Date();
+  const schoolToday = getSchoolDateParts(today);
   const records = await prisma.attendance.findMany({
     where: {
       studentId: student.id,
-      date: { gte: new Date(today.getFullYear(), 0, 1) },
+      date: { gte: getSchoolYearStart(today) },
     },
     orderBy: { date: "desc" },
   });
@@ -27,11 +29,13 @@ export default async function AttendancePage() {
     ? Math.round((presentCount / counted.length) * 100)
     : null;
   const months = Array.from({ length: 6 }, (_, index) => {
-    const date = new Date(today.getFullYear(), today.getMonth() - 5 + index, 1);
+    const date = new Date(
+      Date.UTC(schoolToday.year, schoolToday.month - 1 - 5 + index, 1),
+    );
     const monthly = records.filter(
       (record) =>
-        record.date.getFullYear() === date.getFullYear() &&
-        record.date.getMonth() === date.getMonth() &&
+        record.date.getUTCFullYear() === date.getUTCFullYear() &&
+        record.date.getUTCMonth() === date.getUTCMonth() &&
         record.status !== AttendanceStatus.EXCUSED,
     );
     const attended = monthly.filter(
@@ -40,7 +44,10 @@ export default async function AttendancePage() {
         record.status === AttendanceStatus.LATE,
     ).length;
     return {
-      month: new Intl.DateTimeFormat("pt-BR", { month: "short" }).format(date),
+      month: new Intl.DateTimeFormat("pt-BR", {
+        month: "short",
+        timeZone: "UTC",
+      }).format(date),
       rate: monthly.length
         ? Math.round((attended / monthly.length) * 100)
         : null,

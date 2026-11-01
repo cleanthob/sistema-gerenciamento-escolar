@@ -1,5 +1,6 @@
 import { forbidden, getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getSchoolDayRangeForDate } from "@/lib/date-format";
 import { UserRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -41,16 +42,10 @@ export async function GET(request: Request) {
   const day = params.get("date");
   let dateFilter = {};
   if (day) {
-    const parsedDate = new Date(day);
-    if (Number.isNaN(parsedDate.getTime()))
+    const range = getSchoolDayRangeForDate(day.slice(0, 10));
+    if (!range)
       return NextResponse.json({ error: "Data inválida." }, { status: 400 });
-    const start = new Date(
-      parsedDate.getFullYear(),
-      parsedDate.getMonth(),
-      parsedDate.getDate(),
-    );
-    const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
-    dateFilter = { startsAt: { gte: start, lt: end } };
+    dateFilter = { startsAt: { gte: range.start, lt: range.end } };
   }
 
   const data = await prisma.lesson.findMany({

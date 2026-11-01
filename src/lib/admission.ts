@@ -1,4 +1,5 @@
 import { StudentStatus } from "@prisma/client";
+import { getSchoolDateParts } from "@/lib/date-format";
 
 type AdmissionPayment = { amount: number; dueDate: Date };
 type AdmissionSuspension = {
@@ -14,8 +15,8 @@ type AdmissionInput = {
   checkedAt?: Date;
 };
 
-function startOfDay(date: Date) {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+function calendarDay(date: Date) {
+  return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 }
 
 export function evaluateAdmission({
@@ -24,14 +25,15 @@ export function evaluateAdmission({
   suspensions,
   checkedAt = new Date(),
 }: AdmissionInput) {
-  const today = startOfDay(checkedAt);
+  const { year, month, day } = getSchoolDateParts(checkedAt);
+  const today = Date.UTC(year, month - 1, day);
   const overduePayments = payments.filter(
-    (payment) => startOfDay(payment.dueDate) < today,
+    (payment) => calendarDay(payment.dueDate) < today,
   );
   const activeSuspensions = suspensions.filter(
     (suspension) =>
-      startOfDay(suspension.startsAt) <= today &&
-      (suspension.endsAt === null || startOfDay(suspension.endsAt) >= today),
+      calendarDay(suspension.startsAt) <= today &&
+      (suspension.endsAt === null || calendarDay(suspension.endsAt) >= today),
   );
   const reasons: string[] = [];
 

@@ -1,6 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { requireStudent } from "@/lib/student-dashboard";
 import { formatCurrencyBRL } from "@/utils/utils";
+import {
+  formatCalendarDate,
+  formatSchoolDateTime,
+  getSchoolCalendarDateStart,
+} from "@/lib/date-format";
 import { PaymentStatus } from "@prisma/client";
 
 function paymentStatus(status: PaymentStatus) {
@@ -17,20 +22,11 @@ export default async function PaymentsPage() {
     where: { studentId: student.id },
     orderBy: { dueDate: "desc" },
   });
-  const today = new Date();
-  const todayStart = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-  );
+  const todayStart = getSchoolCalendarDateStart();
   const overdue = payments.filter(
     (payment) =>
       payment.status === PaymentStatus.PENDING &&
-      new Date(
-        payment.dueDate.getFullYear(),
-        payment.dueDate.getMonth(),
-        payment.dueDate.getDate(),
-      ) < todayStart,
+      payment.dueDate < todayStart,
   );
   const upcoming = payments
     .filter(
@@ -56,9 +52,7 @@ export default async function PaymentsPage() {
           <p className="text-sm text-[#718179]">Próximo vencimento</p>
           <p className="mt-3 text-2xl font-semibold text-[#203b34]">
             {upcoming
-              ? new Intl.DateTimeFormat("pt-BR", {
-                  dateStyle: "medium",
-                }).format(upcoming.dueDate)
+              ? formatCalendarDate(upcoming.dueDate, "medium")
               : "—"}
           </p>
           <p className="mt-1 text-sm text-[#718179]">
@@ -109,9 +103,11 @@ export default async function PaymentsPage() {
                     </h3>
                     <p className="mt-1 text-xs text-[#87958e]">
                       Vencimento{" "}
-                      {new Intl.DateTimeFormat("pt-BR").format(payment.dueDate)}
+                      {formatCalendarDate(payment.dueDate)}
                       {payment.paidAt
-                        ? ` · Pago em ${new Intl.DateTimeFormat("pt-BR").format(payment.paidAt)}`
+                        ? ` · Pago em ${formatSchoolDateTime(payment.paidAt, {
+                            dateStyle: "short",
+                          })}`
                         : ""}
                     </p>
                   </div>

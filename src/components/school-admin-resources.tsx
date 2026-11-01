@@ -25,13 +25,18 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useWatch } from "react-hook-form";
 import {
+  formatCalendarDate,
+  formatSchoolDateTime,
+  fromSchoolDateTimeInputValue,
+  toCalendarDateInputValue,
+  toSchoolDateTimeInputValue,
+} from "@/lib/date-format";
+import {
   BooleanField,
   BooleanInput,
   Create,
   Datagrid,
   DeleteButton,
-  DateField,
-  DateInput,
   DeleteWithConfirmButton,
   Edit,
   EditButton,
@@ -470,7 +475,7 @@ export function StudentList() {
         />
         <TextField source="registration" label="Matrícula" />
         <TextField source="name" label="Aluno(a)" />
-        <DateField source="createdAt" label="Inscrição na escola" />
+        <CalendarDateField source="createdAt" label="Inscrição na escola" />
         <TextField source="grade" label="Ano" />
         <TextField source="className" label="Turma" />
         <FunctionField
@@ -571,10 +576,10 @@ export function StudentEdit() {
           label="Matrícula"
           validate={required()}
         />
-        <DateInput
+        <CalendarDateInput
           source="createdAt"
           label="Inscrição na escola"
-          validate={required()}
+          requiredField
           helperText="A data controla a partir de quando os registros do(a) aluno(a) podem ser feitos."
         />
         <TextInput source="email" label="E-mail do(a) aluno(a)" type="email" />
@@ -649,6 +654,104 @@ function MaskedPhoneInput({ source }: { source: string }) {
       slotProps={{ htmlInput: { inputMode: "numeric", autoComplete: "tel" } }}
     />
   );
+}
+
+function CalendarDateInput({
+  source,
+  label,
+  requiredField = false,
+  helperText,
+}: {
+  source: string;
+  label: string;
+  requiredField?: boolean;
+  helperText?: string;
+}) {
+  const { field, fieldState } = useInput({
+    source,
+    validate: requiredField ? required() : undefined,
+  });
+
+  return (
+    <MuiTextField
+      name={field.name}
+      label={label}
+      type="date"
+      value={toCalendarDateInputValue(field.value)}
+      onChange={(event) => {
+        const value = event.target.value;
+        field.onChange(value ? `${value}T00:00:00.000Z` : null);
+      }}
+      onBlur={field.onBlur}
+      error={Boolean(fieldState.error)}
+      helperText={
+        fieldState.error?.message ? (
+          <ValidationError error={fieldState.error.message} />
+        ) : (
+          helperText
+        )
+      }
+      fullWidth
+      slotProps={{ htmlInput: { required: requiredField } }}
+    />
+  );
+}
+
+function SchoolDateTimeInput({
+  source,
+  label,
+  requiredField = false,
+}: {
+  source: string;
+  label: string;
+  requiredField?: boolean;
+}) {
+  const { field, fieldState } = useInput({
+    source,
+    validate: requiredField ? required() : undefined,
+  });
+
+  return (
+    <MuiTextField
+      name={field.name}
+      label={label}
+      type="datetime-local"
+      value={toSchoolDateTimeInputValue(field.value)}
+      onChange={(event) => {
+        const value = event.target.value;
+        const date = value ? fromSchoolDateTimeInputValue(value) : null;
+        field.onChange(date?.toISOString() ?? "");
+      }}
+      onBlur={field.onBlur}
+      error={Boolean(fieldState.error)}
+      helperText={
+        fieldState.error?.message ?? "Horários no fuso de Brasília (São Paulo)."
+      }
+      fullWidth
+      slotProps={{ htmlInput: { required: requiredField } }}
+    />
+  );
+}
+
+function CalendarDateField({
+  source,
+  label,
+  showTime = false,
+}: {
+  source: string;
+  label: string;
+  showTime?: boolean;
+}) {
+  const record = useRecordContext();
+  const value = record?.[source];
+  const display =
+    typeof value === "string" || value instanceof Date
+      ? showTime
+        ? formatSchoolDateTime(value)
+        : formatCalendarDate(value)
+      : "";
+
+  return <FunctionField label={label} render={() => display} />;
 }
 
 function getPhoneMask(digitCount: number) {
@@ -911,7 +1014,7 @@ export function AttendanceList() {
       <Datagrid rowClick="edit" bulkActionButtons={false} sx={gridStyles}>
         <TextField source="student.name" label="Aluno(a)" />
         <TextField source="student.registration" label="Matrícula" />
-        <DateField source="date" label="Data" />
+        <CalendarDateField source="date" label="Data" />
         <TextField source="student.className" label="Turma" />
         <FunctionField
           label="Registro"
@@ -973,7 +1076,7 @@ export function AttendanceCreate() {
     <Create title="Registrar presença" redirect="list" sx={formPageStyles}>
       <AdminForm>
         <StudentReference />
-        <DateInput source="date" label="Data" validate={required()} />
+        <CalendarDateInput source="date" label="Data" requiredField />
         <TextInput source="subject" label="Disciplina" />
         <SelectInput
           source="status"
@@ -991,7 +1094,7 @@ export function AttendanceEdit() {
   return (
     <Edit title="Editar registro de presença" sx={formPageStyles}>
       <AdminForm>
-        <DateInput source="date" label="Data" validate={required()} />
+        <CalendarDateInput source="date" label="Data" requiredField />
         <TextInput source="subject" label="Disciplina" />
         <SelectInput
           source="status"
@@ -1038,7 +1141,7 @@ export function IncidentList() {
           )}
         />
         <TextField source="reason" label="Motivo" />
-        <DateField source="startsAt" label="Início" />
+        <CalendarDateField source="startsAt" label="Início" />
         <BooleanField
           source="guardianContactRequired"
           label="Chamar responsável"
@@ -1093,12 +1196,12 @@ export function IncidentCreate() {
           multiline
           fullWidth
         />
-        <DateInput
+        <CalendarDateInput
           source="startsAt"
           label="Data de início"
-          validate={required()}
+          requiredField
         />
-        <DateInput source="endsAt" label="Fim da suspensão" />
+        <CalendarDateInput source="endsAt" label="Fim da suspensão" />
         <BooleanInput
           source="guardianContactRequired"
           label="É necessário chamar o responsável?"
@@ -1138,12 +1241,12 @@ export function IncidentEdit() {
           multiline
           fullWidth
         />
-        <DateInput
+        <CalendarDateInput
           source="startsAt"
           label="Data de início"
-          validate={required()}
+          requiredField
         />
-        <DateInput source="endsAt" label="Fim da suspensão" />
+        <CalendarDateInput source="endsAt" label="Fim da suspensão" />
         <BooleanInput
           source="guardianContactRequired"
           label="É necessário chamar o responsável?"
@@ -1177,8 +1280,8 @@ export function PaymentList() {
         <TextField source="student.name" label="Aluno(a)" />
         <TextField source="student.registration" label="Matrícula" />
         <NumberField source="amount" label="Valor (centavos)" />
-        <DateField source="dueDate" label="Vencimento" />
-        <DateField source="paidAt" label="Pago em" />
+        <CalendarDateField source="dueDate" label="Vencimento" />
+        <CalendarDateField source="paidAt" label="Pago em" showTime />
         <FunctionField
           label="Situação"
           render={(record) => (
@@ -1223,7 +1326,11 @@ export function PaymentCreate() {
           validate={required()}
           helperText="Informe o valor como inteiro em centavos."
         />
-        <DateInput source="dueDate" label="Vencimento" validate={required()} />
+        <CalendarDateInput
+          source="dueDate"
+          label="Vencimento"
+          requiredField
+        />
         <TextInput source="reference" label="Referência" />
       </AdminForm>
     </Create>
@@ -1247,7 +1354,7 @@ export function GradeList() {
         <NumberField source="score" label="Nota" />
         <NumberField source="maxScore" label="Máximo" />
         <TextField source="term" label="Período" />
-        <DateField source="recordedAt" label="Lançada em" />
+        <CalendarDateField source="recordedAt" label="Lançada em" showTime />
       </Datagrid>
     </List>
   );
@@ -1298,8 +1405,8 @@ export function LessonList() {
         <TextField source="subject" label="Disciplina" />
         <TextField source="teacher" label="Professor" />
         <TextField source="room" label="Sala" />
-        <DateField source="startsAt" label="Início" showTime />
-        <DateField source="endsAt" label="Término" showTime />
+        <CalendarDateField source="startsAt" label="Início" showTime />
+        <CalendarDateField source="endsAt" label="Término" showTime />
       </Datagrid>
     </List>
   );
@@ -1313,8 +1420,16 @@ export function LessonCreate() {
         <TextInput source="subject" label="Disciplina" validate={required()} />
         <TextInput source="teacher" label="Professor" validate={required()} />
         <TextInput source="room" label="Sala" validate={required()} />
-        <DateInput source="startsAt" label="Início" validate={required()} />
-        <DateInput source="endsAt" label="Término" validate={required()} />
+        <SchoolDateTimeInput
+          source="startsAt"
+          label="Início"
+          requiredField
+        />
+        <SchoolDateTimeInput
+          source="endsAt"
+          label="Término"
+          requiredField
+        />
       </AdminForm>
     </Create>
   );

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { requireStudent } from "@/lib/student-dashboard";
+import { formatSchoolDateTime } from "@/lib/date-format";
 
 export default async function GradesPage() {
   const student = await requireStudent();
@@ -54,9 +55,9 @@ export default async function GradesPage() {
                     </h2>
                     <p className="mt-1 text-xs text-[#87958e]">
                       {grade.activity} · {grade.term} ·{" "}
-                      {new Intl.DateTimeFormat("pt-BR").format(
-                        grade.recordedAt,
-                      )}
+                      {formatSchoolDateTime(grade.recordedAt, {
+                        dateStyle: "short",
+                      })}
                     </p>
                   </div>
                   <p className="text-sm font-semibold text-[#203b34]">

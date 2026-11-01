@@ -10,6 +10,11 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import {
+  formatSchoolDateTime,
+  formatSchoolTime,
+  getSchoolDateParts,
+} from "@/lib/date-format";
 
 export default function AdminDashboard() {
   const [overview, setOverview] = useState<Overview | null>(null);
@@ -45,6 +50,7 @@ export default function AdminDashboard() {
   }, []);
 
   const today = new Date();
+  const schoolYear = getSchoolDateParts(today).year;
   const formatCount = (value: number) =>
     new Intl.NumberFormat("pt-BR").format(value);
   const cards = overview
@@ -180,9 +186,7 @@ export default function AdminDashboard() {
             </Typography>
           </Box>
           <Chip
-            label={new Intl.DateTimeFormat("pt-BR", {
-              dateStyle: "medium",
-            }).format(today)}
+            label={formatSchoolDateTime(today, { dateStyle: "medium" })}
             size="small"
             sx={{
               bgcolor: "#1b3042",
@@ -470,7 +474,7 @@ export default function AdminDashboard() {
                   variant="h6"
                   sx={{ color: "#e5eee8", fontWeight: 700 }}
                 >
-                  Frequência mensal · {today.getFullYear()}
+                  Frequência mensal · {schoolYear}
                 </Typography>
                 <Typography
                   variant="body2"
@@ -493,7 +497,7 @@ export default function AdminDashboard() {
               {overview ? (
                 <Box
                   component="ul"
-                  aria-label={`Frequência mensal de janeiro a dezembro de ${today.getFullYear()}`}
+                  aria-label={`Frequência mensal de janeiro a dezembro de ${schoolYear}`}
                   sx={{
                     display: "grid",
                     gridTemplateColumns: {
@@ -665,9 +669,7 @@ export default function AdminDashboard() {
                     <Typography
                       sx={{ color: "#a0b2a7", fontSize: 12, fontWeight: 700 }}
                     >
-                      {new Intl.DateTimeFormat("pt-BR", {
-                        timeStyle: "short",
-                      }).format(new Date(item.startsAt))}
+                      {formatSchoolTime(item.startsAt)}
                     </Typography>
                   </Box>
                   <Box
