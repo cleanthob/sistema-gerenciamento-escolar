@@ -8,10 +8,24 @@ const phoneSchema = z
   .trim()
   .min(10, "Informe um telefone com DDD.")
   .max(20);
+const optionalPhoto = z
+  .union([
+    z.literal(""),
+    z
+      .string()
+      .max(1_333_359, "A foto deve ter no máximo 1 MB.")
+      .regex(
+        /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/,
+        "Envie uma imagem PNG, JPG ou WebP válida.",
+      ),
+  ])
+  .nullable()
+  .optional();
 
 export const createStudentSchema = z.object({
   registration: z.string().trim().min(1, "Matrícula obrigatória.").max(30),
   name: z.string().trim().min(3, "Informe o nome completo.").max(120),
+  photoUrl: optionalPhoto,
   email: optionalEmail,
   grade: z.string().trim().min(1, "Ano escolar obrigatório.").max(30),
   className: z.string().trim().min(1, "Turma obrigatória.").max(30),
@@ -32,6 +46,7 @@ export const updateStudentSchema = z
   .object({
     registration: z.string().trim().min(1).max(30).optional(),
     name: z.string().trim().min(3).max(120).optional(),
+    photoUrl: optionalPhoto,
     email: optionalEmail,
     grade: z.string().trim().min(1).max(30).optional(),
     className: z.string().trim().min(1).max(30).optional(),

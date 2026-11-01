@@ -1,15 +1,20 @@
 "use client";
 
 import {
+  Box,
   Chip,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Button as MuiButton,
+  FormControl,
+  FormHelperText,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState, type ChangeEvent } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useWatch } from "react-hook-form";
 import {
   BooleanField,
   BooleanInput,
@@ -32,6 +37,7 @@ import {
   TextInput,
   required,
   useRecordContext,
+  useInput,
 } from "react-admin";
 
 const listStyles = {
@@ -129,6 +135,12 @@ export function StudentList() {
       sx={listStyles}
     >
       <Datagrid rowClick="edit" bulkActionButtons={false} sx={gridStyles}>
+        <FunctionField
+          label="Foto"
+          render={(record) => (
+            <StudentAvatar name={record.name} photoUrl={record.photoUrl} />
+          )}
+        />
         <TextField source="registration" label="Matrícula" />
         <TextField source="name" label="Aluno" />
         <TextField source="grade" label="Ano" />
@@ -161,6 +173,7 @@ export function StudentCreate() {
   return (
     <Create title="Cadastrar aluno">
       <SimpleForm>
+        <StudentPhotoInput />
         <TextInput
           source="name"
           label="Nome completo"
@@ -213,6 +226,7 @@ export function StudentEdit() {
   return (
     <Edit title="Editar cadastro do aluno">
       <SimpleForm>
+        <StudentPhotoInput />
         <TextInput
           source="name"
           label="Nome completo"
@@ -250,6 +264,118 @@ export function StudentEdit() {
         />
       </SimpleForm>
     </Edit>
+  );
+}
+
+function StudentAvatar({
+  name,
+  photoUrl,
+  className,
+}: {
+  name?: string;
+  photoUrl?: string | null;
+  className?: string;
+}) {
+  const initials = (name ?? "")
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0))
+    .join("")
+    .toLocaleUpperCase("pt-BR");
+
+  return (
+    <Avatar className={className} aria-label={name || "Aluno"}>
+      {photoUrl ? <AvatarImage src={photoUrl} alt={name || "Aluno"} /> : null}
+      <AvatarFallback>{initials || "A"}</AvatarFallback>
+    </Avatar>
+  );
+}
+
+function StudentPhotoInput() {
+  const { field, fieldState } = useInput({ source: "photoUrl" });
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploadError, setUploadError] = useState("");
+  const [reading, setReading] = useState(false);
+  const record = useRecordContext<{ name?: string }>();
+  const name = useWatch({ name: "name" });
+  const photoUrl = typeof field.value === "string" ? field.value : undefined;
+
+  function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setUploadError("Selecione uma imagem PNG, JPG ou WebP.");
+      return;
+    }
+    if (file.size > 1_000_000) {
+      setUploadError("A foto deve ter no máximo 1 MB.");
+      return;
+    }
+
+    setUploadError("");
+    setReading(true);
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result !== "string") {
+        setUploadError("Não foi possível carregar a foto.");
+      } else {
+        field.onChange(reader.result);
+      }
+      setReading(false);
+    };
+    reader.onerror = () => {
+      setUploadError("Não foi possível carregar a foto.");
+      setReading(false);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  return (
+    <FormControl error={Boolean(uploadError || fieldState.error)} fullWidth>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <StudentAvatar
+          name={typeof name === "string" ? name : record?.name}
+          photoUrl={photoUrl}
+          className="size-16"
+        />
+        <Box>
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            hidden
+            onChange={handleFileChange}
+          />
+          <MuiButton
+            variant="outlined"
+            disabled={reading}
+            onClick={() => inputRef.current?.click()}
+          >
+            {reading ? "Carregando..." : "Selecionar foto"}
+          </MuiButton>
+          <Typography variant="caption" sx={{ display: "block" }}>
+            PNG, JPG ou WebP · máximo de 1 MB
+          </Typography>
+          {photoUrl ? (
+            <MuiButton
+              size="small"
+              onClick={() => {
+                field.onChange("");
+                setUploadError("");
+              }}
+            >
+              Remover foto
+            </MuiButton>
+          ) : null}
+        </Box>
+      </Box>
+      <FormHelperText>
+        {uploadError || fieldState.error?.message || "Foto do aluno"}
+      </FormHelperText>
+    </FormControl>
   );
 }
 

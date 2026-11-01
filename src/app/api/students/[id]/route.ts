@@ -23,6 +23,7 @@ export async function GET(_request: Request, { params }: Context) {
       id: true,
       registration: true,
       name: true,
+      photoUrl: true,
       email: true,
       grade: true,
       className: true,
@@ -65,6 +66,9 @@ export async function PATCH(request: Request, { params }: Context) {
   const input = parsed.data;
   const data = {
     ...input,
+    ...(input.photoUrl !== undefined
+      ? { photoUrl: input.photoUrl || null }
+      : {}),
     ...(input.email !== undefined ? { email: input.email || null } : {}),
     ...(input.guardianEmail !== undefined
       ? { guardianEmail: input.guardianEmail || null }
@@ -78,6 +82,7 @@ export async function PATCH(request: Request, { params }: Context) {
         id: true,
         registration: true,
         name: true,
+        photoUrl: true,
         email: true,
         grade: true,
         className: true,

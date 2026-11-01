@@ -53,6 +53,7 @@ export async function GET(request: Request) {
         id: true,
         registration: true,
         name: true,
+        photoUrl: true,
         email: true,
         grade: true,
         className: true,
@@ -65,7 +66,15 @@ export async function GET(request: Request) {
     }),
     prisma.student.count({ where }),
   ]);
-  return NextResponse.json({ data: students, total });
+  return NextResponse.json({
+    data: students.map(({ photoUrl, ...student }) => ({
+      ...student,
+      photoUrl: photoUrl
+        ? `/api/students/${encodeURIComponent(student.id)}/photo`
+        : null,
+    })),
+    total,
+  });
 }
 
 export async function POST(request: Request) {
@@ -101,6 +110,7 @@ export async function POST(request: Request) {
     const student = await prisma.student.create({
       data: {
         ...studentData,
+        photoUrl: studentData.photoUrl || null,
         email: studentData.email || null,
         guardianEmail: studentData.guardianEmail || null,
         passwordHash: await hash(initialPassword, 12),
@@ -110,6 +120,7 @@ export async function POST(request: Request) {
         id: true,
         registration: true,
         name: true,
+        photoUrl: true,
         email: true,
         grade: true,
         className: true,

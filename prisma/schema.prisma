@@ -60,6 +60,7 @@ model Student {
   id                 String        @id @default(cuid())
   registration       String        @unique
   name               String
+  photoUrl           String?
   email              String?       @unique
   passwordHash       String
   mustChangePassword Boolean       @default(true)
