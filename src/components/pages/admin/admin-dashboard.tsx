@@ -22,7 +22,8 @@ export default function AdminDashboard() {
         const payload = await response.json();
         if (!response.ok)
           throw new Error(
-            payload.error ?? "Não foi possível carregar os indicadores.",
+            payload.error ??
+              "O servidor não conseguiu consultar os indicadores do painel. Tente recarregar a página.",
           );
         return payload.data as Overview;
       })
@@ -32,9 +33,10 @@ export default function AdminDashboard() {
       .catch((reason: unknown) => {
         if (active)
           setError(
-            reason instanceof Error
+            reason instanceof Error &&
+              !(reason instanceof TypeError || reason instanceof SyntaxError)
               ? reason.message
-              : "Falha ao carregar indicadores.",
+              : "Não foi possível consultar os indicadores do painel. Verifique sua conexão e recarregue a página.",
           );
       });
     return () => {

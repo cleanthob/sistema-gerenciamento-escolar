@@ -57,7 +57,12 @@ function useLogin(audience: "STUDENT" | "STAFF") {
       });
       const result = await response.json();
       if (!response.ok) {
-        setRequestError(result.error ?? "Não foi possível entrar.");
+        setRequestError(
+          result.error ??
+            (audience === "STUDENT"
+              ? "Não foi possível validar seu acesso de aluno. Confira sua matrícula, e-mail e senha."
+              : "Não foi possível validar seu acesso à equipe. Confira seu e-mail institucional e senha."),
+        );
         return;
       }
       if (audience === "STAFF") router.replace("/admin");
@@ -67,7 +72,9 @@ function useLogin(audience: "STUDENT" | "STAFF") {
         );
       router.refresh();
     } catch {
-      setRequestError("Falha de conexão. Tente novamente.");
+      setRequestError(
+        "Não foi possível conectar ao serviço de autenticação. Verifique sua conexão e tente entrar novamente.",
+      );
     }
   });
 
@@ -222,13 +229,18 @@ export function StudentChangePasswordForm() {
       });
       const result = await response.json();
       if (!response.ok) {
-        setRequestError(result.error ?? "Não foi possível alterar a senha.");
+        setRequestError(
+          result.error ??
+            "Não foi possível atualizar sua senha. Confira a senha atual e os requisitos da nova senha.",
+        );
         return;
       }
       router.replace("/dashboard");
       router.refresh();
     } catch {
-      setRequestError("Falha de conexão. Tente novamente.");
+      setRequestError(
+        "Não foi possível conectar ao serviço de alteração de senha. Verifique sua conexão e tente novamente.",
+      );
     }
   });
 

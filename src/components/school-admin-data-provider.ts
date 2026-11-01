@@ -16,22 +16,56 @@ type OneParams = Parameters<DataProvider["getOne"]>[1];
 type OneResult = Awaited<ReturnType<DataProvider["getOne"]>>;
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(url, {
-    ...init,
-    credentials: "same-origin",
-    headers: {
-      ...(init?.body ? { "Content-Type": "application/json" } : {}),
-      ...init?.headers,
-    },
-  });
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      ...init,
+      credentials: "same-origin",
+      headers: {
+        ...(init?.body ? { "Content-Type": "application/json" } : {}),
+        ...init?.headers,
+      },
+    });
+  } catch (error) {
+    if (!(error instanceof TypeError)) throw error;
+    throw new HttpError(
+      `${getAdminAction(url, init?.method)}. Verifique sua conexão e tente novamente.`,
+      0,
+    );
+  }
   const payload = await response.json().catch(() => ({}));
   if (!response.ok)
     throw new HttpError(
-      payload.error ?? "A operação não foi concluída.",
+      payload.error ??
+        `${getAdminAction(url, init?.method)}. Confira os dados e tente novamente.`,
       response.status,
       payload,
     );
   return payload as T;
+}
+
+function getAdminAction(url: string, method = "GET"): string {
+  const segments = new URL(url, "http://admin.local").pathname.split("/");
+  const resource = segments[2];
+  const labels: Record<string, string> = {
+    staff: "a equipe escolar",
+    students: "o cadastro do aluno",
+    attendance: "o registro de presença",
+    sanctions: "a ocorrência",
+    payments: "a mensalidade",
+    grades: "a nota",
+    lessons: "a aula",
+  };
+  const target = labels[resource] ?? "os dados solicitados";
+  const action =
+    method === "POST"
+      ? "cadastrar"
+      : method === "PATCH" || method === "PUT"
+        ? "atualizar"
+        : method === "DELETE"
+          ? "arquivar"
+          : "carregar";
+  return `Não foi possível ${action} ${target}`;
 }
 
 function nestedValue(record: Record<string, unknown>, path: string): unknown {

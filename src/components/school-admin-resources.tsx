@@ -47,6 +47,7 @@ import {
   TextField,
   TextInput,
   Toolbar as AdminToolbar,
+  ValidationError,
   required,
   useRecordContext,
   useInput,
@@ -490,7 +491,11 @@ export function StudentList() {
 
 export function StudentCreate() {
   return (
-    <Create title="Cadastrar aluno" redirect="list">
+    <Create
+      title="Cadastrar aluno"
+      redirect="list"
+      mutationMode="pessimistic"
+    >
       <AdminForm>
         <StudentPhotoInput />
         <TextInput
@@ -539,7 +544,7 @@ export function StudentCreate() {
 
 export function StudentEdit() {
   return (
-    <Edit title="Editar cadastro do aluno">
+    <Edit title="Editar cadastro do aluno" mutationMode="pessimistic">
       <AdminForm>
         <StudentPhotoInput />
         <TextInput
@@ -579,7 +584,10 @@ export function StudentEdit() {
 }
 
 function MaskedPhoneInput({ source }: { source: string }) {
-  const { field, fieldState } = useInput({ source, validate: required() });
+  const { field, fieldState } = useInput({
+    source,
+    validate: required("Informe o telefone do responsável."),
+  });
   const { ref: fieldRef, ...inputField } = field;
   const phoneValue = String(inputField.value ?? "");
   const mask = getPhoneMask(phoneValue.replace(/\D/g, "").length);
@@ -614,7 +622,11 @@ function MaskedPhoneInput({ source }: { source: string }) {
       onChange={inputField.onChange}
       onBlur={inputField.onBlur}
       error={Boolean(fieldState.error)}
-      helperText={fieldState.error?.message}
+      helperText={
+        fieldState.error?.message ? (
+          <ValidationError error={fieldState.error.message} />
+        ) : undefined
+      }
       slotProps={{ htmlInput: { inputMode: "numeric", autoComplete: "tel" } }}
     />
   );
@@ -677,14 +689,14 @@ function StudentPhotoInput() {
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result !== "string") {
-        setUploadError("Não foi possível carregar a foto.");
+        setUploadError("O navegador não conseguiu processar este arquivo de imagem.");
       } else {
         field.onChange(reader.result);
       }
       setReading(false);
     };
     reader.onerror = () => {
-      setUploadError("Não foi possível carregar a foto.");
+      setUploadError("O arquivo de imagem não pôde ser lido. Selecione-o novamente.");
       setReading(false);
     };
     reader.readAsDataURL(file);
@@ -789,13 +801,18 @@ function ResetStudentPasswordButton() {
       );
       const result = await response.json();
       if (!response.ok)
-        setError(result.error ?? "Não foi possível redefinir a senha.");
+        setError(
+          result.error ??
+            "O servidor não conseguiu redefinir a senha deste aluno. Tente novamente.",
+        );
       else {
         setTemporaryPassword(result.temporaryPassword);
         setOpen(true);
       }
     } catch {
-      setError("Falha de conexão ao redefinir a senha.");
+      setError(
+        "Não foi possível conectar ao serviço de redefinição de senha. Verifique sua conexão e tente novamente.",
+      );
     } finally {
       setLoading(false);
     }

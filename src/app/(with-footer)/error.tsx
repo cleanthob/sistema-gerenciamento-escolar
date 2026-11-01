@@ -22,11 +22,13 @@ export default function Error({
         </div>
 
         <h1 className="mt-6 text-2xl font-semibold text-[#e5eee8] sm:text-3xl">
-          Ops! Algo deu errado.
+          Não foi possível exibir esta página.
         </h1>
 
         <p className="mt-3 text-sm leading-6 text-[#a0b2a7] sm:text-base">
-          Ocorreu um problema ao carregar esta página. Tente novamente.
+          A página encontrou um erro inesperado. Tente recarregá-la; se o
+          problema continuar, contate o suporte
+          {error.digest ? ` e informe o código ${error.digest}` : ""}.
         </p>
 
         <button

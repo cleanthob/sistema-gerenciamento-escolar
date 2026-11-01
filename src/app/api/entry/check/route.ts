@@ -11,7 +11,12 @@ const staffRoles: UserRole[] = [
   UserRole.TEACHER,
 ];
 const requestSchema = z.object({
-  registration: z.string().trim().min(1, "Informe a matrícula.").max(30),
+  registration: z
+    .string()
+    .trim()
+    .min(1, "Informe a matrícula.")
+    .max(30)
+    .transform((value) => value.toUpperCase()),
 });
 
 export async function POST(request: Request) {

@@ -31,7 +31,10 @@ export function StudentPhotoEditor({ name, photoUrl: initialPhotoUrl }: Props) {
         photoUrl?: string | null;
       };
       if (!response.ok)
-        throw new Error(payload.error ?? "Não foi possível atualizar a foto.");
+        throw new Error(
+          payload.error ??
+            "O servidor recusou a atualização da foto. Verifique o arquivo e tente novamente.",
+        );
 
       const updatedPhotoUrl = payload.photoUrl ?? null;
       setPhotoUrl(updatedPhotoUrl);
@@ -42,9 +45,10 @@ export function StudentPhotoEditor({ name, photoUrl: initialPhotoUrl }: Props) {
       );
     } catch (reason) {
       setError(
-        reason instanceof Error
+        reason instanceof Error &&
+          !(reason instanceof TypeError || reason instanceof SyntaxError)
           ? reason.message
-          : "Não foi possível atualizar a foto.",
+          : "Não foi possível enviar a foto do perfil. Tente selecionar o arquivo novamente.",
       );
     } finally {
       setBusy(false);
@@ -70,14 +74,14 @@ export function StudentPhotoEditor({ name, photoUrl: initialPhotoUrl }: Props) {
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result !== "string") {
-        setError("Não foi possível carregar a foto.");
+        setError("O navegador não conseguiu processar este arquivo de imagem.");
         setBusy(false);
         return;
       }
       void savePhoto(reader.result);
     };
     reader.onerror = () => {
-      setError("Não foi possível carregar a foto.");
+      setError("O arquivo de imagem não pôde ser lido. Selecione-o novamente.");
       setBusy(false);
     };
     reader.readAsDataURL(file);

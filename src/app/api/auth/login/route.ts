@@ -17,10 +17,11 @@ export async function POST(request: Request) {
   }
 
   const { identifier, password, audience } = parsed.data;
+  const normalizedIdentifier = identifier.trim();
   const user =
     audience === "STAFF"
       ? await prisma.user.findUnique({
-          where: { email: identifier.toLowerCase() },
+          where: { email: normalizedIdentifier.toLowerCase() },
         })
       : null;
   const student =
@@ -28,8 +29,8 @@ export async function POST(request: Request) {
       ? await prisma.student.findFirst({
           where: {
             OR: [
-              { registration: identifier },
-              { email: identifier.toLowerCase() },
+              { registration: normalizedIdentifier.toUpperCase() },
+              { email: normalizedIdentifier.toLowerCase() },
             ],
           },
         })

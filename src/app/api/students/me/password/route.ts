@@ -26,7 +26,8 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       {
-        error: "Revise os campos informados.",
+        error:
+          "Confira a senha atual e informe uma nova senha com pelo menos 12 caracteres.",
         details: parsed.error.flatten().fieldErrors,
       },
       { status: 400 },

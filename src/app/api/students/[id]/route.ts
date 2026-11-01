@@ -1,5 +1,6 @@
 import { forbidden, getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { findDuplicateStudentIdentifiers } from "@/lib/student-identifiers";
 import { updateStudentSchema } from "@/lib/validations/student";
 import { UserRole } from "@prisma/client";
 import { NextResponse } from "next/server";
@@ -55,7 +56,8 @@ export async function PATCH(request: Request, { params }: Context) {
   if (!parsed.success) {
     return NextResponse.json(
       {
-        error: "Revise os campos informados.",
+        error:
+          "Não foi possível atualizar o cadastro do aluno. Confira os campos obrigatórios e os formatos informados.",
         details: parsed.error.flatten().fieldErrors,
       },
       { status: 400 },
@@ -64,31 +66,20 @@ export async function PATCH(request: Request, { params }: Context) {
 
   const { id } = await params;
   const input = parsed.data;
-  const [existingRegistration, existingEmail] = await Promise.all([
-    input.registration
-      ? prisma.student.findFirst({
-          where: { registration: input.registration, id: { not: id } },
-          select: { id: true },
-        })
-      : null,
-    input.email
-      ? prisma.student.findFirst({
-          where: { email: input.email, id: { not: id } },
-          select: { id: true },
-        })
-      : null,
-  ]);
-  if (existingRegistration || existingEmail) {
-    const errors = {
-      ...(existingRegistration
-        ? { registration: "Esta matrícula já está cadastrada." }
-        : {}),
-      ...(existingEmail
-        ? { email: "Este e-mail já está cadastrado." }
-        : {}),
-    };
+  const errors = await findDuplicateStudentIdentifiers(
+    {
+      registration: input.registration,
+      email: input.email || undefined,
+    },
+    id,
+  );
+  if (Object.keys(errors).length > 0) {
     return NextResponse.json(
-      { error: "Revise os campos destacados.", errors },
+      {
+        error:
+          "A matrícula ou o e-mail informado pertence a outro aluno. Altere os campos destacados.",
+        errors,
+      },
       { status: 409 },
     );
   }

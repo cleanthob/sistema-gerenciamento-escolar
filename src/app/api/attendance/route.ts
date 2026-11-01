@@ -56,7 +56,8 @@ export async function POST(request: Request) {
   if (!parsed.success)
     return NextResponse.json(
       {
-        error: "Revise os campos da presença.",
+        error:
+          "Não foi possível registrar a presença. Confira o aluno, a data e a situação selecionada.",
         details: parsed.error.flatten().fieldErrors,
       },
       { status: 400 },

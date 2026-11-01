@@ -44,7 +44,8 @@ export async function PATCH(request: Request, { params }: Context) {
   if (!parsed.success)
     return NextResponse.json(
       {
-        error: "Revise os campos da ocorrência.",
+        error:
+          "Não foi possível atualizar a ocorrência. Confira a medida, o motivo e as datas informadas.",
         details: parsed.error.flatten().fieldErrors,
       },
       { status: 400 },

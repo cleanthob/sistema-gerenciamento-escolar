@@ -1,8 +1,12 @@
 import { z } from "zod";
 
 const optionalEmail = z
-  .union([z.literal(""), z.string().email("Informe um e-mail válido.")])
-  .optional();
+  .union([
+    z.literal(""),
+    z.string().trim().email("Informe um e-mail válido."),
+  ])
+  .optional()
+  .transform((value) => (value ? value.trim().toLowerCase() : value));
 const phoneSchema = z
   .string()
   .trim()
@@ -25,7 +29,12 @@ export const studentPhotoSchema = z.object({
 });
 
 export const createStudentSchema = z.object({
-  registration: z.string().trim().min(1, "Matrícula obrigatória.").max(30),
+  registration: z
+    .string()
+    .trim()
+    .min(1, "Matrícula obrigatória.")
+    .max(30)
+    .transform((value) => value.toUpperCase()),
   name: z.string().trim().min(3, "Informe o nome completo.").max(120),
   photoUrl: optionalPhoto,
   email: optionalEmail,
@@ -46,7 +55,13 @@ export const createStudentSchema = z.object({
 
 export const updateStudentSchema = z
   .object({
-    registration: z.string().trim().min(1).max(30).optional(),
+    registration: z
+      .string()
+      .trim()
+      .min(1)
+      .max(30)
+      .transform((value) => value.toUpperCase())
+      .optional(),
     name: z.string().trim().min(3).max(120).optional(),
     photoUrl: optionalPhoto,
     email: optionalEmail,

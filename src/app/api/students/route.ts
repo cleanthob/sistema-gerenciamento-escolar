@@ -1,5 +1,6 @@
 import { forbidden, getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { findDuplicateStudentIdentifiers } from "@/lib/student-identifiers";
 import { createStudentSchema } from "@/lib/validations/student";
 import { UserRole } from "@prisma/client";
 import { hash } from "bcryptjs";
@@ -98,7 +99,7 @@ export async function POST(request: Request) {
         error:
           messages.length > 0
             ? messages.join(" ")
-            : "Revise os campos informados.",
+            : "Os dados enviados não formam um cadastro de aluno válido. Confira os campos e tente novamente.",
         details: fieldErrors,
       },
       { status: 400 },
@@ -106,29 +107,17 @@ export async function POST(request: Request) {
   }
 
   const { initialPassword, ...studentData } = parsed.data;
-  const [existingRegistration, existingEmail] = await Promise.all([
-    prisma.student.findUnique({
-      where: { registration: studentData.registration },
-      select: { id: true },
-    }),
-    studentData.email
-      ? prisma.student.findUnique({
-          where: { email: studentData.email },
-          select: { id: true },
-        })
-      : null,
-  ]);
-  if (existingRegistration || existingEmail) {
-    const errors = {
-      ...(existingRegistration
-        ? { registration: "Esta matrícula já está cadastrada." }
-        : {}),
-      ...(existingEmail
-        ? { email: "Este e-mail já está cadastrado." }
-        : {}),
-    };
+  const errors = await findDuplicateStudentIdentifiers({
+    registration: studentData.registration,
+    email: studentData.email || undefined,
+  });
+  if (Object.keys(errors).length > 0) {
     return NextResponse.json(
-      { error: "Revise os campos destacados.", errors },
+      {
+        error:
+          "A matrícula ou o e-mail informado já está em uso. Altere os campos destacados.",
+        errors,
+      },
       { status: 409 },
     );
   }
