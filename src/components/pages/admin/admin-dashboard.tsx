@@ -281,9 +281,13 @@ export default function AdminDashboard() {
                 >
                   Frequência por mês
                 </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                  Percentual de presenças e atrasos nos registros do mês.
+                  Faltas justificadas não entram no cálculo.
+                </Typography>
               </Box>
               <Typography variant="body2" color="text.secondary">
-                Média atual{" "}
+                Média do ano{" "}
                 <Box component="strong" sx={{ color: "#39a0ed", ml: 0.5 }}>
                   {overview?.attendanceRate == null
                     ? "—"
@@ -302,50 +306,172 @@ export default function AdminDashboard() {
               {overview?.months.some((month) => month.value !== null) ? (
                 <Box
                   role="img"
-                  aria-label="Gráfico mensal de frequência calculado a partir do banco"
-                  sx={{
-                    display: "grid",
-                    gridTemplateColumns: `repeat(${overview.months.length}, minmax(0, 1fr))`,
-                    alignItems: "end",
-                    gap: 1,
-                    height: { xs: 220, sm: 270 },
-                    borderBottom: "1px solid #293b4b",
-                    pt: 2,
-                  }}
+                  aria-label={`Frequência mensal dos últimos seis meses. ${overview.months
+                    .map((item) =>
+                      item.value === null
+                        ? `${item.month}: sem registros`
+                        : `${item.month}: ${item.value}% em ${item.records} registros`,
+                    )
+                    .join("; ")}.`}
                 >
-                  {overview.months.map((item, index) => (
-                    <Stack
-                      key={`${item.month}-${index}`}
-                      spacing={1}
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: "36px minmax(0, 1fr)",
+                      gap: 1,
+                      height: { xs: 210, sm: 250 },
+                    }}
+                  >
+                    <Stack sx={{ height: "100%", pb: 0.5, justifyContent: "space-between" }}>
+                      {[100, 75, 50, 25, 0].map((tick) => (
+                        <Typography
+                          key={tick}
+                          variant="caption"
+                          sx={{
+                            color: "#9fb3c3",
+                            fontSize: { xs: 10, sm: 11 },
+                            lineHeight: 1,
+                          }}
+                        >
+                          {tick}%
+                        </Typography>
+                      ))}
+                    </Stack>
+                    <Box
                       sx={{
-                        height: "100%",
+                        position: "relative",
                         minWidth: 0,
-                        alignItems: "center",
-                        justifyContent: "flex-end",
+                        height: "100%",
+                        borderBottom: "1px solid #526b80",
+                        background:
+                          "repeating-linear-gradient(to bottom, #344c60 0, #344c60 1px, transparent 1px, transparent 25%)",
                       }}
                     >
-                      <Typography
-                        variant="caption"
-                        sx={{ color: "#a0b2a7", fontSize: 11, fontWeight: 700 }}
-                      >
-                        {item.value === null ? "—" : `${item.value}%`}
-                      </Typography>
                       <Box
                         sx={{
-                          width: "min(100%, 38px)",
-                          height:
-                            item.value === null
-                              ? 2
-                              : `${Math.max(item.value, 2)}%`,
-                          bgcolor: item.value === null ? "#293b4b" : "#39a0ed",
-                          borderRadius: "4px 4px 0 0",
+                          position: "absolute",
+                          inset: 0,
+                          display: "grid",
+                          gridTemplateColumns: `repeat(${overview.months.length}, minmax(0, 1fr))`,
+                          gap: { xs: 0.5, sm: 1 },
+                          px: { xs: 0.25, sm: 1 },
                         }}
-                      />
-                      <Typography variant="caption" sx={{ color: "#a0b2a7" }}>
-                        {item.month}
-                      </Typography>
-                    </Stack>
-                  ))}
+                      >
+                        {overview.months.map((item, index) => (
+                          <Box
+                            key={`${item.month}-${index}`}
+                            title={
+                              item.value === null
+                                ? `${item.month}: sem registros`
+                                : `${item.month}: ${item.value}% de frequência em ${item.records} registros`
+                            }
+                            sx={{
+                              position: "relative",
+                              minWidth: 0,
+                              height: "100%",
+                            }}
+                          >
+                            {item.value !== null ? (
+                              <>
+                                <Typography
+                                  variant="caption"
+                                  sx={{
+                                    position: "absolute",
+                                    left: "50%",
+                                    bottom: `calc(${item.value}% + 6px)`,
+                                    transform: "translate(-50%, 50%)",
+                                    color: "#e6f0f8",
+                                    fontSize: { xs: 10, sm: 11 },
+                                    fontWeight: 700,
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  {item.value}%
+                                </Typography>
+                                <Box
+                                  sx={{
+                                    position: "absolute",
+                                    bottom: 0,
+                                    left: "50%",
+                                    transform: "translateX(-50%)",
+                                    width: "min(68%, 38px)",
+                                    height: `${item.value}%`,
+                                    minHeight: 2,
+                                    borderRadius: "4px 4px 0 0",
+                                    background:
+                                      "linear-gradient(180deg, #75baf2 0%, #39a0ed 100%)",
+                                    boxShadow: "0 0 16px rgb(57 160 237 / 18%)",
+                                  }}
+                                />
+                              </>
+                            ) : (
+                              <Typography
+                                variant="caption"
+                                sx={{
+                                  position: "absolute",
+                                  left: "50%",
+                                  bottom: 6,
+                                  transform: "translateX(-50%)",
+                                  color: "#9fb3c3",
+                                  fontSize: 10,
+                                }}
+                              >
+                                —
+                              </Typography>
+                            )}
+                          </Box>
+                        ))}
+                      </Box>
+                    </Box>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: "36px minmax(0, 1fr)",
+                      gap: 1,
+                      mt: 1,
+                    }}
+                  >
+                    <Box />
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: `repeat(${overview.months.length}, minmax(0, 1fr))`,
+                        gap: { xs: 0.5, sm: 1 },
+                        px: { xs: 0.25, sm: 1 },
+                      }}
+                    >
+                      {overview.months.map((item, index) => (
+                        <Stack
+                          key={`${item.month}-label-${index}`}
+                          spacing={0.25}
+                          sx={{ minWidth: 0, alignItems: "center" }}
+                        >
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: "#dce8f1",
+                              fontSize: { xs: 10, sm: 12 },
+                              fontWeight: 600,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {item.month.replace(".", "")}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: "#9fb3c3",
+                              fontSize: { xs: 9, sm: 10 },
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {item.records} {item.records === 1 ? "registro" : "registros"}
+                          </Typography>
+                        </Stack>
+                      ))}
+                    </Box>
+                  </Box>
                 </Box>
               ) : (
                 <Typography

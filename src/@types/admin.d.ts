@@ -9,7 +9,7 @@ type Overview = {
   pendingGuardianCalls: number;
   absentToday: number;
   overduePayments: number;
-  months: { month: string; value: number | null }[];
+  months: { month: string; value: number | null; records: number }[];
   lessonsToday: {
     id: string;
     subject: string;

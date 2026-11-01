@@ -110,6 +110,7 @@ export async function GET() {
     return {
       month: new Intl.DateTimeFormat("pt-BR", { month: "short" }).format(date),
       value: rows.length ? Math.round((present / rows.length) * 100) : null,
+      records: rows.length,
     };
   });
 
