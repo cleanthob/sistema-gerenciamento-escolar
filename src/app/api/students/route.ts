@@ -89,7 +89,7 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     const fieldErrors = parsed.error.flatten().fieldErrors;
 
-    const messages = Object.entries(fieldErrors).flatMap(([field, errors]) =>
+    const messages = Object.values(fieldErrors).flatMap((errors) =>
       (errors ?? []).map((message) => `${message}`),
     );
 
@@ -106,6 +106,33 @@ export async function POST(request: Request) {
   }
 
   const { initialPassword, ...studentData } = parsed.data;
+  const [existingRegistration, existingEmail] = await Promise.all([
+    prisma.student.findUnique({
+      where: { registration: studentData.registration },
+      select: { id: true },
+    }),
+    studentData.email
+      ? prisma.student.findUnique({
+          where: { email: studentData.email },
+          select: { id: true },
+        })
+      : null,
+  ]);
+  if (existingRegistration || existingEmail) {
+    const errors = {
+      ...(existingRegistration
+        ? { registration: "Esta matrícula já está cadastrada." }
+        : {}),
+      ...(existingEmail
+        ? { email: "Este e-mail já está cadastrado." }
+        : {}),
+    };
+    return NextResponse.json(
+      { error: "Revise os campos destacados.", errors },
+      { status: 409 },
+    );
+  }
+
   try {
     const student = await prisma.student.create({
       data: {
@@ -134,6 +161,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ data: student }, { status: 201 });
   } catch (error) {
     if (isUniqueConstraintError(error)) {
+      const field = getUniqueConstraintField(error);
+      if (field) {
+        const label = field === "registration" ? "matrícula" : "e-mail";
+        return NextResponse.json(
+          {
+            error: `Este ${label} já está cadastrado.`,
+            errors: {
+              [field]: `Este ${label} já está cadastrado.`,
+            },
+          },
+          { status: 409 },
+        );
+      }
       return NextResponse.json(
         { error: "Matrícula ou e-mail já está cadastrado." },
         { status: 409 },
@@ -150,4 +190,18 @@ function isUniqueConstraintError(error: unknown): boolean {
     "code" in error &&
     error.code === "P2002"
   );
+}
+
+function getUniqueConstraintField(
+  error: unknown,
+): "registration" | "email" | undefined {
+  if (typeof error !== "object" || error === null || !("meta" in error))
+    return undefined;
+  const meta = error.meta as { target?: unknown } | undefined;
+  const target = meta?.target;
+  const fields = Array.isArray(target) ? target : [target];
+  if (fields.some((field) => String(field).includes("registration")))
+    return "registration";
+  if (fields.some((field) => String(field).includes("email"))) return "email";
+  return undefined;
 }

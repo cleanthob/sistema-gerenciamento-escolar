@@ -64,6 +64,35 @@ export async function PATCH(request: Request, { params }: Context) {
 
   const { id } = await params;
   const input = parsed.data;
+  const [existingRegistration, existingEmail] = await Promise.all([
+    input.registration
+      ? prisma.student.findFirst({
+          where: { registration: input.registration, id: { not: id } },
+          select: { id: true },
+        })
+      : null,
+    input.email
+      ? prisma.student.findFirst({
+          where: { email: input.email, id: { not: id } },
+          select: { id: true },
+        })
+      : null,
+  ]);
+  if (existingRegistration || existingEmail) {
+    const errors = {
+      ...(existingRegistration
+        ? { registration: "Esta matrícula já está cadastrada." }
+        : {}),
+      ...(existingEmail
+        ? { email: "Este e-mail já está cadastrado." }
+        : {}),
+    };
+    return NextResponse.json(
+      { error: "Revise os campos destacados.", errors },
+      { status: 409 },
+    );
+  }
+
   const data = {
     ...input,
     ...(input.photoUrl !== undefined
@@ -101,10 +130,7 @@ export async function PATCH(request: Request, { params }: Context) {
         { status: 404 },
       );
     if (isUniqueConstraintError(error))
-      return NextResponse.json(
-        { error: "Matrícula ou e-mail já está cadastrado." },
-        { status: 409 },
-      );
+      return uniqueConstraintResponse(error);
     throw error;
   }
 }
@@ -143,6 +169,38 @@ function isUniqueConstraintError(error: unknown): boolean {
     "code" in error &&
     error.code === "P2002"
   );
+}
+
+function uniqueConstraintResponse(error: unknown) {
+  const field = getUniqueConstraintField(error);
+  if (!field) {
+    return NextResponse.json(
+      { error: "Matrícula ou e-mail já está cadastrado." },
+      { status: 409 },
+    );
+  }
+  const label = field === "registration" ? "matrícula" : "e-mail";
+  return NextResponse.json(
+    {
+      error: `Este ${label} já está cadastrado.`,
+      errors: { [field]: `Este ${label} já está cadastrado.` },
+    },
+    { status: 409 },
+  );
+}
+
+function getUniqueConstraintField(
+  error: unknown,
+): "registration" | "email" | undefined {
+  if (typeof error !== "object" || error === null || !("meta" in error))
+    return undefined;
+  const meta = error.meta as { target?: unknown } | undefined;
+  const target = meta?.target;
+  const fields = Array.isArray(target) ? target : [target];
+  if (fields.some((field) => String(field).includes("registration")))
+    return "registration";
+  if (fields.some((field) => String(field).includes("email"))) return "email";
+  return undefined;
 }
 
 function isRecordNotFound(error: unknown): boolean {

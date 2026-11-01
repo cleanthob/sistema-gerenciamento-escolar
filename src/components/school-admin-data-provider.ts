@@ -1,4 +1,4 @@
-import type { DataProvider, RaRecord } from "react-admin";
+import { HttpError, type DataProvider, type RaRecord } from "react-admin";
 
 const endpoints: Record<string, string> = {
   users: "/api/staff",
@@ -26,7 +26,11 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok)
-    throw new Error(payload.error ?? "A operação não foi concluída.");
+    throw new HttpError(
+      payload.error ?? "A operação não foi concluída.",
+      response.status,
+      payload,
+    );
   return payload as T;
 }
 
