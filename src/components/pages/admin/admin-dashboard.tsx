@@ -103,14 +103,14 @@ export default function AdminDashboard() {
         width: "100%",
         maxWidth: 1440,
         mx: "auto",
-        px: { xs: 0, sm: 3, lg: 5 },
+        px: { xs: 1.5, sm: 3, lg: 5 },
         pb: { xs: 3, md: 5 },
       }}
     >
       <Box
         sx={{
-          px: { xs: 2.5, sm: 3, lg: 4 },
-          py: { xs: 3, sm: 4 },
+          px: { xs: 2, sm: 3, lg: 4 },
+          py: { xs: 2.5, sm: 4 },
           bgcolor: "#172b3b",
           color: "#fff",
           borderBottom: "4px solid #df896c",
