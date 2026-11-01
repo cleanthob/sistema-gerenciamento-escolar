@@ -10,9 +10,11 @@ import {
   Button as MuiButton,
   FormControl,
   FormHelperText,
+  TextField as MuiTextField,
   Typography,
 } from "@mui/material";
-import { useRef, useState, type ChangeEvent } from "react";
+import { format, useMask } from "@react-input/mask";
+import { useCallback, useRef, useState, type ChangeEvent } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useWatch } from "react-hook-form";
 import {
@@ -207,11 +209,7 @@ export function StudentCreate() {
           validate={required()}
           fullWidth
         />
-        <TextInput
-          source="guardianPhone"
-          label="Telefone do responsável"
-          validate={required()}
-        />
+        <MaskedPhoneInput source="guardianPhone" />
         <TextInput
           source="guardianEmail"
           label="E-mail do responsável"
@@ -252,11 +250,7 @@ export function StudentEdit() {
           validate={required()}
           fullWidth
         />
-        <TextInput
-          source="guardianPhone"
-          label="Telefone do responsável"
-          validate={required()}
-        />
+        <MaskedPhoneInput source="guardianPhone" />
         <TextInput
           source="guardianEmail"
           label="E-mail do responsável"
@@ -265,6 +259,52 @@ export function StudentEdit() {
       </SimpleForm>
     </Edit>
   );
+}
+
+function MaskedPhoneInput({ source }: { source: string }) {
+  const { field, fieldState } = useInput({ source, validate: required() });
+  const { ref: fieldRef, ...inputField } = field;
+  const phoneValue = String(inputField.value ?? "");
+  const mask = getPhoneMask(phoneValue.replace(/\D/g, "").length);
+  const inputRef = useMask({
+    mask,
+    replacement: { _: /\d/ },
+    modify: ({ value, data, selectionStart, selectionEnd, inputType }) => {
+      const selectedDigits = value
+        .slice(selectionStart, selectionEnd)
+        .replace(/\D/g, "").length;
+      const remainingDigits = value.replace(/\D/g, "").length - selectedDigits;
+      const insertedDigits =
+        inputType === "insert" ? (data?.replace(/\D/g, "").length ?? 0) : 0;
+      return { mask: getPhoneMask(remainingDigits + insertedDigits) };
+    },
+  });
+  const setInputRef = useCallback(
+    (input: HTMLInputElement | null) => {
+      if (input) inputRef.current = input;
+      fieldRef(input);
+    },
+    [fieldRef, inputRef],
+  );
+
+  return (
+    <MuiTextField
+      inputRef={setInputRef}
+      name={inputField.name}
+      label="Telefone do responsável"
+      type="tel"
+      value={format(phoneValue, { mask, replacement: { _: /\d/ } })}
+      onChange={inputField.onChange}
+      onBlur={inputField.onBlur}
+      error={Boolean(fieldState.error)}
+      helperText={fieldState.error?.message}
+      slotProps={{ htmlInput: { inputMode: "numeric", autoComplete: "tel" } }}
+    />
+  );
+}
+
+function getPhoneMask(digitCount: number) {
+  return digitCount > 10 ? "(__) _____-____" : "(__) ____-____";
 }
 
 function StudentAvatar({
