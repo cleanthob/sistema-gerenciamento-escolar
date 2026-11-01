@@ -43,19 +43,74 @@ import {
 } from "react-admin";
 
 const listStyles = {
+  width: "100%",
+  maxWidth: 1440,
+  mx: "auto",
+  px: { xs: 2, sm: 3, lg: 5 },
+  pt: { xs: 2, sm: 3 },
+  pb: { xs: 3, sm: 5 },
   "& .RaList-main": { minWidth: 0 },
   "& .RaList-content": {
-    backgroundColor: "transparent",
+    backgroundColor: "#131e28",
     boxShadow: "none",
+    border: "1px solid #293b4b",
+    borderRadius: 2.5,
     overflowX: "auto",
   },
-  "& .RaList-actions": { alignItems: "center", flexWrap: "wrap", gap: 1 },
-  "& .RaList-toolbar": { alignItems: "center", flexWrap: "wrap", gap: 1 },
+  "& .RaList-actions": {
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: 2,
+    mb: 2.5,
+    p: { xs: 1.5, sm: 2.5 },
+    backgroundColor: "#131e28",
+    border: "1px solid #293b4b",
+    borderRadius: 2.5,
+  },
+  "& .RaFilterForm-root": {
+    flex: "1 1 320px",
+    minWidth: 0,
+    p: 0,
+  },
+  "& .RaList-toolbar": {
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: 1.5,
+  },
+  "& .RaFilterForm-filterFormInput": {
+    width: "100%",
+    minWidth: { xs: "100%", sm: 280 },
+  },
+  "& .RaFilterForm-filterFormInput .MuiFormControl-root": {
+    width: "100%",
+    mt: 0,
+  },
+  "& .RaFilterForm-filterFormInput .MuiInputBase-root": {
+    minHeight: 48,
+    borderRadius: 2,
+    backgroundColor: "#0f1922",
+  },
+  "& .RaList-actions .RaTopToolbar": {
+    flexShrink: 0,
+    p: 0,
+  },
 };
 
 const gridStyles = {
   minWidth: 720,
-  "& .MuiTableCell-root": { whiteSpace: "nowrap" },
+  "& .MuiTableCell-root": {
+    px: { xs: 1.5, sm: 2 },
+    py: 1.5,
+    whiteSpace: "nowrap",
+  },
+  "& .MuiTableHead-root .MuiTableCell-root": {
+    backgroundColor: "#172431",
+    color: "#b8c9d6",
+    fontSize: "0.72rem",
+    fontWeight: 700,
+    letterSpacing: "0.06em",
+    textTransform: "uppercase",
+  },
   "& .MuiTableCell-root:nth-of-type(1)": {
     whiteSpace: "normal",
     minWidth: 150,
@@ -67,20 +122,24 @@ const studentStatusChoices = [
   { id: "INACTIVE", name: "Inativo" },
 ];
 
+function searchFilters(placeholder: string) {
+  return [
+    <SearchInput
+      key="q"
+      source="q"
+      alwaysOn
+      placeholder={placeholder}
+    />,
+  ];
+}
+
 export function StaffList() {
   return (
     <List
       title="Equipe escolar"
       perPage={10}
       sort={{ field: "name", order: "ASC" }}
-      filters={[
-        <SearchInput
-          key="q"
-          source="q"
-          alwaysOn
-          placeholder="Nome, e-mail ou setor"
-        />,
-      ]}
+      filters={searchFilters("Buscar por nome, e-mail ou setor")}
       sx={listStyles}
     >
       <Datagrid bulkActionButtons={false} sx={gridStyles}>
@@ -126,14 +185,7 @@ export function StudentList() {
       title="Alunos"
       perPage={10}
       sort={{ field: "name", order: "ASC" }}
-      filters={[
-        <SearchInput
-          key="q"
-          source="q"
-          alwaysOn
-          placeholder="Nome ou matrícula"
-        />,
-      ]}
+      filters={searchFilters("Buscar por nome ou matrícula")}
       sx={listStyles}
     >
       <Datagrid rowClick="edit" bulkActionButtons={false} sx={gridStyles}>
@@ -521,6 +573,7 @@ export function AttendanceList() {
       title="Presença dos alunos"
       perPage={10}
       sort={{ field: "date", order: "DESC" }}
+      filters={searchFilters("Buscar por aluno, turma ou observação")}
       sx={listStyles}
     >
       <Datagrid rowClick="edit" bulkActionButtons={false} sx={gridStyles}>
@@ -636,6 +689,7 @@ export function IncidentList() {
       title="Ocorrências disciplinares"
       perPage={10}
       sort={{ field: "createdAt", order: "DESC" }}
+      filters={searchFilters("Buscar por aluno ou motivo")}
       sx={listStyles}
     >
       <Datagrid rowClick="edit" bulkActionButtons={false} sx={gridStyles}>
@@ -784,6 +838,7 @@ export function PaymentList() {
       title="Mensalidades"
       perPage={10}
       sort={{ field: "dueDate", order: "DESC" }}
+      filters={searchFilters("Buscar por aluno ou matrícula")}
       sx={listStyles}
     >
       <Datagrid bulkActionButtons={false} sx={gridStyles}>
@@ -849,6 +904,7 @@ export function GradeList() {
       title="Notas lançadas"
       perPage={20}
       sort={{ field: "recordedAt", order: "DESC" }}
+      filters={searchFilters("Buscar por aluno, disciplina ou avaliação")}
       sx={listStyles}
     >
       <Datagrid bulkActionButtons={false} sx={gridStyles}>
@@ -901,6 +957,7 @@ export function LessonList() {
       title="Aulas programadas"
       perPage={20}
       sort={{ field: "startsAt", order: "ASC" }}
+      filters={searchFilters("Buscar por aluno, disciplina ou professor")}
       sx={listStyles}
     >
       <Datagrid bulkActionButtons={false} sx={gridStyles}>

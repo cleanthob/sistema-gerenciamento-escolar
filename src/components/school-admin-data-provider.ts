@@ -41,6 +41,7 @@ function matchesFilter(record: RaRecord, filter: Record<string, unknown>) {
   return Object.entries(filter).every(([key, expected]) => {
     if (expected === undefined || expected === null || expected === "")
       return true;
+    if (key === "q") return matchesQuery(record, String(expected));
     const actual = nestedValue(record as Record<string, unknown>, key);
     if (typeof actual === "string")
       return actual
@@ -48,6 +49,28 @@ function matchesFilter(record: RaRecord, filter: Record<string, unknown>) {
         .includes(String(expected).toLocaleLowerCase("pt-BR"));
     return actual === expected;
   });
+}
+
+function matchesQuery(record: RaRecord, query: string): boolean {
+  const normalize = (value: string) =>
+    value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLocaleLowerCase("pt-BR");
+  const normalizedQuery = normalize(query.trim());
+  if (!normalizedQuery) return true;
+
+  function containsQuery(value: unknown): boolean {
+    if (typeof value === "string" || typeof value === "number") {
+      return normalize(String(value)).includes(normalizedQuery);
+    }
+    if (Array.isArray(value)) return value.some(containsQuery);
+    if (value && typeof value === "object")
+      return Object.values(value).some(containsQuery);
+    return false;
+  }
+
+  return containsQuery(record);
 }
 
 async function getList(

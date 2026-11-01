@@ -67,14 +67,48 @@ export const adminTheme = createTheme({
     MuiButton: {
       styleOverrides: { root: { borderRadius: 6, fontWeight: 600 } },
     },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          backgroundColor: "#0f1922",
+          "& .MuiOutlinedInput-notchedOutline": { borderColor: "#344c60" },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#75baf2",
+          },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#39a0ed",
+            borderWidth: 2,
+          },
+        },
+        input: { padding: "11px 14px" },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: "#9fb3c3",
+          "&.Mui-focused": { color: "#75baf2" },
+        },
+      },
+    },
+    MuiTableContainer: {
+      styleOverrides: { root: { overflowX: "auto" } },
+    },
     MuiTableRow: {
       styleOverrides: {
         root: {
-          "&:nth-of-type(even)": { backgroundColor: "#172431" },
+          transition: "background-color 140ms ease",
+          "&:nth-of-type(even)": { backgroundColor: "#14212b" },
           "&:hover": { backgroundColor: "#1b3042" },
         },
       },
     },
-    MuiTableCell: { styleOverrides: { root: { borderColor: "#293b4b" } } },
+    MuiTableCell: {
+      styleOverrides: {
+        root: { borderColor: "#293b4b" },
+        head: { borderBottom: "1px solid #3a5266" },
+      },
+    },
   },
 });
