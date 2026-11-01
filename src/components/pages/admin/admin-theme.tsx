@@ -76,8 +76,10 @@ export const adminTheme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
+          minHeight: 48,
           borderRadius: "6px",
           backgroundColor: "#0f1922",
+          transition: "border-color 140ms ease, box-shadow 140ms ease",
           "& .MuiOutlinedInput-notchedOutline": { borderColor: "#344c60" },
           "&:hover .MuiOutlinedInput-notchedOutline": {
             borderColor: "#75baf2",
@@ -86,9 +88,14 @@ export const adminTheme = createTheme({
             borderColor: "#39a0ed",
             borderWidth: 2,
           },
+          "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#f28b82",
+          },
+          "&.Mui-error.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderWidth: 2,
+          },
         },
         input: {
-          padding: "11px 14px",
           textAlign: "left",
         },
       },
@@ -97,7 +104,19 @@ export const adminTheme = createTheme({
       styleOverrides: {
         root: {
           color: "#9fb3c3",
+          fontWeight: 500,
           "&.Mui-focused": { color: "#75baf2" },
+          "&.Mui-error": { color: "#f28b82" },
+        },
+      },
+    },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: {
+          marginLeft: 0,
+          marginRight: 0,
+          lineHeight: 1.5,
+          "&.Mui-error": { color: "#f28b82" },
         },
       },
     },

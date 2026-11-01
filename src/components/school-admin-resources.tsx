@@ -226,21 +226,76 @@ const studentStatusChoices = [
 
 const formStyles = {
   "& > .MuiStack-root": {
-    alignItems: "stretch",
-    gap: 2,
+    display: "grid",
+    gridTemplateColumns: { xs: "minmax(0, 1fr)", sm: "repeat(2, minmax(0, 1fr))" },
+    alignItems: "start",
+    columnGap: { xs: 2, sm: 2.5 },
+    rowGap: { xs: 2.25, sm: 2.5 },
+    p: { xs: 2, sm: 3 },
   },
   "& .MuiFormControl-root": {
     width: "100%",
     maxWidth: "100%",
     m: 0,
+    minWidth: 0,
+  },
+  "& .MuiFormControl-root.MuiFormControl-fullWidth": {
+    gridColumn: "1 / -1",
+  },
+  "& .MuiFormControl-root:has(textarea), & .MuiFormControl-root:has(.MuiFormControlLabel-root)": {
+    gridColumn: "1 / -1",
+  },
+  "& .MuiInputLabel-root": {
+    position: "static",
+    display: "block",
+    maxWidth: "100%",
+    mb: 0.75,
+    color: "#b8c9d6",
+    fontSize: "0.875rem",
+    fontWeight: 600,
+    lineHeight: 1.4,
+    transform: "none",
+    transformOrigin: "top left",
+    "&.Mui-focused": { color: "#75baf2" },
+    "&.Mui-error": { color: "#f28b82" },
+  },
+  "& .MuiOutlinedInput-notchedOutline legend": {
+    display: "none",
   },
   "& .MuiFormControlLabel-root": {
     ml: 0,
+    alignItems: "center",
   },
   "& .MuiFormHelperText-root": {
     ml: 0,
     mt: 0.75,
-    lineHeight: 1.45,
+    lineHeight: 1.5,
+  },
+  "& .MuiInputBase-root": { minWidth: 0 },
+  "& .MuiInputBase-root:not(.MuiInputBase-multiline)": {
+    height: 48,
+    alignItems: "center",
+  },
+  "& .MuiInputBase-input:not(textarea)": {
+    padding: "10px 14px",
+    textAlign: "left",
+    "&::placeholder": {
+      color: "transparent",
+      opacity: 0,
+    },
+  },
+  "& textarea.MuiInputBase-input": {
+    padding: "12px 14px",
+    textAlign: "left",
+    "&::placeholder": {
+      color: "transparent",
+      opacity: 0,
+    },
+  },
+  "& .MuiSelect-select": {
+    display: "flex",
+    alignItems: "center",
+    padding: "10px 14px",
   },
 };
 
@@ -264,25 +319,50 @@ function AdminFormToolbar() {
       sx={{
         display: "flex",
         justifyContent: "flex-end",
+        alignItems: "center",
+        flexWrap: "wrap",
         gap: 1.5,
         px: { xs: 2, sm: 3 },
         py: 1.5,
         borderTop: "1px solid #293b4b",
+        "& > .MuiButton-root, & > .MuiIconButton-root": {
+          minHeight: 40,
+          borderRadius: "6px",
+          fontSize: "0.875rem",
+          fontWeight: 600,
+        },
         "&.RaToolbar-mobileToolbar": {
-          left: 0,
+          position: "static",
+          bottom: "auto",
+          left: "auto",
+          right: "auto",
           width: "100%",
+          boxSizing: "border-box",
+          zIndex: "auto",
+          flexWrap: "wrap",
           justifyContent: "flex-end",
+          alignItems: "center",
           gap: 1,
           px: 2,
           py: 1.5,
           backgroundColor: "#131e28",
           borderTop: "1px solid #293b4b",
+          "& > .MuiButton-root": {
+            minHeight: 40,
+            px: 1.75,
+            borderRadius: "6px",
+            fontSize: "0.875rem",
+            fontWeight: 600,
+            whiteSpace: "nowrap",
+          },
           "& .MuiIconButton-root": {
             width: "auto",
+            minWidth: 40,
             height: 40,
+            minHeight: 40,
             border: "1px solid #344c60",
-            borderRadius: 2,
-            px: 1.5,
+            borderRadius: "6px",
+            px: 1.75,
             gap: 0.75,
             "&::after": {
               content: "attr(aria-label)",
