@@ -34,8 +34,22 @@ export async function GET() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.id },
-    select: { id: true, name: true, email: true, role: true, active: true },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      photoUrl: true,
+      role: true,
+      active: true,
+    },
   });
   if (!user || !user.active) return unauthorized();
-  return NextResponse.json({ user });
+  return NextResponse.json({
+    user: {
+      ...user,
+      photoUrl: user.photoUrl
+        ? `/api/admin/me/photo?v=${Date.now()}`
+        : null,
+    },
+  });
 }

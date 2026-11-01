@@ -16,7 +16,7 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Tooltip,
   TooltipContent,
@@ -27,10 +27,17 @@ import { navigationAdminPage } from "@/constants/admin";
 import { Logout01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { cn } from "@/lib/utils";
+import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import Image from "next/image";
-import { useEffect, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type ReactNode,
+} from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 
 function matchesAdminRoute(currentPath: string, href: string) {
@@ -46,6 +53,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [profile, setProfile] = useState<AccountProfile | null>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const [photoBusy, setPhotoBusy] = useState(false);
+  const [photoError, setPhotoError] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -68,6 +78,64 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     await fetch("/api/auth/logout", { method: "POST" });
 
     router.push("/");
+  }
+
+  async function savePhoto(photoUrl: string) {
+    setPhotoBusy(true);
+    setPhotoError("");
+    try {
+      const response = await fetch("/api/admin/me/photo", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ photoUrl }),
+      });
+      const payload = (await response.json()) as {
+        error?: string;
+        photoUrl?: string | null;
+      };
+      if (!response.ok) {
+        throw new Error(payload.error ?? "Não foi possível salvar a foto.");
+      }
+      setProfile((current) =>
+        current ? { ...current, photoUrl: payload.photoUrl ?? null } : current,
+      );
+    } catch (reason) {
+      setPhotoError(
+        reason instanceof Error &&
+          !(reason instanceof TypeError || reason instanceof SyntaxError)
+          ? reason.message
+          : "Não foi possível enviar a foto. Tente selecionar o arquivo novamente.",
+      );
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
+
+  function handlePhotoChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setPhotoError("Selecione uma imagem PNG, JPG ou WebP.");
+      return;
+    }
+    if (file.size > 1_000_000) {
+      setPhotoError("A foto deve ter no máximo 1 MB.");
+      return;
+    }
+
+    setPhotoError("");
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result !== "string") {
+        setPhotoError("O navegador não conseguiu processar esta imagem.");
+        return;
+      }
+      void savePhoto(reader.result);
+    };
+    reader.onerror = () =>
+      setPhotoError("O arquivo não pôde ser lido. Selecione-o novamente.");
+    reader.readAsDataURL(file);
   }
 
   if (loading) return <Loading />;
@@ -145,21 +213,43 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           </SidebarContent>
           <SidebarFooter className="border-t border-[#293830] p-4 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-2">
             <div className="flex min-w-0 items-center gap-3 group-data-[collapsible=icon]:justify-center">
-              <Avatar
-                title={profile?.name ?? "Conta administrativa"}
-                className="size-8 bg-[#22372c] text-[11px] font-semibold text-[#b7ddc6]"
+              <button
+                type="button"
+                title="Alterar foto do perfil"
+                aria-label="Alterar foto do perfil"
+                disabled={photoBusy}
+                onClick={() => photoInputRef.current?.click()}
+                className="group/admin-photo relative size-8 shrink-0 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#39a0ed] disabled:cursor-wait"
               >
-                <AvatarFallback>
-                  {profile?.name
-                  ? profile.name
-                      .split(/\s+/)
-                      .slice(0, 2)
-                      .map((part) => part[0])
-                      .join("")
-                      .toLocaleUpperCase("pt-BR")
+                <Avatar className="size-8 bg-[#22372c] text-[11px] font-semibold text-[#b7ddc6]">
+                  {profile?.photoUrl ? (
+                    <AvatarImage
+                      src={profile.photoUrl}
+                      alt={`Foto de ${profile.name}`}
+                    />
+                  ) : null}
+                  <AvatarFallback>
+                    {profile?.name
+                    ? profile.name
+                        .split(/\s+/)
+                        .slice(0, 2)
+                        .map((part) => part[0])
+                        .join("")
+                        .toLocaleUpperCase("pt-BR")
                     : "…"}
-                </AvatarFallback>
-              </Avatar>
+                  </AvatarFallback>
+                </Avatar>
+                <span className="absolute inset-0 flex items-center justify-center rounded-full bg-[#071521]/65 text-white opacity-0 transition-opacity group-hover/admin-photo:opacity-100 group-focus-visible/admin-photo:opacity-100 [@media(hover:none)]:opacity-100">
+                  <Pencil aria-hidden="true" className="size-3.5" />
+                </span>
+              </button>
+              <input
+                ref={photoInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                hidden
+                onChange={handlePhotoChange}
+              />
               <div className="min-w-0 group-data-[collapsible=icon]:hidden">
                 <p className="truncate text-sm font-semibold text-[#dce8df]">
                   {profile?.name ?? "Carregando conta"}
@@ -169,6 +259,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 </p>
               </div>
             </div>
+            {photoError ? (
+              <p
+                role="alert"
+                aria-live="assertive"
+                className="mt-2 rounded-md border border-red-400/40 bg-red-950/40 px-2 py-1.5 text-xs text-red-200"
+              >
+                {photoError}
+              </p>
+            ) : null}
             <button
               type="button"
               onClick={logout}

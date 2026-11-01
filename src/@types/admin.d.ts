@@ -21,4 +21,4 @@ type Overview = {
   }[];
 };
 
-type AccountProfile = { name: string; role: string };
+type AccountProfile = { name: string; role: string; photoUrl?: string | null };

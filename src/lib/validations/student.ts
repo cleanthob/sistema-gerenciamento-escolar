@@ -24,7 +24,7 @@ const photoDataSchema = z.union([
 ]);
 const optionalPhoto = photoDataSchema.nullable().optional();
 
-export const studentPhotoSchema = z.object({
+export const profilePhotoSchema = z.object({
   photoUrl: photoDataSchema,
 });
 

@@ -1,6 +1,6 @@
 import { getSession, unauthorized } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { studentPhotoSchema } from "@/lib/validations/student";
+import { profilePhotoSchema } from "@/lib/validations/student";
 import { UserRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 
@@ -14,7 +14,7 @@ export async function PATCH(request: Request) {
     );
   }
 
-  const parsed = studentPhotoSchema.safeParse(
+  const parsed = profilePhotoSchema.safeParse(
     await request.json().catch(() => null),
   );
   if (!parsed.success) {
