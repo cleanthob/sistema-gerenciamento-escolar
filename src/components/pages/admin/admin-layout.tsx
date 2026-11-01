@@ -254,9 +254,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 <p className="truncate text-sm font-semibold text-[#dce8df]">
                   {profile?.name ?? "Carregando conta"}
                 </p>
-                <p className="truncate text-xs text-[#a0b2a7]">
-                  {profile?.role ?? " "}
-                </p>
               </div>
             </div>
             {photoError ? (
