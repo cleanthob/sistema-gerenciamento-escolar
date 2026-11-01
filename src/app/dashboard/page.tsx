@@ -100,7 +100,7 @@ export default async function Dashboard() {
   const latestPayment = payments[0];
 
   return (
-    <main className="mx-auto w-full max-w-330 px-4 py-7 sm:px-7 sm:py-9 lg:px-10">
+    <main className="portal-page">
       <div className="mb-7 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
         <div className="flex items-center gap-4">
           <StudentPhotoEditor
@@ -126,7 +126,7 @@ export default async function Dashboard() {
 
       <section
         aria-label="Indicadores escolares"
-        className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"
+        className="portal-metric-grid grid gap-3 sm:grid-cols-2 xl:grid-cols-4"
       >
         <article className="rounded-lg border border-[#e1e8df] bg-white p-5">
           <p className="text-sm text-[#718179]">Média geral registrada</p>

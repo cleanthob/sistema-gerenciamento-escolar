@@ -41,7 +41,7 @@ export default async function PaymentsPage() {
     .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime())[0];
 
   return (
-    <main className="mx-auto w-full max-w-330 px-4 py-7 sm:px-7 sm:py-9 lg:px-10">
+    <main className="portal-page">
       <header className="mb-7">
         <p className="text-sm font-medium text-[#7a8c83]">Resumo financeiro</p>
         <h1 className="mt-1 text-2xl font-semibold text-[#203b34] sm:text-3xl">
@@ -51,7 +51,7 @@ export default async function PaymentsPage() {
           Mensalidades registradas para sua matrícula.
         </p>
       </header>
-      <section className="grid gap-3 sm:grid-cols-2">
+      <section className="portal-metric-grid grid gap-3 sm:grid-cols-2">
         <article className="rounded-lg border border-[#e1e8df] bg-white p-5">
           <p className="text-sm text-[#718179]">Próximo vencimento</p>
           <p className="mt-3 text-2xl font-semibold text-[#203b34]">

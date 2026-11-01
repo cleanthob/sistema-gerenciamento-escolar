@@ -2,22 +2,22 @@ import { createTheme } from "@mui/material/styles";
 
 export const adminTheme = createTheme({
   palette: {
-    mode: "light",
+    mode: "dark",
     primary: {
-      main: "#174f43",
-      dark: "#103d34",
-      light: "#43806c",
-      contrastText: "#ffffff",
+      main: "#39a0ed",
+      dark: "#2187d0",
+      light: "#75baf2",
+      contrastText: "#071521",
     },
     secondary: {
-      main: "#b65b40",
-      dark: "#873f2c",
-      light: "#d48768",
-      contrastText: "#ffffff",
+      main: "#df896c",
+      dark: "#b8614a",
+      light: "#f0ad91",
+      contrastText: "#20100b",
     },
-    background: { default: "#f3f6ef", paper: "#ffffff" },
-    text: { primary: "#203b34", secondary: "#687b71" },
-    divider: "#e1e8df",
+    background: { default: "#0c141c", paper: "#131e28" },
+    text: { primary: "#e6f0f8", secondary: "#9fb3c3" },
+    divider: "#293b4b",
   },
   shape: { borderRadius: 8 },
   typography: {
@@ -32,24 +32,24 @@ export const adminTheme = createTheme({
   },
   components: {
     MuiCssBaseline: {
-      styleOverrides: { body: { backgroundColor: "#f3f6ef" } },
+      styleOverrides: { body: { backgroundColor: "#0c141c" } },
     },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: "#ffffff",
-          color: "#203b34",
+          backgroundColor: "#111b24",
+          color: "#e6f0f8",
           boxShadow: "none",
-          borderBottom: "1px solid #e1e8df",
+          borderBottom: "1px solid #293b4b",
         },
       },
     },
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: "#ffffff",
-          borderRight: "1px solid #e1e8df",
-          backgroundImage: "linear-gradient(180deg, #ffffff 0%, #fbfcf9 100%)",
+          backgroundColor: "#111b24",
+          borderRight: "1px solid #293b4b",
+          backgroundImage: "none",
           boxSizing: "border-box",
           width: "min(280px, calc(100vw - 1rem))",
         },
@@ -60,7 +60,7 @@ export const adminTheme = createTheme({
         root: {
           backgroundImage: "none",
           boxShadow: "none",
-          border: "1px solid #e1e8df",
+          border: "1px solid #293b4b",
         },
       },
     },
@@ -70,11 +70,11 @@ export const adminTheme = createTheme({
     MuiTableRow: {
       styleOverrides: {
         root: {
-          "&:nth-of-type(even)": { backgroundColor: "#fbfcf9" },
-          "&:hover": { backgroundColor: "#f1f6f0" },
+          "&:nth-of-type(even)": { backgroundColor: "#172431" },
+          "&:hover": { backgroundColor: "#1b3042" },
         },
       },
     },
-    MuiTableCell: { styleOverrides: { root: { borderColor: "#e8ede7" } } },
+    MuiTableCell: { styleOverrides: { root: { borderColor: "#293b4b" } } },
   },
 });

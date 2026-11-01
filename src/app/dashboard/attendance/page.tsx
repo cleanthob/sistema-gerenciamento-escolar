@@ -48,7 +48,7 @@ export default async function AttendancePage() {
   });
 
   return (
-    <main className="mx-auto w-full max-w-330 px-4 py-7 sm:px-7 sm:py-9 lg:px-10">
+    <main className="portal-page">
       <header className="mb-7">
         <p className="text-sm font-medium text-[#7a8c83]">
           Acompanhamento escolar · {student.grade} · Turma {student.className}
@@ -60,7 +60,7 @@ export default async function AttendancePage() {
           Presenças registradas pela escola neste ano letivo.
         </p>
       </header>
-      <section className="grid gap-3 sm:grid-cols-3">
+      <section className="portal-metric-grid grid gap-3 sm:grid-cols-3">
         <article className="rounded-lg border border-[#e1e8df] bg-white p-5">
           <p className="text-sm text-[#718179]">Frequência acumulada</p>
           <p className="mt-3 text-3xl font-semibold text-[#203b34]">

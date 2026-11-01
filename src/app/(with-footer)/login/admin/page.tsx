@@ -1,20 +1,20 @@
 import heroImage from "@/assets/images/hero.jpg";
-import logoImage from "@/assets/images/logo.svg";
+import logoImage from "@/assets/images/school-logo.svg";
 import { StaffLoginForm } from "@/components/pages/login/auth-forms";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Admin() {
   return (
-    <main className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-[#f5f3ed] px-4 py-8 text-[#263c38] before:absolute before:inset-0 before:-z-10 before:bg-[radial-gradient(ellipse_at_90%_8%,rgba(242,133,105,0.2),transparent_34%),radial-gradient(ellipse_at_5%_95%,rgba(221,239,177,0.65),transparent_32%)] sm:px-8">
+    <main className="auth-page relative isolate flex items-center justify-center overflow-hidden text-[#e5eee8]">
       <div className="w-full max-w-5xl">
         <Link
           href="/"
-          className="mb-4 inline-flex min-h-10 items-center text-sm font-medium text-[#687b71] transition-colors hover:text-[#174f43] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#174f43]"
+          className="mb-4 inline-flex min-h-10 items-center text-sm font-medium text-[#a0b2a7] transition-colors hover:text-[#91c6aa] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#63b392]"
         >
           Voltar ao início
         </Link>
-        <section className="grid w-full overflow-hidden rounded-lg border border-[#e7ddd2] bg-white shadow-[0_28px_80px_-42px_rgba(54,57,44,0.35)] md:min-h-[560px] md:grid-cols-[1.05fr_0.95fr]">
+        <section className="auth-panel grid w-full md:min-h-[560px] md:grid-cols-[1.05fr_0.95fr]">
           <div className="relative min-h-44 overflow-hidden bg-[#8d523d] md:min-h-full">
             <Image
               src={heroImage}
@@ -39,26 +39,26 @@ export default function Admin() {
             <Image
               src={logoImage}
               alt="Sistema Escolar"
-              className="mb-10 h-auto w-[132px]"
+              className="mb-10 h-auto w-[160px]"
               priority
             />
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#a46448]">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#f0ad91]">
               Acesso administrativo
             </p>
-            <h1 className="mt-2 text-3xl font-semibold leading-tight text-[#263c38]">
+            <h1 className="mt-2 text-3xl font-semibold leading-tight text-[#e5eee8]">
               Área do professor
             </h1>
-            <p className="mt-2 text-sm leading-6 text-[#727b70]">
+            <p className="mt-2 text-sm leading-6 text-[#a0b2a7]">
               Use seu e-mail institucional para acessar o sistema.
             </p>
 
             <StaffLoginForm />
 
-            <p className="mt-8 border-t border-[#eee9e2] pt-5 text-center text-sm text-[#727b70]">
+            <p className="mt-8 border-t border-[#2b3a31] pt-5 text-center text-sm text-[#a0b2a7]">
               É estudante?{" "}
               <Link
                 href="/login"
-                className="font-semibold text-[#28705b] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#174f43]"
+                className="font-semibold text-[#91c6aa] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#63b392]"
               >
                 Acesse por aqui
               </Link>

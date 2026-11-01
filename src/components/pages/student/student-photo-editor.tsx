@@ -85,9 +85,9 @@ export function StudentPhotoEditor({ name, photoUrl: initialPhotoUrl }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <Avatar className="size-16 border-2 border-white shadow-sm">
+      <Avatar className="size-16 border-2 border-[#293830] shadow-sm">
         {photoUrl ? <AvatarImage src={photoUrl} alt={`Foto de ${name}`} /> : null}
-        <AvatarFallback className="bg-[#e8f1e9] text-base text-[#205b49]">
+        <AvatarFallback className="bg-[#22372c] text-base text-[#b7ddc6]">
           {getInitialsFromName(name)}
         </AvatarFallback>
       </Avatar>
@@ -118,7 +118,7 @@ export function StudentPhotoEditor({ name, photoUrl: initialPhotoUrl }: Props) {
           Remover
         </Button>
       ) : null}
-      <p className="text-center text-xs text-[#718179]">
+      <p className="text-center text-xs text-[#a0b2a7]">
         PNG, JPG ou WebP · máximo de 1 MB
       </p>
       {error ? (

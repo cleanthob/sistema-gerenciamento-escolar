@@ -59,9 +59,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={cn("h-full", "antialiased", "font-sans", nunito.variable)}
     >
-      <body className="flex min-h-screen flex-col">
-        <main>{children}</main>
-      </body>
+      <body className="flex min-h-screen flex-col">{children}</body>
     </html>
   );
 }

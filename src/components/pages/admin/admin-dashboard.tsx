@@ -49,13 +49,13 @@ export default function AdminDashboard() {
           label: "Alunos ativos",
           value: overview.activeStudents,
           note: `${overview.totalStudents} matrículas cadastradas`,
-          color: "#28705b",
+          color: "#39a0ed",
         },
         {
           label: "Equipe ativa",
           value: overview.activeStaff,
           note: `${overview.totalStaff} contas de equipe`,
-          color: "#567b96",
+          color: "#82aeca",
         },
         {
           label: "Frequência registrada",
@@ -64,13 +64,13 @@ export default function AdminDashboard() {
               ? "—"
               : `${overview.attendanceRate}%`,
           note: `${overview.attendanceCount} registros neste ano`,
-          color: "#bb8a38",
+          color: "#e0b45f",
         },
         {
           label: "Contato pendente",
           value: overview.pendingGuardianCalls,
           note: "Responsáveis a contatar",
-          color: "#b65b40",
+          color: "#df896c",
         },
       ]
     : [];
@@ -80,19 +80,19 @@ export default function AdminDashboard() {
           label: "Contato com responsáveis pendente",
           count: overview.pendingGuardianCalls,
           note: "Ocorrências que exigem contato",
-          color: "#b65b40",
+          color: "#df896c",
         },
         {
           label: "Faltas de hoje",
           count: overview.absentToday,
           note: "Registros de ausência",
-          color: "#bb8a38",
+          color: "#e0b45f",
         },
         {
           label: "Mensalidades vencidas",
           count: overview.overduePayments,
           note: "Pendentes após o vencimento",
-          color: "#567b96",
+          color: "#82aeca",
         },
       ]
     : [];
@@ -111,9 +111,9 @@ export default function AdminDashboard() {
         sx={{
           px: { xs: 2.5, sm: 3, lg: 4 },
           py: { xs: 3, sm: 4 },
-          bgcolor: "#174f43",
+          bgcolor: "#172b3b",
           color: "#fff",
-          borderBottom: "4px solid #c16a4b",
+          borderBottom: "4px solid #df896c",
         }}
       >
         <Stack
@@ -130,7 +130,7 @@ export default function AdminDashboard() {
             <Typography
               variant="overline"
               sx={{
-                color: "#d4e5d9",
+                color: "#b8ddf8",
                 fontWeight: 700,
                 letterSpacing: "0.14em",
               }}
@@ -145,7 +145,7 @@ export default function AdminDashboard() {
             >
               Resumo da escola
             </Typography>
-            <Typography variant="body2" sx={{ mt: 1, color: "#d4e5d9" }}>
+            <Typography variant="body2" sx={{ mt: 1, color: "#b8ddf8" }}>
               Indicadores calculados a partir dos registros do banco.
             </Typography>
           </Box>
@@ -175,8 +175,8 @@ export default function AdminDashboard() {
               xs: "repeat(2, minmax(0, 1fr))",
               lg: "repeat(4, minmax(0, 1fr))",
             },
-            bgcolor: "#fff",
-            border: "1px solid #e1e8df",
+            bgcolor: "#131e28",
+            border: "1px solid #293b4b",
             borderRadius: 1,
           }}
         >
@@ -189,11 +189,11 @@ export default function AdminDashboard() {
                   px: { xs: 2, sm: 2.5 },
                   py: 2.5,
                   borderRight: {
-                    xs: index % 2 === 0 ? "1px solid #e8ede7" : "none",
-                    lg: index < cards.length - 1 ? "1px solid #e8ede7" : "none",
+                    xs: index % 2 === 0 ? "1px solid #293b4b" : "none",
+                    lg: index < cards.length - 1 ? "1px solid #293b4b" : "none",
                   },
                   borderBottom: {
-                    xs: index < 2 ? "1px solid #e8ede7" : "none",
+                    xs: index < 2 ? "1px solid #293b4b" : "none",
                     lg: "none",
                   },
                 }}
@@ -267,7 +267,7 @@ export default function AdminDashboard() {
                 <Typography
                   variant="overline"
                   sx={{
-                    color: "#b65b40",
+                    color: "#df896c",
                     fontWeight: 700,
                     letterSpacing: "0.12em",
                   }}
@@ -277,14 +277,14 @@ export default function AdminDashboard() {
                 <Typography
                   id="attendance-title"
                   variant="h6"
-                  sx={{ color: "#203b34", fontWeight: 700 }}
+                  sx={{ color: "#e5eee8", fontWeight: 700 }}
                 >
                   Frequência por mês
                 </Typography>
               </Box>
               <Typography variant="body2" color="text.secondary">
                 Média atual{" "}
-                <Box component="strong" sx={{ color: "#174f43", ml: 0.5 }}>
+                <Box component="strong" sx={{ color: "#39a0ed", ml: 0.5 }}>
                   {overview?.attendanceRate == null
                     ? "—"
                     : `${overview.attendanceRate}%`}
@@ -293,9 +293,9 @@ export default function AdminDashboard() {
             </Stack>
             <Box
               sx={{
-                border: "1px solid #e1e8df",
+                border: "1px solid #293b4b",
                 borderRadius: 1,
-                bgcolor: "#fff",
+                bgcolor: "#131e28",
                 p: { xs: 2, sm: 3 },
               }}
             >
@@ -309,7 +309,7 @@ export default function AdminDashboard() {
                     alignItems: "end",
                     gap: 1,
                     height: { xs: 220, sm: 270 },
-                    borderBottom: "1px solid #e5ebe4",
+                    borderBottom: "1px solid #293b4b",
                     pt: 2,
                   }}
                 >
@@ -326,7 +326,7 @@ export default function AdminDashboard() {
                     >
                       <Typography
                         variant="caption"
-                        sx={{ color: "#657970", fontSize: 11, fontWeight: 700 }}
+                        sx={{ color: "#a0b2a7", fontSize: 11, fontWeight: 700 }}
                       >
                         {item.value === null ? "—" : `${item.value}%`}
                       </Typography>
@@ -337,11 +337,11 @@ export default function AdminDashboard() {
                             item.value === null
                               ? 2
                               : `${Math.max(item.value, 2)}%`,
-                          bgcolor: item.value === null ? "#e8ede7" : "#78a48e",
+                          bgcolor: item.value === null ? "#293b4b" : "#39a0ed",
                           borderRadius: "4px 4px 0 0",
                         }}
                       />
-                      <Typography variant="caption" sx={{ color: "#82918a" }}>
+                      <Typography variant="caption" sx={{ color: "#a0b2a7" }}>
                         {item.month}
                       </Typography>
                     </Stack>
@@ -366,7 +366,7 @@ export default function AdminDashboard() {
               <Typography
                 variant="overline"
                 sx={{
-                  color: "#b65b40",
+                  color: "#df896c",
                   fontWeight: 700,
                   letterSpacing: "0.12em",
                 }}
@@ -376,7 +376,7 @@ export default function AdminDashboard() {
               <Typography
                 id="followups-title"
                 variant="h6"
-                sx={{ mb: 1.5, color: "#203b34", fontWeight: 700 }}
+                sx={{ mb: 1.5, color: "#e5eee8", fontWeight: 700 }}
               >
                 Itens para revisar
               </Typography>
@@ -384,8 +384,8 @@ export default function AdminDashboard() {
                 divider={<Divider flexItem />}
                 sx={{
                   borderTop: "1px solid #e1e8df",
-                  borderBottom: "1px solid #e1e8df",
-                  bgcolor: "#fff",
+                  borderBottom: "1px solid #293b4b",
+                  bgcolor: "#131e28",
                   px: 2,
                 }}
               >
@@ -407,7 +407,7 @@ export default function AdminDashboard() {
                     <Box sx={{ minWidth: 0, flex: 1 }}>
                       <Typography
                         variant="body2"
-                        sx={{ color: "#29483e", fontWeight: 700 }}
+                        sx={{ color: "#dce8df", fontWeight: 700 }}
                       >
                         {item.label}
                       </Typography>
@@ -433,7 +433,7 @@ export default function AdminDashboard() {
             <Typography
               variant="overline"
               sx={{
-                color: "#b65b40",
+                color: "#df896c",
                 fontWeight: 700,
                 letterSpacing: "0.12em",
               }}
@@ -443,7 +443,7 @@ export default function AdminDashboard() {
             <Typography
               id="schedule-title"
               variant="h6"
-              sx={{ color: "#203b34", fontWeight: 700 }}
+              sx={{ color: "#e5eee8", fontWeight: 700 }}
             >
               Aulas de hoje
             </Typography>
@@ -464,13 +464,13 @@ export default function AdminDashboard() {
                   spacing={1.5}
                   sx={{
                     py: 2,
-                    borderBottom: "1px solid #e1e8df",
+                    borderBottom: "1px solid #2b3a31",
                     alignItems: "flex-start",
                   }}
                 >
                   <Box sx={{ width: 46, flexShrink: 0, pt: 0.25 }}>
                     <Typography
-                      sx={{ color: "#52685e", fontSize: 12, fontWeight: 700 }}
+                      sx={{ color: "#a0b2a7", fontSize: 12, fontWeight: 700 }}
                     >
                       {new Intl.DateTimeFormat("pt-BR", {
                         timeStyle: "short",
@@ -481,14 +481,14 @@ export default function AdminDashboard() {
                     sx={{
                       width: 3,
                       flexShrink: 0,
-                      bgcolor: "#28705b",
+                      bgcolor: "#39a0ed",
                       borderRadius: 2,
                     }}
                   />
                   <Box sx={{ minWidth: 0 }}>
                     <Typography
                       variant="body2"
-                      sx={{ color: "#29483e", fontWeight: 700 }}
+                      sx={{ color: "#dce8df", fontWeight: 700 }}
                     >
                       {item.subject}
                     </Typography>
@@ -511,20 +511,20 @@ export default function AdminDashboard() {
                 mt: 3,
                 p: 2,
                 borderLeft: "3px solid #c16a4b",
-                bgcolor: "#fff4ef",
+                bgcolor: "#3a241e",
               }}
             >
               <Typography
                 variant="caption"
                 sx={{
-                  color: "#9b5038",
+                  color: "#f0ad91",
                   fontWeight: 700,
                   letterSpacing: "0.08em",
                 }}
               >
                 ORIGEM DOS DADOS
               </Typography>
-              <Typography variant="body2" sx={{ mt: 0.5, color: "#704b3e" }}>
+              <Typography variant="body2" sx={{ mt: 0.5, color: "#d7a28e" }}>
                 Indicadores calculados a partir dos registros atuais do banco
                 escolar.
               </Typography>

@@ -25,7 +25,7 @@ export default async function ClassesPage() {
   );
 
   return (
-    <main className="mx-auto w-full max-w-330 px-4 py-7 sm:px-7 sm:py-9 lg:px-10">
+    <main className="portal-page">
       <header className="mb-7">
         <p className="text-sm font-medium text-[#7a8c83]">
           Agenda escolar · {student.grade} · Turma {student.className}

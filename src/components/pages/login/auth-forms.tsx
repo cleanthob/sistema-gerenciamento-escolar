@@ -33,7 +33,7 @@ type ChangePasswordFields = z.infer<typeof passwordChangeSchema>;
 function FormError({ children }: { children?: string }) {
   if (!children) return null;
   return (
-    <p role="alert" className="text-sm text-[#a23e30]">
+    <p role="alert" className="text-sm text-[#f28b82]">
       {children}
     </p>
   );
@@ -82,11 +82,11 @@ export function StudentLoginForm() {
   } = form;
 
   return (
-    <form onSubmit={submit} noValidate className="mt-8 space-y-5">
+    <form onSubmit={submit} noValidate className="auth-form mt-8 space-y-5">
       <div className="space-y-2">
         <label
           htmlFor="student-id"
-          className="text-sm font-medium text-[#294b42]"
+          className="text-sm font-medium text-[#dce8df]"
         >
           Matrícula ou e-mail
         </label>
@@ -95,7 +95,7 @@ export function StudentLoginForm() {
           autoComplete="username"
           placeholder="Digite sua matrícula"
           aria-invalid={Boolean(errors.identifier)}
-          className="h-12 rounded-md border-[#d6e1d8] bg-[#fbfcf9] px-4 text-sm"
+          className="h-12 rounded-md border-[#34463a] bg-[#0e1922] px-4 text-sm"
           {...register("identifier")}
         />
         <FormError>{errors.identifier?.message}</FormError>
@@ -103,7 +103,7 @@ export function StudentLoginForm() {
       <div className="space-y-2">
         <label
           htmlFor="student-password"
-          className="text-sm font-medium text-[#294b42]"
+          className="text-sm font-medium text-[#dce8df]"
         >
           Senha
         </label>
@@ -113,7 +113,7 @@ export function StudentLoginForm() {
           autoComplete="current-password"
           placeholder="Digite sua senha"
           aria-invalid={Boolean(errors.password)}
-          className="h-12 rounded-md border-[#d6e1d8] bg-[#fbfcf9] px-4 text-sm"
+          className="h-12 rounded-md border-[#34463a] bg-[#0e1922] px-4 text-sm"
           {...register("password")}
         />
         <FormError>{errors.password?.message}</FormError>
@@ -121,7 +121,7 @@ export function StudentLoginForm() {
       <div className="flex justify-end">
         <a
           href="/login/forgot-password"
-          className="text-sm font-medium text-[#28705b] underline-offset-4 hover:text-[#174f43] hover:underline"
+          className="text-sm font-medium text-[#91c6aa] underline-offset-4 hover:text-[#b7ddc6] hover:underline"
         >
           Esqueci minha senha
         </a>
@@ -130,7 +130,7 @@ export function StudentLoginForm() {
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="h-12 w-full rounded-md bg-[#174f43] text-sm font-semibold text-white hover:bg-[#103d34]"
+        className="h-12 w-full rounded-md bg-[#63b392] text-sm font-semibold text-[#0d1913] hover:bg-[#91c6aa]"
       >
         {isSubmitting ? "Entrando..." : "Entrar"}
       </Button>
@@ -146,11 +146,11 @@ export function StaffLoginForm() {
   } = form;
 
   return (
-    <form onSubmit={submit} noValidate className="mt-8 space-y-5">
+    <form onSubmit={submit} noValidate className="auth-form mt-8 space-y-5">
       <div className="space-y-2">
         <label
           htmlFor="staff-email"
-          className="text-sm font-medium text-[#394e45]"
+          className="text-sm font-medium text-[#dce8df]"
         >
           E-mail institucional
         </label>
@@ -160,7 +160,7 @@ export function StaffLoginForm() {
           autoComplete="username"
           placeholder="nome@escola.edu.br"
           aria-invalid={Boolean(errors.identifier)}
-          className="h-12 rounded-md border-[#e5ddd4] bg-[#fcfaf7] px-4 text-sm"
+          className="h-12 rounded-md border-[#34463a] bg-[#0e1922] px-4 text-sm"
           {...register("identifier")}
         />
         <FormError>{errors.identifier?.message}</FormError>
@@ -168,7 +168,7 @@ export function StaffLoginForm() {
       <div className="space-y-2">
         <label
           htmlFor="staff-password"
-          className="text-sm font-medium text-[#394e45]"
+          className="text-sm font-medium text-[#dce8df]"
         >
           Senha
         </label>
@@ -178,7 +178,7 @@ export function StaffLoginForm() {
           autoComplete="current-password"
           placeholder="Digite sua senha"
           aria-invalid={Boolean(errors.password)}
-          className="h-12 rounded-md border-[#e5ddd4] bg-[#fcfaf7] px-4 text-sm"
+          className="h-12 rounded-md border-[#34463a] bg-[#0e1922] px-4 text-sm"
           {...register("password")}
         />
         <FormError>{errors.password?.message}</FormError>
@@ -187,7 +187,7 @@ export function StaffLoginForm() {
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="h-12 w-full rounded-md bg-[#a45137] text-sm font-semibold text-white hover:bg-[#873f2c]"
+        className="h-12 w-full rounded-md bg-[#df896c] text-sm font-semibold text-[#20100b] hover:bg-[#f0ad91]"
       >
         {isSubmitting ? "Entrando..." : "Entrar no painel"}
       </Button>
@@ -229,11 +229,11 @@ export function StudentChangePasswordForm() {
   });
 
   return (
-    <form onSubmit={submit} noValidate className="mt-7 space-y-5">
+    <form onSubmit={submit} noValidate className="auth-form mt-7 space-y-5">
       <div className="space-y-2">
         <label
           htmlFor="current-password"
-          className="text-sm font-medium text-[#294b42]"
+          className="text-sm font-medium text-[#dce8df]"
         >
           Senha temporária atual
         </label>
@@ -241,7 +241,7 @@ export function StudentChangePasswordForm() {
           id="current-password"
           type="password"
           autoComplete="current-password"
-          className="h-12 rounded-md border-[#d6e1d8] bg-[#fbfcf9] px-4"
+          className="h-12 rounded-md border-[#34463a] bg-[#0e1922] px-4"
           {...register("currentPassword")}
         />
         <FormError>{errors.currentPassword?.message}</FormError>
@@ -249,7 +249,7 @@ export function StudentChangePasswordForm() {
       <div className="space-y-2">
         <label
           htmlFor="new-password"
-          className="text-sm font-medium text-[#294b42]"
+          className="text-sm font-medium text-[#dce8df]"
         >
           Nova senha
         </label>
@@ -257,7 +257,7 @@ export function StudentChangePasswordForm() {
           id="new-password"
           type="password"
           autoComplete="new-password"
-          className="h-12 rounded-md border-[#d6e1d8] bg-[#fbfcf9] px-4"
+          className="h-12 rounded-md border-[#34463a] bg-[#0e1922] px-4"
           {...register("newPassword")}
         />
         <FormError>{errors.newPassword?.message}</FormError>
@@ -265,7 +265,7 @@ export function StudentChangePasswordForm() {
       <div className="space-y-2">
         <label
           htmlFor="confirm-password"
-          className="text-sm font-medium text-[#294b42]"
+          className="text-sm font-medium text-[#dce8df]"
         >
           Confirme a nova senha
         </label>
@@ -273,7 +273,7 @@ export function StudentChangePasswordForm() {
           id="confirm-password"
           type="password"
           autoComplete="new-password"
-          className="h-12 rounded-md border-[#d6e1d8] bg-[#fbfcf9] px-4"
+          className="h-12 rounded-md border-[#34463a] bg-[#0e1922] px-4"
           {...register("confirmation")}
         />
         <FormError>{errors.confirmation?.message}</FormError>
@@ -282,7 +282,7 @@ export function StudentChangePasswordForm() {
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="h-12 w-full rounded-md bg-[#174f43] text-sm font-semibold text-white hover:bg-[#103d34]"
+        className="h-12 w-full rounded-md bg-[#63b392] text-sm font-semibold text-[#0d1913] hover:bg-[#91c6aa]"
       >
         {isSubmitting ? "Salvando..." : "Salvar nova senha"}
       </Button>

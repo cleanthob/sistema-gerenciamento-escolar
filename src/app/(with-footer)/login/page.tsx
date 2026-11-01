@@ -1,21 +1,21 @@
 import heroImage from "@/assets/images/hero.jpg";
-import logoImage from "@/assets/images/logo.svg";
+import logoImage from "@/assets/images/school-logo.svg";
 import { StudentLoginForm } from "@/components/pages/login/auth-forms";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Login() {
   return (
-    <main className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-[#f3f6ef] px-4 py-8 text-[#183b35] before:absolute before:inset-0 before:-z-10 before:bg-[radial-gradient(ellipse_at_10%_10%,rgba(221,239,177,0.7),transparent_35%),radial-gradient(ellipse_at_95%_90%,rgba(242,133,105,0.18),transparent_30%)] sm:px-8">
+    <main className="auth-page relative isolate flex items-center justify-center overflow-hidden text-[#e5eee8]">
       <div className="w-full max-w-5xl">
         <Link
           href="/"
-          className="mb-4 inline-flex min-h-10 items-center text-sm font-medium text-[#527068] transition-colors hover:text-[#174f43] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#174f43]"
+          className="mb-4 inline-flex min-h-10 items-center text-sm font-medium text-[#a0b2a7] transition-colors hover:text-[#91c6aa] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#63b392]"
         >
           Voltar ao início
         </Link>
-        <section className="grid w-full overflow-hidden rounded-lg border border-[#dce6dc] bg-white shadow-[0_28px_80px_-42px_rgba(24,59,53,0.45)] md:min-h-[560px] md:grid-cols-[1.05fr_0.95fr]">
-          <div className="relative min-h-44 overflow-hidden bg-[#174f43] md:min-h-full">
+        <section className="auth-panel grid w-full md:min-h-[560px] md:grid-cols-[1.05fr_0.95fr]">
+          <div className="relative min-h-44 overflow-hidden bg-[#172b3b] md:min-h-full">
             <Image
               src={heroImage}
               alt="Materiais escolares sobre uma mesa de estudos"
@@ -39,26 +39,26 @@ export default function Login() {
             <Image
               src={logoImage}
               alt="Sistema Escolar"
-              className="mb-10 h-auto w-[132px]"
+              className="mb-10 h-auto w-[160px]"
               priority
             />
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#648177]">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#91c6aa]">
               Acesso do estudante
             </p>
-            <h1 className="mt-2 text-3xl font-semibold leading-tight text-[#183b35]">
+            <h1 className="mt-2 text-3xl font-semibold leading-tight text-[#e5eee8]">
               Que bom ter você aqui.
             </h1>
-            <p className="mt-2 text-sm leading-6 text-[#647b73]">
+            <p className="mt-2 text-sm leading-6 text-[#a0b2a7]">
               Entre com seus dados escolares para continuar.
             </p>
 
             <StudentLoginForm />
 
-            <p className="mt-8 border-t border-[#e7ede7] pt-5 text-center text-sm text-[#647b73]">
+            <p className="mt-8 border-t border-[#2b3a31] pt-5 text-center text-sm text-[#a0b2a7]">
               Acesso administrativo?{" "}
               <Link
                 href="/login/admin"
-                className="font-semibold text-[#28705b] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#174f43]"
+                className="font-semibold text-[#91c6aa] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#63b392]"
               >
                 Entrar como professor
               </Link>
