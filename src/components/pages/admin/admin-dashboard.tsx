@@ -470,15 +470,15 @@ export default function AdminDashboard() {
                   variant="h6"
                   sx={{ color: "#e5eee8", fontWeight: 700 }}
                 >
-                  Frequência por mês
+                  Frequência mensal · {today.getFullYear()}
                 </Typography>
                 <Typography
                   variant="body2"
                   color="text.secondary"
                   sx={{ mt: 0.5 }}
                 >
-                  Percentual de presenças e atrasos. Faltas justificadas não
-                  entram no cálculo.
+                  Cada barra mostra a frequência do mês em uma escala de 0% a
+                  100%. Faltas justificadas não entram no cálculo.
                 </Typography>
               </Box>
             </Stack>
@@ -490,177 +490,110 @@ export default function AdminDashboard() {
                 p: { xs: 2, sm: 3 },
               }}
             >
-              {overview?.months.some((month) => month.value !== null) ? (
+              {overview ? (
                 <Box
-                  role="img"
-                  aria-label={`Frequência mensal dos últimos seis meses. ${overview.months
-                    .map((item) =>
-                      item.value === null
-                        ? `${item.month}: sem registros`
-                        : `${item.month}: ${item.value}% em ${item.records} registros`,
-                    )
-                    .join("; ")}.`}
+                  component="ul"
+                  aria-label={`Frequência mensal de janeiro a dezembro de ${today.getFullYear()}`}
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: {
+                      xs: "repeat(2, minmax(0, 1fr))",
+                      sm: "repeat(3, minmax(0, 1fr))",
+                      lg: "repeat(4, minmax(0, 1fr))",
+                    },
+                    gap: { xs: 1, sm: 1.5 },
+                    m: 0,
+                    p: 0,
+                    listStyle: "none",
+                  }}
                 >
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: "36px minmax(0, 1fr)",
-                      gap: 1,
-                      height: { xs: 210, sm: 250 },
-                    }}
-                  >
-                    <Stack
-                      sx={{
-                        height: "100%",
-                        pb: 0.5,
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      {[100, 75, 50, 25, 0].map((tick) => (
-                        <Typography
-                          key={tick}
-                          variant="caption"
-                          sx={{
-                            color: "#9fb3c3",
-                            fontSize: { xs: 10, sm: 11 },
-                            lineHeight: 1,
-                          }}
-                        >
-                          {tick}%
-                        </Typography>
-                      ))}
-                    </Stack>
+                  {overview.months.map((item, index) => (
                     <Box
+                      component="li"
+                      key={`${item.month}-${index}`}
                       sx={{
-                        position: "relative",
                         minWidth: 0,
-                        height: "100%",
-                        borderBottom: "1px solid #526b80",
-                        background:
-                          "repeating-linear-gradient(to bottom, #344c60 0, #344c60 1px, transparent 1px, transparent 25%)",
+                        p: { xs: 1.25, sm: 1.75 },
+                        border: "1px solid #293b4b",
+                        borderRadius: 1.25,
+                        bgcolor: "#0f1922",
                       }}
                     >
-                      <Box
+                      <Stack
+                        direction="row"
                         sx={{
-                          position: "absolute",
-                          inset: 0,
-                          display: "grid",
-                          gridTemplateColumns: `repeat(${overview.months.length}, minmax(0, 1fr))`,
-                          gap: { xs: 0.5, sm: 1 },
-                          px: { xs: 0.25, sm: 1 },
+                          justifyContent: "space-between",
+                          alignItems: "baseline",
+                          gap: 1,
+                          mb: 1.25,
                         }}
                       >
-                        {overview.months.map((item, index) => (
-                          <Box
-                            key={`${item.month}-${index}`}
-                            sx={{
-                              position: "relative",
-                              minWidth: 0,
-                              height: "100%",
-                            }}
-                          >
-                            {item.value !== null ? (
-                              <>
-                                <Typography
-                                  variant="caption"
-                                  sx={{
-                                    position: "absolute",
-                                    left: "50%",
-                                    bottom: `calc(${item.value}% + 12px)`,
-                                    transform: "translate(-50%, 50%)",
-                                    color: "#e6f0f8",
-                                    fontSize: { xs: 10, sm: 11 },
-                                    fontWeight: 700,
-                                    whiteSpace: "nowrap",
-                                  }}
-                                >
-                                  {item.value}%
-                                </Typography>
-                                <Box
-                                  sx={{
-                                    position: "absolute",
-                                    bottom: 0,
-                                    left: "50%",
-                                    transform: "translateX(-50%)",
-                                    width: "min(68%, 38px)",
-                                    height: `${item.value}%`,
-                                    minHeight: 2,
-                                    borderRadius: "4px 4px 0 0",
-                                    background:
-                                      "linear-gradient(180deg, #75baf2 0%, #39a0ed 100%)",
-                                    boxShadow: "0 0 16px rgb(57 160 237 / 18%)",
-                                  }}
-                                />
-                              </>
-                            ) : (
-                              <Typography
-                                variant="caption"
-                                sx={{
-                                  position: "absolute",
-                                  left: "50%",
-                                  bottom: 6,
-                                  transform: "translateX(-50%)",
-                                  color: "#9fb3c3",
-                                  fontSize: 10,
-                                }}
-                              >
-                                —
-                              </Typography>
-                            )}
-                          </Box>
-                        ))}
-                      </Box>
-                    </Box>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: "36px minmax(0, 1fr)",
-                      gap: 1,
-                      mt: 2,
-                    }}
-                  >
-                    <Box />
-                    <Box
-                      sx={{
-                        display: "grid",
-                        gridTemplateColumns: `repeat(${overview.months.length}, minmax(0, 1fr))`,
-                        gap: { xs: 0.5, sm: 1 },
-                        px: { xs: 0.25, sm: 1 },
-                      }}
-                    >
-                      {overview.months.map((item, index) => (
-                        <Stack
-                          key={`${item.month}-label-${index}`}
-                          spacing={0.25}
-                          sx={{ minWidth: 0, alignItems: "center" }}
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "#dce8f1",
+                            fontWeight: 600,
+                            textTransform: "capitalize",
+                          }}
                         >
-                          <Typography
-                            variant="caption"
+                          {item.month.replace(".", "")}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: item.value === null ? "#71879a" : "#75baf2",
+                            fontWeight: 700,
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {item.value === null ? "—" : `${item.value}%`}
+                        </Typography>
+                      </Stack>
+                      <Box
+                        role={item.value === null ? undefined : "progressbar"}
+                        aria-label={
+                          item.value === null
+                            ? undefined
+                            : `Frequência em ${item.month}`
+                        }
+                        aria-valuemin={item.value === null ? undefined : 0}
+                        aria-valuemax={item.value === null ? undefined : 100}
+                        aria-valuenow={item.value ?? undefined}
+                        sx={{
+                          height: 8,
+                          overflow: "hidden",
+                          borderRadius: 999,
+                          bgcolor: "#293b4b",
+                        }}
+                      >
+                        {item.value !== null ? (
+                          <Box
                             sx={{
-                              color: "#dce8f1",
-                              fontSize: { xs: 10, sm: 12 },
-                              fontWeight: 600,
-                              textTransform: "capitalize",
+                              width: `${item.value}%`,
+                              height: "100%",
+                              borderRadius: 999,
+                              bgcolor: "#39a0ed",
+                              transition: "width 250ms ease",
                             }}
-                          >
-                            {item.month.replace(".", "")}
-                          </Typography>
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              color: "#9fb3c3",
-                              fontSize: { xs: 9, sm: 10 },
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {item.records}{" "}
-                            {item.records === 1 ? "registro" : "registros"}
-                          </Typography>
-                        </Stack>
-                      ))}
+                          />
+                        ) : null}
+                      </Box>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          display: "block",
+                          mt: 0.75,
+                          color: "#9fb3c3",
+                        }}
+                      >
+                        {item.value === null
+                          ? "Sem dados"
+                          : `${formatCount(item.records)} ${
+                              item.records === 1 ? "registro" : "registros"
+                            }`}
+                      </Typography>
                     </Box>
-                  </Box>
+                  ))}
                 </Box>
               ) : (
                 <Typography

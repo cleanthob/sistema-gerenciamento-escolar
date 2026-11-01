@@ -51,7 +51,7 @@ export async function GET() {
       },
     }),
     prisma.attendance.findMany({
-      where: { date: { gte: schoolYearStart } },
+      where: { date: { gte: schoolYearStart, lt: tomorrow } },
       select: { date: true, status: true },
     }),
     prisma.grade.findMany({ select: { score: true, maxScore: true } }),
@@ -94,8 +94,8 @@ export async function GET() {
         0,
       ) / gradeRows.length
     : null;
-  const months = Array.from({ length: 6 }, (_, index) => {
-    const date = new Date(now.getFullYear(), now.getMonth() - 5 + index, 1);
+  const months = Array.from({ length: 12 }, (_, index) => {
+    const date = new Date(now.getFullYear(), index, 1);
     const rows = attendanceRows.filter(
       (record) =>
         record.date.getFullYear() === date.getFullYear() &&
