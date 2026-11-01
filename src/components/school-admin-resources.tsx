@@ -490,7 +490,7 @@ export function StudentList() {
 
 export function StudentCreate() {
   return (
-    <Create title="Cadastrar aluno">
+    <Create title="Cadastrar aluno" redirect="list">
       <AdminForm>
         <StudentPhotoInput />
         <TextInput
@@ -934,7 +934,7 @@ function StudentReference() {
 
 export function AttendanceCreate() {
   return (
-    <Create title="Registrar presença">
+    <Create title="Registrar presença" redirect="list">
       <AdminForm>
         <StudentReference />
         <DateInput source="date" label="Data" validate={required()} />
@@ -1041,7 +1041,7 @@ function contactLabel(status: string) {
 
 export function IncidentCreate() {
   return (
-    <Create title="Registrar ocorrência">
+    <Create title="Registrar ocorrência" redirect="list">
       <AdminForm>
         <StudentReference />
         <SelectInput
@@ -1177,7 +1177,7 @@ function paymentLabel(status: string) {
 
 export function PaymentCreate() {
   return (
-    <Create title="Registrar mensalidade">
+    <Create title="Registrar mensalidade" redirect="list">
       <AdminForm>
         <StudentReference />
         <NumberInput
@@ -1219,7 +1219,7 @@ export function GradeList() {
 
 export function GradeCreate() {
   return (
-    <Create title="Lançar nota">
+    <Create title="Lançar nota" redirect="list">
       <AdminForm>
         <StudentReference />
         <TextInput source="subject" label="Disciplina" validate={required()} />
@@ -1271,7 +1271,7 @@ export function LessonList() {
 
 export function LessonCreate() {
   return (
-    <Create title="Programar aula">
+    <Create title="Programar aula" redirect="list">
       <AdminForm>
         <StudentReference />
         <TextInput source="subject" label="Disciplina" validate={required()} />
