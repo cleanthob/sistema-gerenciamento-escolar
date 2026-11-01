@@ -571,7 +571,12 @@ export function StudentEdit() {
           label="Matrícula"
           validate={required()}
         />
-        <DateField source="createdAt" label="Inscrição na escola" />
+        <DateInput
+          source="createdAt"
+          label="Inscrição na escola"
+          validate={required()}
+          helperText="A data controla a partir de quando os registros do(a) aluno(a) podem ser feitos."
+        />
         <TextInput source="email" label="E-mail do(a) aluno(a)" type="email" />
         <TextInput source="grade" label="Ano escolar" validate={required()} />
         <TextInput source="className" label="Turma" validate={required()} />

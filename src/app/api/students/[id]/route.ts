@@ -111,6 +111,7 @@ export async function PATCH(request: Request, { params }: Context) {
         guardianPhone: true,
         guardianEmail: true,
         mustChangePassword: true,
+        createdAt: true,
       },
     });
     return NextResponse.json({ data: student });

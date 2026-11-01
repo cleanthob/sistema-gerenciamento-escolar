@@ -68,6 +68,7 @@ export const updateStudentSchema = z
     grade: z.string().trim().min(1).max(30).optional(),
     className: z.string().trim().min(1).max(30).optional(),
     status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
+    createdAt: z.coerce.date().optional(),
     guardianName: z.string().trim().min(3).max(120).optional(),
     guardianPhone: phoneSchema.optional(),
     guardianEmail: optionalEmail,
