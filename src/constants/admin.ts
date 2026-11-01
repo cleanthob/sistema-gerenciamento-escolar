@@ -3,6 +3,7 @@ import {
   Calendar03Icon,
   ChartColumnIcon,
   Home01Icon,
+  AccessIcon,
   UserGroupIcon,
   UserMultipleIcon,
   Wallet01Icon,
@@ -21,6 +22,12 @@ export const navigationAdminPage = [
     description: "Acompanhe os principais indicadores e informações da escola.",
     href: "/",
     icon: Home01Icon,
+  },
+  {
+    label: "Controle de entrada",
+    description: "Verifique se o aluno está liberado para entrar na escola.",
+    href: "/entry-check",
+    icon: AccessIcon,
   },
   {
     label: "Equipe escolar",
