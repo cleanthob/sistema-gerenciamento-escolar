@@ -291,7 +291,7 @@
     border-radius: 0.5rem;
     background: #0e1922;
     color: var(--foreground);
-    transition: border-color 140ms ease, box-shadow 140ms ease;
+    transition: border-color 140ms ease, box-shadow 140ms ease, scale 140ms ease;
   }
 
   .auth-form {

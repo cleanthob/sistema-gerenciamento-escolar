@@ -32,6 +32,7 @@ import {
   toSchoolDateTimeInputValue,
 } from "@/lib/date-format";
 import {
+  AutocompleteInput,
   BooleanField,
   BooleanInput,
   Create,
@@ -1067,11 +1068,13 @@ function StudentReference() {
       perPage={100}
       sort={{ field: "name", order: "ASC" }}
     >
-      <SelectInput
+      <AutocompleteInput
         optionText="name"
+        filterToQuery={(searchText) => ({ q: searchText })}
         validate={required()}
         fullWidth
         label="Aluno(a)"
+        noOptionsText="Nenhum(a) aluno(a) encontrado(a)"
       />
     </ReferenceInput>
   );
