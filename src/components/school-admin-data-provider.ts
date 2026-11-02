@@ -185,7 +185,7 @@ async function updateRecord(
   if (!endpoint) throw new Error(`Recurso desconhecido: ${resource}`);
   const url =
     resource === "payments"
-      ? `${endpoint}?id=${encodeURIComponent(String(id))}`
+      ? `${endpoint}/${encodeURIComponent(String(id))}`
       : `${endpoint}/${encodeURIComponent(String(id))}`;
   return request<{ data: RaRecord }>(url, {
     method: "PATCH",

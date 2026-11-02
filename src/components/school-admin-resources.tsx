@@ -230,6 +230,12 @@ const studentStatusChoices = [
   { id: "INACTIVE", name: "Inativo" },
 ];
 
+const paymentStatusChoices = [
+  { id: "PENDING", name: "Pendente" },
+  { id: "PAID", name: "Pago" },
+  { id: "WAIVED", name: "Dispensado" },
+];
+
 const formStyles = {
   "& > .MuiStack-root": {
     display: "grid",
@@ -1276,7 +1282,7 @@ export function PaymentList() {
       filters={searchFilters("Buscar por aluno(a) ou matrícula")}
       sx={listStyles}
     >
-      <Datagrid bulkActionButtons={false} sx={gridStyles}>
+      <Datagrid rowClick="edit" bulkActionButtons={false} sx={gridStyles}>
         <TextField source="student.name" label="Aluno(a)" />
         <TextField source="student.registration" label="Matrícula" />
         <NumberField source="amount" label="Valor (centavos)" />
@@ -1298,6 +1304,7 @@ export function PaymentList() {
             />
           )}
         />
+        <EditButton />
       </Datagrid>
     </List>
   );
@@ -1311,6 +1318,35 @@ function paymentLabel(status: string) {
         string
       >
     )[status] ?? status
+  );
+}
+
+export function PaymentEdit() {
+  return (
+    <Edit title="Editar mensalidade" sx={formPageStyles}>
+      <AdminForm>
+        <StudentReference />
+        <NumberInput
+          source="amount"
+          label="Valor em centavos"
+          min={1}
+          validate={required()}
+          helperText="Informe o valor como inteiro em centavos."
+        />
+        <CalendarDateInput
+          source="dueDate"
+          label="Vencimento"
+          requiredField
+        />
+        <SelectInput
+          source="status"
+          label="Situação"
+          validate={required()}
+          choices={paymentStatusChoices}
+        />
+        <TextInput source="reference" label="Referência" />
+      </AdminForm>
+    </Edit>
   );
 }
 

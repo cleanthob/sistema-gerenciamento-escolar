@@ -15,9 +15,17 @@ const createPaymentSchema = z.object({
   dueDate: z.coerce.date(),
   reference: z.string().trim().max(100).optional(),
 });
-const updatePaymentSchema = z.object({
-  status: z.enum(["PENDING", "PAID", "WAIVED"]),
-});
+const updatePaymentSchema = z
+  .object({
+    studentId: z.string().min(1).optional(),
+    amount: z.number().int().positive().optional(),
+    dueDate: z.coerce.date().optional(),
+    status: z.enum(["PENDING", "PAID", "WAIVED"]).optional(),
+    reference: z.string().trim().max(100).nullable().optional(),
+  })
+  .refine((record) => Object.values(record).some((value) => value !== undefined), {
+    message: "Informe ao menos um campo para atualizar.",
+  });
 
 export async function GET(request: Request) {
   const session = await getSession();
@@ -101,12 +109,22 @@ export async function PATCH(request: Request) {
     );
 
   try {
+    const data = {
+      ...parsed.data,
+      ...(parsed.data.reference !== undefined
+        ? { reference: parsed.data.reference || null }
+        : {}),
+      ...(parsed.data.status !== undefined
+        ? { paidAt: parsed.data.status === "PAID" ? new Date() : null }
+        : {}),
+      ...(parsed.data.status !== undefined
+        ? { status: parsed.data.status as PaymentStatus }
+        : {}),
+    };
+
     const payment = await prisma.payment.update({
       where: { id: paymentId },
-      data: {
-        status: parsed.data.status as PaymentStatus,
-        paidAt: parsed.data.status === "PAID" ? new Date() : null,
-      },
+      data,
       include: { student: { select: { name: true, registration: true } } },
     });
     return NextResponse.json({ data: payment });

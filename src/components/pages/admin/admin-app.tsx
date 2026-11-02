@@ -14,6 +14,7 @@ import {
   LessonCreate,
   LessonList,
   PaymentCreate,
+  PaymentEdit,
   PaymentList,
   StaffList,
   StudentCreate,
@@ -75,6 +76,7 @@ export default function AdminApp() {
         name="payments"
         list={PaymentList}
         create={PaymentCreate}
+        edit={PaymentEdit}
         options={{ label: "Pagamentos" }}
       />
       <Resource
