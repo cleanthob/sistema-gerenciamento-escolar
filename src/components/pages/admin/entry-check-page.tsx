@@ -105,8 +105,9 @@ export default function EntryCheckPage() {
             Controle de entrada
           </Typography>
           <Typography color="text.secondary" sx={{ mt: 1, maxWidth: 680 }}>
-            Consulte a matrícula antes de permitir a entrada. A decisão considera
-            a situação da matrícula, mensalidades vencidas e suspensões ativas.
+            Consulte a matrícula antes de permitir a entrada. A decisão
+            considera a situação da matrícula, mensalidades vencidas e
+            suspensões ativas.
           </Typography>
         </Box>
 
@@ -140,10 +141,19 @@ export default function EntryCheckPage() {
               type="submit"
               variant="contained"
               disabled={checking || !registration.trim()}
-              sx={{ minWidth: { sm: 190 }, minHeight: 48, whiteSpace: "nowrap" }}
+              sx={{
+                minWidth: { sm: 190 },
+                minHeight: 48,
+                whiteSpace: "nowrap",
+                alignSelf: "center",
+              }}
             >
               {checking ? (
-                <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{ alignItems: "center" }}
+                >
                   <CircularProgress size={18} color="inherit" />
                   <span>Consultando</span>
                 </Stack>
@@ -231,8 +241,8 @@ export default function EntryCheckPage() {
 
               {result.canEnter ? (
                 <Alert severity="success">
-                  Situação regular. O(A) aluno(a) está liberado(a) para entrar neste
-                  momento.
+                  Situação regular. O(A) aluno(a) está liberado(a) para entrar
+                  neste momento.
                 </Alert>
               ) : (
                 <Alert severity="error">
@@ -243,12 +253,19 @@ export default function EntryCheckPage() {
 
               {result.reasons.length ? (
                 <Box>
-                  <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 700 }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ mb: 1, fontWeight: 700 }}
+                  >
                     Motivos do bloqueio
                   </Typography>
                   <Stack component="ul" spacing={0.75} sx={{ m: 0, pl: 2.5 }}>
                     {result.reasons.map((reason) => (
-                      <Typography component="li" key={reason} color="text.primary">
+                      <Typography
+                        component="li"
+                        key={reason}
+                        color="text.primary"
+                      >
                         {reason}
                       </Typography>
                     ))}
@@ -258,7 +275,10 @@ export default function EntryCheckPage() {
 
               {result.overduePayments.length ? (
                 <Box>
-                  <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 700 }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ mb: 1, fontWeight: 700 }}
+                  >
                     Mensalidades vencidas
                   </Typography>
                   <Stack spacing={0.5}>
@@ -277,7 +297,10 @@ export default function EntryCheckPage() {
 
               {result.activeSuspensions.length ? (
                 <Box>
-                  <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 700 }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ mb: 1, fontWeight: 700 }}
+                  >
                     Suspensão ativa
                   </Typography>
                   <Stack spacing={0.5}>
