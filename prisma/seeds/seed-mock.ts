@@ -40,6 +40,34 @@ async function main() {
       department: "Português",
       phone: "(83) 99999-0004",
     },
+    {
+      email: "rafael.martins@escola.test",
+      name: "Rafael Martins",
+      role: UserRole.TEACHER,
+      department: "Matemática",
+      phone: "(83) 99999-0005",
+    },
+    {
+      email: "juliana.mendes@escola.test",
+      name: "Juliana Mendes",
+      role: UserRole.TEACHER,
+      department: "Matemática",
+      phone: "(83) 99999-0006",
+    },
+    {
+      email: "fernanda.costa@escola.test",
+      name: "Fernanda Costa",
+      role: UserRole.TEACHER,
+      department: "Português",
+      phone: "(83) 99999-0007",
+    },
+    {
+      email: "marcos.vinicius@escola.test",
+      name: "Marcos Vinícius",
+      role: UserRole.TEACHER,
+      department: "Português",
+      phone: "(83) 99999-0008",
+    },
   ];
 
   for (const user of users) {
@@ -608,36 +636,63 @@ async function main() {
   // 5. AULAS
   // =====================================================
 
+  const classes = new Map<string, typeof students>();
   for (const student of students) {
-    const existingLessons = await prisma.lesson.count({
-      where: { studentId: student.id },
-    });
-
-    if (existingLessons > 0) continue;
-
-    const startsAt = new Date("2026-11-02T11:00:00.000Z");
-
-    await prisma.lesson.createMany({
-      data: [
-        {
-          studentId: student.id,
-          subject: "Matemática",
-          teacher: "Carlos Henrique",
-          room: `Sala ${student.className}`,
-          startsAt,
-          endsAt: new Date(startsAt.getTime() + 50 * 60 * 1000),
-        },
-        {
-          studentId: student.id,
-          subject: "Português",
-          teacher: "Ana Beatriz",
-          room: `Sala ${student.className}`,
-          startsAt: new Date(startsAt.getTime() + 60 * 60 * 1000),
-          endsAt: new Date(startsAt.getTime() + 110 * 60 * 1000),
-        },
-      ],
-    });
+    const classKey = `${student.grade}|${student.className}`;
+    const classStudents = classes.get(classKey) ?? [];
+    classStudents.push(student);
+    classes.set(classKey, classStudents);
   }
+
+  await prisma.lesson.deleteMany({
+    where: { studentId: { in: students.map((student) => student.id) } },
+  });
+
+  const mathTeachers = ["Carlos Henrique", "Rafael Martins", "Juliana Mendes"];
+  const portugueseTeachers = [
+    "Ana Beatriz",
+    "Fernanda Costa",
+    "Marcos Vinícius",
+  ];
+  const lessonDurationMinutes = 50;
+  const classBlockMinutes = 100;
+  const schoolDayStart = new Date("2026-11-02T11:00:00.000Z");
+  const lessons = [...classes.values()].flatMap((classStudents, classIndex) => {
+    const parallelGroup = classIndex % mathTeachers.length;
+    const blockIndex = Math.floor(classIndex / mathTeachers.length);
+    const firstLessonStart = new Date(
+      schoolDayStart.getTime() + blockIndex * classBlockMinutes * 60_000,
+    );
+    const secondLessonStart = new Date(
+      firstLessonStart.getTime() + lessonDurationMinutes * 60_000,
+    );
+    const room = String(101 + classIndex);
+
+    return classStudents.flatMap((student) => [
+      {
+        studentId: student.id,
+        subject: "Matemática",
+        teacher: mathTeachers[parallelGroup],
+        room,
+        startsAt: firstLessonStart,
+        endsAt: new Date(
+          firstLessonStart.getTime() + lessonDurationMinutes * 60_000,
+        ),
+      },
+      {
+        studentId: student.id,
+        subject: "Português",
+        teacher: portugueseTeachers[parallelGroup],
+        room,
+        startsAt: secondLessonStart,
+        endsAt: new Date(
+          secondLessonStart.getTime() + lessonDurationMinutes * 60_000,
+        ),
+      },
+    ]);
+  });
+
+  await prisma.lesson.createMany({ data: lessons });
 
   // =====================================================
   // 6. NOTAS

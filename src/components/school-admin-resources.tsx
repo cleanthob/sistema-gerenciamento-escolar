@@ -1435,16 +1435,52 @@ export function LessonList() {
       filters={searchFilters("Buscar por aluno(a), disciplina ou professor")}
       sx={listStyles}
     >
-      <Datagrid bulkActionButtons={false} sx={gridStyles}>
+      <Datagrid rowClick="edit" bulkActionButtons={false} sx={gridStyles}>
         <TextField source="student.name" label="Aluno(a)" />
+        <TextField source="student.registration" label="Matrícula" />
         <TextField source="student.className" label="Turma" />
         <TextField source="subject" label="Disciplina" />
-        <TextField source="teacher" label="Professor" />
+        <FunctionField
+          label="Professor(a)"
+          render={(record) => record.teacher || "Não informado"}
+        />
         <TextField source="room" label="Sala" />
-        <CalendarDateField source="startsAt" label="Início" showTime />
-        <CalendarDateField source="endsAt" label="Término" showTime />
+        <FunctionField
+          label="Horário"
+          render={(record) => {
+            const start = record.startsAt
+              ? formatSchoolDateTime(record.startsAt)
+              : "—";
+            const end = record.endsAt ? formatSchoolDateTime(record.endsAt) : "—";
+            return `${start} · ${end}`;
+          }}
+        />
+        <EditButton />
       </Datagrid>
     </List>
+  );
+}
+
+export function LessonEdit() {
+  return (
+    <Edit title="Editar aula" sx={formPageStyles}>
+      <AdminForm>
+        <StudentReference />
+        <TextInput source="subject" label="Disciplina" validate={required()} />
+        <TextInput source="teacher" label="Professor" validate={required()} />
+        <TextInput source="room" label="Sala" validate={required()} />
+        <SchoolDateTimeInput
+          source="startsAt"
+          label="Início"
+          requiredField
+        />
+        <SchoolDateTimeInput
+          source="endsAt"
+          label="Término"
+          requiredField
+        />
+      </AdminForm>
+    </Edit>
   );
 }
 

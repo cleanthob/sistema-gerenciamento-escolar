@@ -12,6 +12,7 @@ import {
   IncidentEdit,
   IncidentList,
   LessonCreate,
+  LessonEdit,
   LessonList,
   PaymentCreate,
   PaymentEdit,
@@ -70,6 +71,7 @@ export default function AdminApp() {
         name="lessons"
         list={LessonList}
         create={LessonCreate}
+        edit={LessonEdit}
         options={{ label: "Aulas" }}
       />
       <Resource

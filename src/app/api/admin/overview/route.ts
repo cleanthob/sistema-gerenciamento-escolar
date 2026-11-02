@@ -82,7 +82,7 @@ export async function GET() {
     }),
     prisma.lesson.findMany({
       where: { startsAt: { gte: todayStart, lt: tomorrow } },
-      include: { student: { select: { name: true, className: true } } },
+      include: { student: { select: { className: true } } },
       orderBy: { startsAt: "asc" },
     }),
   ]);
@@ -126,6 +126,41 @@ export async function GET() {
       records: rows.length,
     };
   });
+  const groupedLessons = new Map<
+    string,
+    {
+      id: string;
+      subject: string;
+      teacher: string;
+      room: string;
+      startsAt: Date;
+      endsAt: Date;
+      className: string;
+    }
+  >();
+
+  for (const lesson of lessonsToday) {
+    const key = JSON.stringify([
+      lesson.subject,
+      lesson.teacher,
+      lesson.room,
+      lesson.startsAt.toISOString(),
+      lesson.endsAt.toISOString(),
+      lesson.student.className,
+    ]);
+
+    if (!groupedLessons.has(key)) {
+      groupedLessons.set(key, {
+        id: lesson.id,
+        subject: lesson.subject,
+        teacher: lesson.teacher,
+        room: lesson.room,
+        startsAt: lesson.startsAt,
+        endsAt: lesson.endsAt,
+        className: lesson.student.className,
+      });
+    }
+  }
 
   return NextResponse.json({
     data: {
@@ -140,15 +175,7 @@ export async function GET() {
       absentToday,
       overduePayments,
       months,
-      lessonsToday: lessonsToday.map((lesson) => ({
-        id: lesson.id,
-        subject: lesson.subject,
-        teacher: lesson.teacher,
-        room: lesson.room,
-        startsAt: lesson.startsAt,
-        studentName: lesson.student.name,
-        className: lesson.student.className,
-      })),
+      lessonsToday: [...groupedLessons.values()],
       checkedAt: now.toISOString(),
     },
   });

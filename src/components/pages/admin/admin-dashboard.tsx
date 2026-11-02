@@ -19,6 +19,7 @@ import {
 export default function AdminDashboard() {
   const [overview, setOverview] = useState<Overview | null>(null);
   const [error, setError] = useState("");
+  const [currentTime, setCurrentTime] = useState<number | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -49,10 +50,37 @@ export default function AdminDashboard() {
     };
   }, []);
 
+  useEffect(() => {
+    const updateCurrentTime = () => setCurrentTime(Date.now());
+    updateCurrentTime();
+    const intervalId = window.setInterval(updateCurrentTime, 30_000);
+    return () => window.clearInterval(intervalId);
+  }, []);
+
   const today = new Date();
   const schoolYear = getSchoolDateParts(today).year;
   const formatCount = (value: number) =>
     new Intl.NumberFormat("pt-BR").format(value);
+  const formatRoom = (room: string) =>
+    /^sala\b/i.test(room.trim()) ? room.trim() : `Sala ${room.trim()}`;
+  const currentLessons =
+    overview?.lessonsToday.filter((lesson) => {
+      if (currentTime === null) return false;
+      const start = new Date(lesson.startsAt).getTime();
+      const end = new Date(lesson.endsAt).getTime();
+      return start <= currentTime && currentTime < end;
+    }) ?? [];
+  const allUpcomingLessons =
+    overview?.lessonsToday.filter(
+      (lesson) =>
+        currentTime !== null &&
+        new Date(lesson.startsAt).getTime() > currentTime,
+    ) ?? [];
+  const nextStartTime = allUpcomingLessons[0]?.startsAt;
+  const upcomingLessons = nextStartTime
+    ? allUpcomingLessons.filter((lesson) => lesson.startsAt === nextStartTime)
+    : [];
+  const visibleLessons = [...currentLessons, ...upcomingLessons];
   const cards = overview
     ? [
         {
@@ -442,12 +470,17 @@ export default function AdminDashboard() {
             },
             gap: { xs: 3, lg: 4 },
             mt: { xs: 3, sm: 4 },
+            alignItems: "stretch",
           }}
         >
           <Box
             component="section"
             aria-labelledby="attendance-title"
-            sx={{ minWidth: 0 }}
+            sx={{
+              minWidth: 0,
+              display: "flex",
+              flexDirection: "column",
+            }}
           >
             <Stack
               direction={{ xs: "column", sm: "row" }}
@@ -456,6 +489,7 @@ export default function AdminDashboard() {
                 mb: 1.5,
                 justifyContent: "space-between",
                 alignItems: { xs: "flex-start", sm: "flex-end" },
+                minHeight: { lg: 112 },
               }}
             >
               <Box>
@@ -488,6 +522,10 @@ export default function AdminDashboard() {
             </Stack>
             <Box
               sx={{
+                flex: 1,
+                minHeight: 0,
+                display: "flex",
+                flexDirection: "column",
                 border: "1px solid #293b4b",
                 borderRadius: 1.5,
                 bgcolor: "#131e28",
@@ -616,92 +654,202 @@ export default function AdminDashboard() {
             aria-labelledby="schedule-title"
             sx={{
               minWidth: 0,
-              p: { xs: 2, sm: 2.5 },
-              border: "1px solid #293b4b",
-              borderRadius: 1.5,
-              bgcolor: "#131e28",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
-            <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-              <CalendarDays size={16} color="#75baf2" aria-hidden="true" />
-              <Typography
-                variant="overline"
-                sx={{
-                  color: "#75baf2",
-                  fontWeight: 700,
-                  letterSpacing: "0.12em",
-                }}
-              >
-                OPERAÇÃO ESCOLAR
-              </Typography>
-            </Stack>
-            <Typography
-              id="schedule-title"
-              variant="h6"
-              sx={{ color: "#e5eee8", fontWeight: 700 }}
+            <Stack
+              spacing={0.5}
+              sx={{
+                mb: 1.5,
+                minHeight: { lg: 112 },
+                justifyContent: "flex-start",
+              }}
             >
-              Aulas de hoje
-            </Typography>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ mt: 0.5, mb: 2 }}
-            >
-              {overview?.lessonsToday.length
-                ? `${formatCount(overview.lessonsToday.length)} ${
-                    overview.lessonsToday.length === 1 ? "aula" : "aulas"
-                  } na agenda`
-                : "Não há aulas programadas para hoje."}
-            </Typography>
-            <Stack sx={{ borderTop: "1px solid #344c60" }}>
-              {overview?.lessonsToday.map((item) => (
-                <Stack
-                  key={item.id}
-                  direction="row"
-                  spacing={1.5}
+              <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+                <CalendarDays size={16} color="#75baf2" aria-hidden="true" />
+                <Typography
+                  variant="overline"
                   sx={{
-                    py: 2,
-                    borderBottom: "1px solid #293b4b",
-                    alignItems: "flex-start",
+                    color: "#75baf2",
+                    fontWeight: 700,
+                    letterSpacing: "0.12em",
                   }}
                 >
-                  <Box sx={{ width: 46, flexShrink: 0, pt: 0.25 }}>
-                    <Typography
-                      sx={{ color: "#a0b2a7", fontSize: 12, fontWeight: 700 }}
-                    >
-                      {formatSchoolTime(item.startsAt)}
-                    </Typography>
-                  </Box>
+                  OPERAÇÃO ESCOLAR
+                </Typography>
+              </Stack>
+              <Typography
+                id="schedule-title"
+                variant="h6"
+                sx={{ color: "#e5eee8", fontWeight: 700 }}
+              >
+                Aulas de hoje
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {currentLessons.length
+                  ? `${formatCount(currentLessons.length)} ${
+                      currentLessons.length === 1
+                        ? "aula em andamento"
+                        : "aulas em andamento"
+                    }${upcomingLessons.length ? ` · ${formatCount(upcomingLessons.length)} próximas` : ""}`
+                  : upcomingLessons.length
+                    ? `${formatCount(upcomingLessons.length)} ${
+                        upcomingLessons.length === 1 ? "próxima aula" : "próximas aulas"
+                      }`
+                    : "Não há aulas em andamento ou próximas para hoje."}
+              </Typography>
+            </Stack>
+            <Box
+              sx={{
+                height: 360,
+                maxHeight: 360,
+                minHeight: 0,
+                flex: "0 0 360px",
+                boxSizing: "border-box",
+                display: "flex",
+                flexDirection: "column",
+                overflow: "hidden",
+                p: { xs: 1.5, sm: 2 },
+                border: "1px solid #293b4b",
+                borderRadius: 1.5,
+                bgcolor: "#131e28",
+              }}
+            >
+              <Box
+                sx={{
+                  flex: 1,
+                  minHeight: 0,
+                  overflowY: "auto",
+                  pr: 0.5,
+                  "&::-webkit-scrollbar": {
+                    width: 8,
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#374f68",
+                    borderRadius: 999,
+                  },
+                }}
+              >
+                {visibleLessons.length ? (
+                  <Stack
+                    component="ol"
+                    aria-label="Aulas em andamento e próximas"
+                    spacing={1}
+                    sx={{ m: 0, p: 0, listStyle: "none" }}
+                  >
+                    {visibleLessons.map((item) => {
+                      const isInProgress = currentLessons.some(
+                        (lesson) => lesson.id === item.id,
+                      );
+
+                      return (
+                        <Box
+                          component="li"
+                          key={item.id}
+                          sx={{
+                            p: 1.5,
+                            border: "1px solid #293b4b",
+                            borderLeft: "3px solid #39a0ed",
+                            borderRadius: 1.25,
+                            bgcolor: "#0f1922",
+                          }}
+                        >
+                          <Stack
+                            direction="row"
+                            spacing={1}
+                            sx={{
+                              alignItems: "flex-start",
+                              justifyContent: "space-between",
+                              mb: 1,
+                            }}
+                          >
+                            <Box sx={{ minWidth: 0 }}>
+                              <Typography
+                                variant="overline"
+                                sx={{
+                                  color: "#9fb3c3",
+                                  fontSize: 10,
+                                  fontWeight: 700,
+                                  letterSpacing: "0.06em",
+                                  lineHeight: 1.4,
+                                }}
+                              >
+                                {formatSchoolTime(item.startsAt)} –{" "}
+                                {formatSchoolTime(item.endsAt)}
+                              </Typography>
+                              <Typography
+                                variant="body1"
+                                sx={{
+                                  color: "#f0f5f9",
+                                  fontWeight: 700,
+                                  lineHeight: 1.35,
+                                  overflowWrap: "anywhere",
+                                }}
+                              >
+                                {item.subject}
+                              </Typography>
+                            </Box>
+                            <Chip
+                              label={
+                                isInProgress ? "Em andamento" : "A seguir"
+                              }
+                              size="small"
+                              sx={{
+                                flexShrink: 0,
+                                bgcolor: isInProgress
+                                  ? "rgba(57, 160, 237, 0.2)"
+                                  : "rgba(57, 160, 237, 0.12)",
+                                color: "#75baf2",
+                                fontWeight: 700,
+                              }}
+                            />
+                          </Stack>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: "#dce8df",
+                              fontWeight: 600,
+                              lineHeight: 1.45,
+                            }}
+                          >
+                            Professor(a): {item.teacher || "Não informado"}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              display: "block",
+                              mt: 0.5,
+                              color: "#9fb3c3",
+                              lineHeight: 1.5,
+                            }}
+                          >
+                            Turma {item.className} · {formatRoom(item.room)}
+                          </Typography>
+                        </Box>
+                      );
+                    })}
+                  </Stack>
+                ) : (
                   <Box
                     sx={{
-                      width: 3,
-                      flexShrink: 0,
-                      bgcolor: "#39a0ed",
-                      borderRadius: 2,
+                      display: "grid",
+                      placeItems: "center",
+                      height: "100%",
+                      minHeight: 120,
+                      px: 2,
+                      textAlign: "center",
                     }}
-                  />
-                  <Box sx={{ minWidth: 0 }}>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#dce8df", fontWeight: 700 }}
-                    >
-                      {item.subject}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{ display: "block", mt: 0.5 }}
-                    >
-                      {item.studentName} · Turma {item.className} · Sala{" "}
-                      {item.room}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {item.teacher}
+                  >
+                    <Typography variant="body2" color="text.secondary">
+                      {overview
+                        ? "Não há aulas em andamento ou próximas para hoje."
+                        : "Carregando a agenda de hoje…"}
                     </Typography>
                   </Box>
-                </Stack>
-              ))}
-            </Stack>
+                )}
+              </Box>
+            </Box>
           </Box>
         </Box>
       </Box>

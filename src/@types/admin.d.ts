@@ -16,7 +16,7 @@ type Overview = {
     teacher: string;
     room: string;
     startsAt: string;
-    studentName: string;
+    endsAt: string;
     className: string;
   }[];
 };
