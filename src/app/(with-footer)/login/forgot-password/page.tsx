@@ -1,5 +1,4 @@
 import BackButton from "@/components/shared/back-button";
-import Link from "next/link";
 
 export default function ForgotPasswordPage() {
   return (
@@ -14,7 +13,7 @@ export default function ForgotPasswordPage() {
           solicitada à equipe escolar. A secretaria poderá confirmar a
           identidade do responsável e emitir uma senha temporária.
         </p>
-        <BackButton text="Voltar ao login" />
+        <BackButton text="Voltar ao login" href="/login" />
       </section>
     </main>
   );

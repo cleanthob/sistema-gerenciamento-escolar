@@ -1,18 +1,22 @@
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { Button } from "../ui/button";
 
 type BackButtonProps = {
   text?: string;
+  href?: string;
 };
 
-export default function BackButton({ text = "Voltar" }: BackButtonProps) {
+export default function BackButton({
+  text = "Voltar",
+  href = "/",
+}: BackButtonProps) {
   return (
     <Link
-      href="/"
-      className="mt-8 inline-flex min-h-12 items-center justify-center rounded-full bg-[#63b392] px-7 text-sm font-semibold text-[#0d1913] transition-colors hover:bg-[#91c6aa] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#63b392]"
-      passHref
+      href={href}
+      className="group/button mb-2 inline-flex h-9 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md border border-transparent bg-[#39a0ed] px-4 text-xs font-semibold text-[#071521] transition-all outline-none hover:bg-[#75baf2] focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 active:translate-y-px"
     >
-      <Button>{text}</Button>
+      <ArrowLeft size={14} />
+      {text}
     </Link>
   );
 }
