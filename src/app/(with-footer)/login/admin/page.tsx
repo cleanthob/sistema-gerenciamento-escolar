@@ -1,6 +1,7 @@
 import heroImage from "@/assets/images/hero.jpg";
 import logoImage from "@/assets/images/school-logo.svg";
 import { StaffLoginForm } from "@/components/pages/login/auth-forms";
+import BackButton from "@/components/shared/back-button";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,12 +9,7 @@ export default function Admin() {
   return (
     <main className="auth-page relative isolate flex items-center justify-center overflow-hidden text-[#e5eee8]">
       <div className="w-full max-w-5xl">
-        <Link
-          href="/"
-          className="mb-4 inline-flex min-h-10 items-center text-sm font-medium text-[#a0b2a7] transition-colors hover:text-[#91c6aa] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#63b392]"
-        >
-          Voltar ao início
-        </Link>
+        <BackButton />
         <section className="auth-panel grid w-full md:min-h-[560px] md:grid-cols-[1.05fr_0.95fr]">
           <div className="relative min-h-44 overflow-hidden bg-[#8d523d] md:min-h-full">
             <Image

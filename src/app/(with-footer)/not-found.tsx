@@ -1,4 +1,4 @@
-import Link from "next/link";
+import BackButton from "../../components/shared/back-button";
 
 export default function NotFound() {
   return (
@@ -16,12 +16,7 @@ export default function NotFound() {
           A página que você está procurando não existe ou foi removida.
         </p>
 
-        <Link
-          href="/"
-          className="mt-8 inline-flex min-h-12 items-center justify-center rounded-full bg-[#63b392] px-7 text-sm font-semibold text-[#0d1913] transition-colors hover:bg-[#91c6aa] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#63b392]"
-        >
-          Voltar para o início
-        </Link>
+        <BackButton />
       </div>
     </main>
   );
