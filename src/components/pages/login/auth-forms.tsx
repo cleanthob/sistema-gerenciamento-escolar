@@ -2,33 +2,16 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  ChangePasswordFields,
+  LoginFields,
+  loginFormSchema,
+  passwordChangeSchema,
+} from "@/lib/validations/auth-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-const loginFields = z.object({
-  identifier: z.string().trim().min(1, "Informe sua matrícula ou e-mail."),
-  password: z.string().min(1, "Informe sua senha."),
-});
-
-const loginFormSchema = loginFields.extend({
-  audience: z.enum(["STUDENT", "STAFF"]),
-});
-const passwordChangeSchema = z
-  .object({
-    currentPassword: z.string().min(1, "Informe sua senha atual."),
-    newPassword: z.string().min(12, "Use pelo menos 12 caracteres.").max(128),
-    confirmation: z.string().min(1, "Confirme a nova senha."),
-  })
-  .refine((values) => values.newPassword === values.confirmation, {
-    message: "As senhas não coincidem.",
-    path: ["confirmation"],
-  });
-
-type LoginFields = z.infer<typeof loginFormSchema>;
-type ChangePasswordFields = z.infer<typeof passwordChangeSchema>;
 
 function FormError({ children, id }: { children?: string; id?: string }) {
   if (!children) return null;
@@ -106,7 +89,9 @@ export function StudentLoginForm() {
           className="h-12 rounded-md text-sm"
           {...register("identifier")}
         />
-        <FormError id="student-id-error">{errors.identifier?.message}</FormError>
+        <FormError id="student-id-error">
+          {errors.identifier?.message}
+        </FormError>
       </div>
       <div className="space-y-2">
         <label
@@ -121,11 +106,15 @@ export function StudentLoginForm() {
           autoComplete="current-password"
           placeholder="Digite sua senha"
           aria-invalid={Boolean(errors.password)}
-          aria-describedby={errors.password ? "student-password-error" : undefined}
+          aria-describedby={
+            errors.password ? "student-password-error" : undefined
+          }
           className="h-12 rounded-md text-sm"
           {...register("password")}
         />
-        <FormError id="student-password-error">{errors.password?.message}</FormError>
+        <FormError id="student-password-error">
+          {errors.password?.message}
+        </FormError>
       </div>
       <div className="flex justify-end">
         <a
@@ -173,7 +162,9 @@ export function StaffLoginForm() {
           className="h-12 rounded-md text-sm"
           {...register("identifier")}
         />
-        <FormError id="staff-email-error">{errors.identifier?.message}</FormError>
+        <FormError id="staff-email-error">
+          {errors.identifier?.message}
+        </FormError>
       </div>
       <div className="space-y-2">
         <label
@@ -188,11 +179,15 @@ export function StaffLoginForm() {
           autoComplete="current-password"
           placeholder="Digite sua senha"
           aria-invalid={Boolean(errors.password)}
-          aria-describedby={errors.password ? "staff-password-error" : undefined}
+          aria-describedby={
+            errors.password ? "staff-password-error" : undefined
+          }
           className="h-12 rounded-md text-sm"
           {...register("password")}
         />
-        <FormError id="staff-password-error">{errors.password?.message}</FormError>
+        <FormError id="staff-password-error">
+          {errors.password?.message}
+        </FormError>
       </div>
       <FormError>{requestError}</FormError>
       <Button
@@ -258,11 +253,15 @@ export function StudentChangePasswordForm() {
           type="password"
           autoComplete="current-password"
           aria-invalid={Boolean(errors.currentPassword)}
-          aria-describedby={errors.currentPassword ? "current-password-error" : undefined}
+          aria-describedby={
+            errors.currentPassword ? "current-password-error" : undefined
+          }
           className="h-12 rounded-md"
           {...register("currentPassword")}
         />
-        <FormError id="current-password-error">{errors.currentPassword?.message}</FormError>
+        <FormError id="current-password-error">
+          {errors.currentPassword?.message}
+        </FormError>
       </div>
       <div className="space-y-2">
         <label
@@ -276,14 +275,18 @@ export function StudentChangePasswordForm() {
           type="password"
           autoComplete="new-password"
           aria-invalid={Boolean(errors.newPassword)}
-          aria-describedby={errors.newPassword ? "new-password-error" : undefined}
+          aria-describedby={
+            errors.newPassword ? "new-password-error" : undefined
+          }
           className="h-12 rounded-md"
           {...register("newPassword")}
         />
         <p className="text-xs leading-relaxed text-[#9fb3c3]">
           Use pelo menos 12 caracteres.
         </p>
-        <FormError id="new-password-error">{errors.newPassword?.message}</FormError>
+        <FormError id="new-password-error">
+          {errors.newPassword?.message}
+        </FormError>
       </div>
       <div className="space-y-2">
         <label
@@ -297,11 +300,15 @@ export function StudentChangePasswordForm() {
           type="password"
           autoComplete="new-password"
           aria-invalid={Boolean(errors.confirmation)}
-          aria-describedby={errors.confirmation ? "confirm-password-error" : undefined}
+          aria-describedby={
+            errors.confirmation ? "confirm-password-error" : undefined
+          }
           className="h-12 rounded-md"
           {...register("confirmation")}
         />
-        <FormError id="confirm-password-error">{errors.confirmation?.message}</FormError>
+        <FormError id="confirm-password-error">
+          {errors.confirmation?.message}
+        </FormError>
       </div>
       <FormError>{requestError}</FormError>
       <Button
