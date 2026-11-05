@@ -127,7 +127,7 @@ export default function EntryCheckPage() {
           >
             <TextField
               fullWidth
-              label="Matrícula do(a) aluno(a)"
+              placeholder="Matrícula do(a) aluno(a)"
               value={registration}
               onChange={(event) =>
                 setRegistration(event.target.value.toUpperCase())
