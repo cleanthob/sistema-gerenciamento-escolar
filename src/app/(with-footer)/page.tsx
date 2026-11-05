@@ -1,5 +1,5 @@
-import heroImage from "@/assets/images/hero.jpg";
 import logoImage from "@/assets/images/school-logo.svg";
+import { HomeHeroImage } from "@/components/pages/home/home-hero-image";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,15 +17,7 @@ export default function Home() {
       </header>
 
       <section className="home-entry" aria-labelledby="home-title">
-        <div className="home-entry-image">
-          <Image
-            src={heroImage}
-            alt="Livros e materiais preparados para um dia de estudos"
-            fill
-            priority
-            sizes="(max-width: 760px) 100vw, 55vw"
-          />
-        </div>
+        <HomeHeroImage />
 
         <div className="home-entry-content">
           <p className="home-eyebrow">Portal do(a) aluno(a)</p>

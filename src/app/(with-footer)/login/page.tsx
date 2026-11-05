@@ -9,7 +9,6 @@ export default function Login() {
   return (
     <main className="auth-page relative isolate flex items-center justify-center overflow-hidden text-[#e5eee8]">
       <div className="w-full max-w-5xl">
-        <BackButton />
         <section className="auth-panel grid w-full md:min-h-[560px] md:grid-cols-[1.05fr_0.95fr]">
           <div className="relative min-h-44 overflow-hidden bg-[#172b3b] md:min-h-full">
             <Image
@@ -31,7 +30,10 @@ export default function Login() {
             </div>
           </div>
 
-          <div className="flex flex-col justify-center px-6 py-9 sm:px-12 sm:py-12">
+          <div className="relative flex flex-col justify-center px-6 py-9 sm:px-12 sm:py-12">
+            <div className="absolute right-6 top-5 z-20">
+              <BackButton />
+            </div>
             <Image
               src={logoImage}
               alt="Sistema Escolar"
