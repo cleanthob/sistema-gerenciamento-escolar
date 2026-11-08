@@ -1,4 +1,5 @@
 import { jwtVerify } from "jose";
+import { prisma } from "@/lib/prisma";
 import { NextResponse, type NextRequest } from "next/server";
 
 const cookieName = "school_session";
@@ -41,7 +42,37 @@ export async function proxy(request: NextRequest) {
       { algorithms: ["HS256"] },
     );
 
-    const role = payload.role;
+    const userId = payload.sub; // ID armazenado no JWT
+
+    if (typeof userId !== "string") {
+      throw new Error("Sessão sem identificador de usuário");
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
+        role: true,
+      },
+    });
+
+    // Usuário excluído do banco: invalida o cookie.
+    if (!user) {
+      const response = isLoginPage
+        ? NextResponse.next()
+        : redirectUnauthorized(
+            request,
+            isAdminArea ? "/login/admin" : "/login",
+          );
+
+      response.cookies.delete(cookieName);
+
+      return response;
+    }
+
+    const role = user.role;
 
     // Redireciona usuários autenticados que acessam as páginas de login.
     if (isLoginPage) {
